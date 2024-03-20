@@ -7,6 +7,7 @@ const MOD_NAME = "error.js";
 
 /**
  * error message wrapper used to generate error messages and avoid boilerplate
+ * 
  * @param {string} modName      name of original file 
  * @param {string} funcName     name of caller function
  * @param {string} msg          custom error message to be printed

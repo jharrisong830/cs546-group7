@@ -19,7 +19,7 @@ const pkcePossible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012345
  * 
  * @returns {string}    authorization endpoint used to get user authorization code
  */
-const getSpotifyAuthorizationURL = () => {
+const SPGetAuthorizationURL = () => {
     const scope = "playlist-read-private user-read-private user-library-read"; // TODO: refine scopes to be minimal
     const userAuthQuery = {
         response_type: "code",
@@ -56,11 +56,46 @@ const generatePKCEString = (length = 64) => {
 };
 
 
+/**
+ * encrypt str with sha256 algorithm
+ * 
+ * reference for implementation: https://developer.spotify.com/documentation/web-api/tutorials/code-pkce-flow
+ * 
+ * @param {string} str  message to be encrypted
+ * 
+ * @returns sha256 encrypted message 
+ */
+const encrypt = async (str) => {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(str);
+    return await crypto.subtle.digest('SHA-256', data); // encrypt with sha256 algo
+};
+
+
+/**
+ * base-64 encode a byte buffer
+ * 
+ * reference for implementation: https://developer.spotify.com/documentation/web-api/tutorials/code-pkce-flow
+ * 
+ * @param {ArrayBuffer} buf   buffer to be encoded 
+ * 
+ * @returns base-64 encoded buffer
+ */
+const base64encode = (input) => {
+    return btoa(String.fromCharCode(...new Uint8Array(input)))
+      .replace(/=/g, '')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_');
+};
+
+
 
 
 const exportedMethods = {
-    getSpotifyAuthorizationURL,
-    generatePKCEString
+    SPGetAuthorizationURL,
+    generatePKCEString,
+    encrypt,
+    base64encode
 };
 
 

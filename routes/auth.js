@@ -1,8 +1,8 @@
 /**
  * routes for authorizing external services (spotify, AM...)
  * 
- * implements authorization code flow to gain access to spotify api
- * see more details here: https://developer.spotify.com/documentation/web-api/tutorials/code-flow 
+ * implements authorization PKCE code flow to gain access to spotify api
+ * see more details here: https://developer.spotify.com/documentation/web-api/tutorials/code-pkce-flow
  */
 
 import { Router } from "express";
@@ -18,7 +18,7 @@ const router = Router();
 router
     .route("/spotify")
     .get((req, res) => {
-        const authURL = authentication.getSpotifyAuthorizationURL();
+        const authURL = authentication.SPGetAuthorizationURL();
 
         return res.redirect(authURL); 
     });
