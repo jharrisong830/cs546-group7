@@ -15,10 +15,13 @@ config(); // load environment vars from .env file
 
 const router = Router();
 
+const codes = await authentication.getPKCECodes(64);
+
+
 router
     .route("/spotify")
     .get((req, res) => {
-        const authURL = authentication.SPGetAuthorizationURL();
+        const authURL = authentication.SPGetAuthorizationURL(codes["codeChallenge"]);
 
         return res.redirect(authURL); 
     });
@@ -34,11 +37,12 @@ router
         const accessBody = {
             grant_type: "authorization_code",
             code: authCode,
-            redirect_uri: process.env.SPOTIFY_REDIRECT
+            redirect_uri: process.env.SPOTIFY_REDIRECT,
+            client_id: process.env.SPOTIFY_CLIENT, // for PKCE
+            code_verifier: codes["codeVerifier"]
         };
         const accessHeader = {
-            "Content-Type": "application/x-www-form-urlencoded",
-            Authorization: "Basic " + (new Buffer.from(process.env.SPOTIFY_CLIENT + ":" + process.env.SPOTIFY_SECRET).toString("base64")) // send api client/secret as encoded string in the header
+            "Content-Type": "application/x-www-form-urlencoded"
         };
 
         try {

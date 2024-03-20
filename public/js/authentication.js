@@ -17,15 +17,19 @@ const pkcePossible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz012345
  * 
  * redirects to spotify login, which returns authorization code on success
  * 
+ * @param {codeChallenge}   PKCE code challenge to be sent as a query param
+ * 
  * @returns {string}    authorization endpoint used to get user authorization code
  */
-const SPGetAuthorizationURL = () => {
+const SPGetAuthorizationURL = (codeChallenge) => {
     const scope = "playlist-read-private user-read-private user-library-read"; // TODO: refine scopes to be minimal
     const userAuthQuery = {
         response_type: "code",
         redirect_uri: process.env.SPOTIFY_REDIRECT,
         client_id: process.env.SPOTIFY_CLIENT,
-        scope: scope
+        scope: scope,
+        code_challenge_method: "S256",
+        code_challenge: codeChallenge
     };
 
     const authURL = "https://accounts.spotify.com/authorize?" + // construct http query
@@ -63,7 +67,7 @@ const generatePKCEString = (length = 64) => {
  * 
  * @param {string} str  message to be encrypted
  * 
- * @returns sha256 encrypted message 
+ * @returns {ArrayBuffer} sha256 encrypted message buffer
  */
 const encrypt = async (str) => {
     const encoder = new TextEncoder();
@@ -79,7 +83,7 @@ const encrypt = async (str) => {
  * 
  * @param {ArrayBuffer} buf   buffer to be encoded 
  * 
- * @returns base-64 encoded buffer
+ * @returns {string} base-64 encoded buffer
  */
 const base64encode = (input) => {
     return btoa(String.fromCharCode(...new Uint8Array(input)))
@@ -90,12 +94,35 @@ const base64encode = (input) => {
 
 
 
+/**
+ * returns a triplet of PKCE codes to use for authorization
+ * 
+ * @param {number} length   length of the randomly generated string
+ * 
+ * @returns {Object} containing codeVerifier, hashed, and codeChallenge
+ * @throws when length is invalid
+ */
+const getPKCECodes = async (length = 64) => {
+    const codeVerifier = generatePKCEString(length) // will throw with incorrect length
+    const hashed = await encrypt(codeVerifier)
+    const codeChallenge = base64encode(hashed)
+
+    return {
+        codeVerifier: codeVerifier,
+        hashed: hashed,
+        codeChallenge: codeChallenge
+    };
+};
+
+
+
 
 const exportedMethods = {
     SPGetAuthorizationURL,
     generatePKCEString,
     encrypt,
-    base64encode
+    base64encode,
+    getPKCECodes
 };
 
 
