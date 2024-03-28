@@ -55,6 +55,7 @@ Below is an outline of the database structure of Tweeter. **Currently, this is o
 | ---  | ---  | ---         |
 | `_id`| `ObjectId` | unique identifier for the comment |
 | `authorId` | `ObjectId` | `_id` of the user who authored the comment |
+| `parentId` | `ObjectId` | `_id` of the post that this comment is on |
 | `textContent` | `string` | the text content of the comment | 
 | `likes` | `[ObjectId]` | an array of `_id`s of the users who liked this comment
 | `createTime` | `number` | time since Unix epoch of when the comment was created |
