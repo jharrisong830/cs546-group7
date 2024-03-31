@@ -23,6 +23,8 @@ Below is an outline of the database structure of Tweeter. **Currently, this is o
 | `comments` | `[ObjectId]` | list of comment `_id`s authored by this user |
 | `postLikes` | `[ObjectId]` | list of post `_id`s liked by this user |
 | `commentLikes` | `[ObjectId]` | list of comment `_id`s liked by this user |
+| `ratings` | `[ObjectId]` | list of playlists rated by this user |
+| `addedPlaylists` | `[ObjectId]` | list of playlists added by this user to Spotify/AM |
 
 
 ### SPAuth (Subdocument)
@@ -99,6 +101,7 @@ Below is an outline of the database structure of Tweeter. **Currently, this is o
 | `artists` | `[string]` | name(s) of the artist(s) of the playlist |
 | `platformURL` | `string` | url link to the playlist on its original platform |
 | `tracks` | `[Object]` | a list of song objects contained in this playlist |
+| `ratings` | `[Object]` | an array of star ratings (1-5) given to playlist |
 
 
 
