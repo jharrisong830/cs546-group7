@@ -23,11 +23,11 @@ Below is an outline of the database structure of Tweeter. **Currently, this is o
 | `comments` | `[ObjectId]` | list of comment `_id`s authored by this user |
 | `postLikes` | `[ObjectId]` | list of post `_id`s liked by this user |
 | `commentLikes` | `[ObjectId]` | list of comment `_id`s liked by this user |
-| `ratings` | `[ObjectId]` | list of playlists rated by this user |
+| `ratings` | `[ObjectId]` | list of rating `_id`s authoreed by this user |
 | `addedPlaylists` | `[ObjectId]` | list of playlists added by this user to Spotify/AM |
 
 
-### SPAuth (Subdocument)
+### SPAuth (Subdocument of User)
 | Field | Type | Description |
 | ---  | ---  | ---         |
 | `accessToken` | `string` | token needed for access to spotify api data functions |
@@ -52,21 +52,21 @@ Below is an outline of the database structure of Tweeter. **Currently, this is o
 | `createTime` | `number` | time since Unix epoch of when the post was created |
 
 
-### Comment (Subdocument)
+### Comment (Subdocument of Post)
 | Field | Type | Description |
 | ---  | ---  | ---         |
 | `_id`| `ObjectId` | unique identifier for the comment |
 | `authorId` | `ObjectId` | `_id` of the user who authored the comment |
 | `parentId` | `ObjectId` | `_id` of the post that this comment is on |
 | `textContent` | `string` | the text content of the comment | 
-| `likes` | `[ObjectId]` | an array of `_id`s of the users who liked this comment
+| `likes` | `[ObjectId]` | an array of `_id`s of the users who liked this comment |
 | `createTime` | `number` | time since Unix epoch of when the comment was created |
 
 
 
 
 
-### Song (Subdocument, Music Item)
+### Song (Subdocument of Post, Music Item)
 | Field | Type | Description |
 | ---  | ---  | ---         |
 | `_id`| `string` | platform id for the song (either from Spotify or AM api) |
@@ -79,7 +79,7 @@ Below is an outline of the database structure of Tweeter. **Currently, this is o
 | `albumURL` | `string` | the `platformURL` of the LP/EP/single object associated with this song |
 
 
-### Album (Subdocument, Music Item)
+### Album (Subdocument of Post, Music Item)
 | Field | Type | Description |
 | ---  | ---  | ---         |
 | `_id`| `string` | platform id for the album (either from Spotify or AM api) |
@@ -91,7 +91,7 @@ Below is an outline of the database structure of Tweeter. **Currently, this is o
 | `tracks` | `[Object]` | a list of song objects contained in this album |
 
 
-### Playlist (Subdocument, Music Item)
+### Playlist (Subdocument of Post, Music Item)
 | Field | Type | Description |
 | ---  | ---  | ---         |
 | `_id`| `string` | platform id for the playlist (either from Spotify or AM api) |
@@ -101,8 +101,19 @@ Below is an outline of the database structure of Tweeter. **Currently, this is o
 | `artists` | `[string]` | name(s) of the artist(s) of the playlist |
 | `platformURL` | `string` | url link to the playlist on its original platform |
 | `tracks` | `[Object]` | a list of song objects contained in this playlist |
-| `ratings` | `[Object]` | an array of star ratings (1-5) given to playlist |
+| `ratings` | `[Object]` (subdocument) | an array of ratings given to this playlist |
 
+
+
+### Rating (Subdocument of Playlist)
+| Field | Type | Description |
+| ---  | ---  | ---         |
+| `_id`| `ObjectId` | unique identifier for this rating |
+| `authorId` | `ObjectId` | `_id` of the user who authored this rating |
+| `parentId` | `string` | `_id` of the playlist that this review is on |
+| `starRating` | `number` in [1, 5] inclusive, whole numbers only | the star rating, on a scale of 1 - 5 (whole numbers only) |
+| `textContent` | `string` | the text content of the rating |
+| `likes` | `[ObjectId]` | an array of `_id`s of the users who liked this rating | 
 
 
 
