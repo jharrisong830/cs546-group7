@@ -2,6 +2,8 @@
 
 Below is an outline of the database structure of Tweeter. **Currently, this is only a proposal, and this document will be updated to reflect changes to the database as the project progresses**.
 
+There will be two main collections for our database. **Users** will store identifying info for individual users, external API authentication data, and their relationships to other objects. **Posts** contain a large amount of subdocuments, as they will feature the majority of the content for our app. Each post can be associated with a "music item" subdocument, which can be a playlist, song, or album. Users can leave comments on posts, and additionally leave ratings on playlists.
+
 
 ---
 
@@ -23,7 +25,7 @@ Below is an outline of the database structure of Tweeter. **Currently, this is o
 | `comments` | `[ObjectId]` | list of comment `_id`s authored by this user |
 | `postLikes` | `[ObjectId]` | list of post `_id`s liked by this user |
 | `commentLikes` | `[ObjectId]` | list of comment `_id`s liked by this user |
-| `ratings` | `[ObjectId]` | list of rating `_id`s authoreed by this user |
+| `ratings` | `[ObjectId]` | list of rating `_id`s authored by this user |
 | `addedPlaylists` | `[ObjectId]` | list of playlists added by this user to Spotify/AM |
 
 
@@ -34,6 +36,11 @@ Below is an outline of the database structure of Tweeter. **Currently, this is o
 | `expiryTime` | `number` | time since Unix epoch of when the above access token expires |
 | `refreshToken` | `string` | token used to get new access token after expiry |
 
+
+### AMAuth\* (Subdocument of User)
+| Field | Type | Description |
+| ---  | ---  | ---         |
+| `data` | `Object` | data relevant for authenticating access to the Apple Music API |
 
 
 ---
@@ -116,5 +123,10 @@ Below is an outline of the database structure of Tweeter. **Currently, this is o
 | `likes` | `[ObjectId]` | an array of `_id`s of the users who liked this rating | 
 
 
+---
 
+
+
+
+\* **Note**: the documentation for [MusicKit on the Web](https://js-cdn.music.apple.com/musickit/v3/docs/index.html?path=/story/user-authorization--page) is very vague on what data is needed/returned as part of the authorization flow. Additionally, we haven't been able to test AM authentication yet, as it involves using DOM listeners. This section will be updated as the project progresses.
 
