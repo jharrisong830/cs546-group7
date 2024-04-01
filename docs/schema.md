@@ -1,5 +1,15 @@
 # Tweeter - Database Schema Outline
 
+#### Group Members
+
+- John Graham
+- Emma Hodor
+- Ramses Peralta
+- Justin Duran
+- Rebecca An
+
+---
+
 Below is an outline of the database structure of Tweeter. **Currently, this is only a proposal, and this document will be updated to reflect changes to the database as the project progresses**.
 
 There will be two main collections for our database. **Users** will store identifying info for individual users, external API authentication data, and their relationships to other objects. **Posts** contain a large amount of subdocuments, as they will feature the majority of the content for our app. Each post can be associated with a "music item" subdocument, which can be a playlist, song, or album. Users can leave comments on posts, and additionally leave ratings on playlists.
@@ -17,6 +27,7 @@ There will be two main collections for our database. **Users** will store identi
 | `name` | `string` (optional) | display name |
 | `email` | `string` | login and contact email |
 | `password` | `string` | login password |
+| `dateOfBirth` | `Date`(as ISO `string`) | ISO formatted string representing the user's date of birth (for registration purposes) |
 | `SPAuth` | `Object` (subdocument, optional) | subdocument with fields for spotify authentication |
 | `AMAuth` | `Object` (subdocument, optional) | subdocument with fields for apple music authentication |
 | `public` | `boolean` | denotes whether this profile is public (`true`) or private (`false`) |
@@ -26,7 +37,6 @@ There will be two main collections for our database. **Users** will store identi
 | `postLikes` | `[ObjectId]` | list of post `_id`s liked by this user |
 | `commentLikes` | `[ObjectId]` | list of comment `_id`s liked by this user |
 | `ratings` | `[ObjectId]` | list of rating `_id`s authored by this user |
-| `addedPlaylists` | `[ObjectId]` | list of playlists added by this user to Spotify/AM |
 
 
 ### SPAuth (Subdocument of User)
@@ -41,6 +51,38 @@ There will be two main collections for our database. **Users** will store identi
 | Field | Type | Description |
 | ---  | ---  | ---         |
 | `data` | `Object` | data relevant for authenticating access to the Apple Music API |
+
+
+
+### Sample User Object
+
+```javascript
+const user = {
+    _id: ObjectId("123"),
+    username: "deviousTweeter",
+    name: "Michael Devious",
+    email: "deviousTweeter@tweeter.com",
+    password: "123",
+    dateOfBirth: "1969-04-20T05:00:00.000Z",
+    SPAuth: {
+        accessToken: "abcdefg",
+        expiryTime: 1713585600000,
+        refreshToken: "hijklmnop"
+    },
+    AMAuth: null,
+    public: true,
+    friends: [
+        ObjectId("456"),
+        ObjectId("789")
+    ],
+    posts: [...], // all arrays of ObjectIds...
+    comments: [...],
+    postLikes: [...],
+    commentLikes: [...],
+    ratings: [...]
+};
+```
+
 
 
 ---
@@ -83,7 +125,7 @@ There will be two main collections for our database. **Users** will store identi
 | `name` | `string` | name of the song |
 | `artists` | `[string]` | name(s) of the artist(s) of the song |
 | `platformURL` | `string` | url link to the song on its original platform |
-| `albumURL` | `string` | the `platformURL` of the LP/EP/single object associated with this song |
+| `albumId` | `string` | the `_id` of the LP/EP/single object associated with this song |
 
 
 ### Album (Subdocument of Post, Music Item)
@@ -105,7 +147,6 @@ There will be two main collections for our database. **Users** will store identi
 | `platform` | `string: 'SP' \| 'AM'` | the platform from which the playlist originates (depends on the api used to retrieve the playlist) | 
 | `type` | `string: 'playlist'` | type of music resource |
 | `name` | `string` | name of the playlist |
-| `artists` | `[string]` | name(s) of the artist(s) of the playlist |
 | `platformURL` | `string` | url link to the playlist on its original platform |
 | `tracks` | `[Object]` | a list of song objects contained in this playlist |
 | `ratings` | `[Object]` (subdocument) | an array of ratings given to this playlist |
@@ -121,6 +162,63 @@ There will be two main collections for our database. **Users** will store identi
 | `starRating` | `number` in [1, 5] inclusive, whole numbers only | the star rating, on a scale of 1 - 5 (whole numbers only) |
 | `textContent` | `string` | the text content of the rating |
 | `likes` | `[ObjectId]` | an array of `_id`s of the users who liked this rating | 
+
+
+
+
+
+### Sample Post Object w/ Subdocuments
+
+```javascript
+const post = {
+    _id: ObjectId("012"),
+    authorId: ObjectId("123"),
+    musicContent: { // example playlist object, with data from Spotify API
+        _id: "3gBrgOKZRKfOSgKrTNWE2y",
+        platform: "SP",
+        type: "playlist",
+        name: "soup",
+        platformURL: "https://open.spotify.com/playlist/3gBrgOKZRKfOSgKrTNWE2y",
+        tracks: [
+            { // example song oject
+                _id: "4PTG3Z6ehGkBFwjybzWkR8",
+                platform: "SP",
+                type: "song",
+                isrc: "GBARL9300135",
+                name: "Never Gonna Give You Up",
+                artists: ["Rick Astley"],
+                platformURL: "https://open.spotify.com/track/4PTG3Z6ehGkBFwjybzWkR8",
+                albumId: "6eUW0wxWtzkFdaEFsTJto6"
+            }, ...
+        ],
+        ratings: [
+            { // example rating object
+                _id: ObjectId("678"),
+                authorId: ObjectId("789"),
+                parentId: "3gBrgOKZRKfOSgKrTNWE2y",
+                starRating: 1,
+                textContent: "Despite what the comments might say, this playlist is NOT goated.",
+                likes: [...]
+            }, ...
+        ]
+
+    },
+    textContent: "goated playlist",
+    likes: [...],
+    comments: [
+        { // example comment object
+            _id: ObjectId("345"),
+            authorId: ObjectId("456"),
+            parentId: ObjectId("012"),
+            textContent: "wait, this is goated",
+            likes: [...], 
+            createTime: 1710460800
+        }, ...
+    ],
+    createTime: 1710374400
+};
+```
+
 
 
 ---
