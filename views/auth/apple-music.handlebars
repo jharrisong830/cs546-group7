@@ -17,8 +17,9 @@
         // MusicKit instance is available
         let music = MusicKit.getInstance();
         document.getElementById("musickit-js-auth").addEventListener("click", async () => {
-            const mut = await music.authorize();
-            alert(`got music user token! ${mut}`);
+            const mut = await music.authorize(); // get music user token to store in db
+            await music.unauthorize(); // unauthorize to clear mut from browser cookies 
+            window.location.href = `/auth/apple-music/success?mut=${mut}`; // redirect to the success page
         });
     });
 </script>
