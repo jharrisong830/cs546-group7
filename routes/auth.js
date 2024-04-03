@@ -61,12 +61,15 @@ router.route("/spotify/success").get(async (req, res) => {
     }
 });
 
-router.route("/apple-music").get(async (req, res) => {
-    const devToken = authentication.AMGenerateDevToken();
-    return res.render("auth/apple-music", { title: "am test", AMDevToken: devToken });
-})
-.post(async (req, res) => {
-    
-});
+router
+    .route("/apple-music")
+    .get(async (req, res) => {
+        const devToken = authentication.AMGenerateDevToken();
+        return res.render("auth/apple-music", {
+            title: "am test",
+            AMDevToken: devToken
+        });
+    })
+    .post(async (req, res) => {});
 
 export default router;

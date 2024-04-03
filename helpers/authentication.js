@@ -125,11 +125,9 @@ const getPKCECodes = async (length = 64) => {
     };
 };
 
-
-
 /**
  * generates a JSON Web Token (JWT) signed developer token used to access the apple music api
- * 
+ *
  * @returns {string}    signed JWT developer token
  */
 const AMGenerateDevToken = () => {
@@ -147,10 +145,8 @@ const AMGenerateDevToken = () => {
         exp: currTime + 3600 // expires in one hour
     };
 
-    return jwt.sign(payload, secret, {header: header}); // return the encoded dev token
+    return jwt.sign(payload, secret, { header: header }); // return the encoded dev token
 };
-
-
 
 const exportedMethods = {
     SPGetAuthorizationURL,
