@@ -4,6 +4,7 @@
 
 import { config } from "dotenv";
 import errorMessage from "./error.js";
+import jwt from "jsonwebtoken";
 
 const MOD_NAME = "authentication.js";
 
@@ -124,12 +125,40 @@ const getPKCECodes = async (length = 64) => {
     };
 };
 
+
+
+/**
+ * generates a JSON Web Token (JWT) signed developer token used to access the apple music api
+ * 
+ * @returns {string}    signed JWT developer token
+ */
+const AMGenerateDevToken = () => {
+    let secret = process.env.AM_SECRET;
+    secret = secret.replaceAll("\\n", "\n"); // replace all "\n" literals with proper newline
+    const header = {
+        alg: "ES256",
+        kid: process.env.AM_KEY_ID
+    };
+
+    const currTime = Math.floor(Date.now() / 1000); // unix epoch in seconds
+    const payload = {
+        iss: process.env.AM_TEAM_ID,
+        iat: currTime,
+        exp: currTime + 3600 // expires in one hour
+    };
+
+    return jwt.sign(payload, secret, {header: header}); // return the encoded dev token
+};
+
+
+
 const exportedMethods = {
     SPGetAuthorizationURL,
     generatePKCEString,
     encrypt,
     base64encode,
-    getPKCECodes
+    getPKCECodes,
+    AMGenerateDevToken
 };
 
 export default exportedMethods;

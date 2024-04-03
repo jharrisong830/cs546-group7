@@ -16,6 +16,10 @@ const router = Router();
 
 const codes = await authentication.getPKCECodes(64);
 
+router.route("/").get(async (req, res) => {
+    return res.render("auth", { title: "Authorize" });
+});
+
 router.route("/spotify").get((req, res) => {
     const authURL = authentication.SPGetAuthorizationURL(
         codes["codeChallenge"]
@@ -55,6 +59,14 @@ router.route("/spotify/success").get(async (req, res) => {
     } catch (e) {
         return res.status(500).json({ error: e });
     }
+});
+
+router.route("/apple-music").get(async (req, res) => {
+    const devToken = authentication.AMGenerateDevToken();
+    return res.render("auth/apple-music", { title: "am test", AMDevToken: devToken });
+})
+.post(async (req, res) => {
+    
 });
 
 export default router;

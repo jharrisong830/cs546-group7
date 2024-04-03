@@ -1,2 +1,3 @@
 # does not style anything found in .gitignore, and also...
 *.md
+*.handlebars # will mess up formatting of code more than it fixes it

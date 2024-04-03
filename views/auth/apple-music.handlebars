@@ -1,0 +1,29 @@
+<script src="https://js-cdn.music.apple.com/musickit/v3/musickit.js" async></script> <!-- include musickit web lib -->
+
+<script>
+    document.addEventListener("musickitloaded", async function () {
+        try { // reference for implementation: https://js-cdn.music.apple.com/musickit/v3/docs/index.html?path=/story/get-started--page
+            await MusicKit.configure({
+                developerToken: "{{AMDevToken}}",
+                app: {
+                    name: "Tweeter",
+                    build: "0.0.1",
+                },
+            });
+        } catch (e) {
+            alert(`Error: ${e}`);
+        }
+
+        // MusicKit instance is available
+        let music = MusicKit.getInstance();
+        document.getElementById("musickit-js-auth").addEventListener("click", async () => {
+            const mut = await music.authorize();
+            alert(`got music user token! ${mut}`);
+        });
+    });
+</script>
+
+<h1>HELLO APPLEMUSIC AHHHHH</h1>
+
+<button id="musickit-js-auth">Hello</button>
+
