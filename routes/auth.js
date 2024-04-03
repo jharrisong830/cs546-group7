@@ -16,6 +16,10 @@ const router = Router();
 
 const codes = await authentication.getPKCECodes(64);
 
+router.route("/").get((req, res) => {
+    return res.render("auth", { title: "Authorize" });
+});
+
 router.route("/spotify").get((req, res) => {
     const authURL = authentication.SPGetAuthorizationURL(
         codes["codeChallenge"]
@@ -55,6 +59,25 @@ router.route("/spotify/success").get(async (req, res) => {
     } catch (e) {
         return res.status(500).json({ error: e });
     }
+});
+
+router.route("/apple-music").get((req, res) => {
+    const devToken = authentication.AMGenerateDevToken();
+    return res.render("auth/apple-music", {
+        title: "am test",
+        AMDevToken: devToken
+    });
+});
+
+router.route("/apple-music/success").get(async (req, res) => {
+    let mut = req.query.mut || null; // try to get music user token from query params
+    if (mut === null) {
+        return res
+            .status(500)
+            .json({ error: "issue getting apple music user token" });
+    }
+
+    return res.json({ authData: req.query.mut, status: "success" }); // TODO: don't actually display this to user, handle and associate access token with user profile to use for api requests
 });
 
 export default router;
