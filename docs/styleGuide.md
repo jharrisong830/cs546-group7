@@ -32,12 +32,12 @@
 
 Use the below graphic as a guide for where to put what files:
 
-```js
+```
 cs546-group7
 ├── package.json    // project config files in root
 ├── .gitignore
 ├── ...
-├── config            // mongodb configuration files
+├── config          // mongodb configuration files
 │   ├── ...
 ├── data            // for functions that interact with the mongodb driver
 │   ├── ...
