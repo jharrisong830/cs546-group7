@@ -1,4 +1,4 @@
 export const mongoConfig = {
     serverUrl: "mongodb://localhost:27017/",
-    database: "db.app.jhg.tweeter"
+    database: "tweeter-db"
 };

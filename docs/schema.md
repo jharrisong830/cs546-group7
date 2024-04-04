@@ -30,7 +30,7 @@ There will be two main collections for our database. **Users** will store identi
 | `dateOfBirth` | `Date`(as ISO `string`) | ISO formatted string representing the user's date of birth (for registration purposes) |
 | `SPAuth` | `Object` (subdocument, optional) | subdocument with fields for spotify authentication |
 | `AMAuth` | `Object` (subdocument, optional) | subdocument with fields for apple music authentication |
-| `public` | `boolean` | denotes whether this profile is public (`true`) or private (`false`) |
+| `publicProfile` | `boolean` | denotes whether this profile is public (`true`) or private (`false`) |
 | `friends` | `[ObjectId]` | list of `_id`s of the current users friends |
 | `posts` | `[ObjectId]` | list of post `_id`s authored by this user |
 | `comments` | `[ObjectId]` | list of comment `_id`s authored by this user |

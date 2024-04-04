@@ -6,7 +6,7 @@ import { config } from "dotenv";
 import errorMessage from "./error.js";
 import jwt from "jsonwebtoken";
 
-const MOD_NAME = "authentication.js";
+const MOD_NAME = "helpers/authentication.js";
 
 config();
 
