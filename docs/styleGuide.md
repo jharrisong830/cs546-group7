@@ -34,18 +34,21 @@ Use the below graphic as a guide for where to put what files:
 
 ```js
 cs546-group7
-├── package.json    // config files
+├── package.json    // project config files in root
+├── .gitignore
 ├── ...
-├── docs            // for documentation files (like this one!)
-│   ├── schema.md
-│   └── styleGuide.md
-├── helpers         // for helper functions used by other modules and in routes
+├── config            // mongodb configuration files
 │   ├── ...
 ├── data            // for functions that interact with the mongodb driver
 │   ├── ...
-├── views           // handlebars layout/templating files
+├── docs            // for documentation files (like this one!)
 │   ├── ...
-└── routes          // expressjs routers
-    ├── auth.js
-    └── index.js
+├── helpers         // for helper functions used by other modules and in routes
+│   ├── ...
+├── routes          // expressjs routers
+│   ├── ...
+├── tasks           // npm scripts (mainly for testing, seeding db, etc...)
+│   ├── ...
+└── views           // handlebars layout/templating files
+    ├── ...
 ```
