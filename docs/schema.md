@@ -47,10 +47,10 @@ There will be two main collections for our database. **Users** will store identi
 | `refreshToken` | `string` | token used to get new access token after expiry |
 
 
-### AMAuth\* (Subdocument of User)
+### AMAuth (Subdocument of User)
 | Field | Type | Description |
 | ---  | ---  | ---         |
-| `data` | `Object` | data relevant for authenticating access to the Apple Music API |
+| `musicUserToken` | `string` | token with which we can access a specific user's data using the Apple Music web API |
 
 
 
@@ -70,7 +70,7 @@ const user = {
         refreshToken: "hijklmnop"
     },
     AMAuth: null,
-    public: true,
+    publicProfile: true,
     friends: [
         ObjectId("456"),
         ObjectId("789")
@@ -218,13 +218,3 @@ const post = {
     createTime: 1710374400
 };
 ```
-
-
-
----
-
-
-
-
-\* **Note**: the documentation for [MusicKit on the Web](https://js-cdn.music.apple.com/musickit/v3/docs/index.html?path=/story/user-authorization--page) is very vague on what data is needed/returned as part of the authorization flow. Additionally, we haven't been able to test AM authentication yet, as it involves using DOM listeners. This section will be updated as the project progresses.
-
