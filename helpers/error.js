@@ -2,7 +2,7 @@
  * methods for generating error messages and throwing errors
  */
 
-const MOD_NAME = "error.js";
+const MOD_NAME = "helpers/error.js";
 
 /**
  * error message wrapper used to generate error messages and avoid boilerplate
