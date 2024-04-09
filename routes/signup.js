@@ -22,6 +22,7 @@ router.route("/").get(async (req, res) => {
             SAMPLE_DATA.password,
             SAMPLE_DATA.dateOfBirth
         );
+        await userData.addSPAccessData(inserted._id, "abc123", 42069, "def456"); // test inserting SPAuth subdoc
         return res.json({ status: "success", user: inserted });
     } catch (e) {
         return res.status(500).json({ error: e });

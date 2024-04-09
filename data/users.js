@@ -62,8 +62,59 @@ const registerUser = async (
     return await userCol.findOne({ _id: insertInfo.insertedId }); // return the object just added to the db
 };
 
+/**
+ * given a user id, add the supplied api access data as a SPAuth subdocument
+ *
+ * @param {string} id               id of user to be updated
+ * @param {string} accessToken      access token used to get data from SP API
+ * @param {number} expiryTime       time in Unix epoch seconds at which the access token expires
+ * @param {string} refreshToken     used to fetch a new accessToken after its expiry time
+ *
+ * @throws if the update was unsuccessful (i.e. id was not found), or if input is invalid
+ */
+const addSPAccessData = async (id, accessToken, expiryTime, refreshToken) => {
+    id = vld.checkObjectId(id); // validates and converts to object id
+
+    accessToken = vld.returnValidString(accessToken);
+    vld.checkEmptyString(accessToken);
+
+    refreshToken = vld.returnValidString(refreshToken);
+    vld.checkEmptyString(refreshToken);
+
+    vld.checkUnsignedInt(expiryTime);
+
+    const userCol = await users();
+    const updateInfo = await userCol.updateOne(
+        { _id: id },
+        {
+            $set: {
+                // id is converted to ObjectId, so just set the thing
+                SPAuth: {
+                    // add the SPAuth subdocument
+                    accessToken: accessToken,
+                    expiryTime: expiryTime,
+                    refreshToken: refreshToken
+                }
+            }
+        }
+    );
+
+    if (
+        !updateInfo ||
+        updateInfo.matchedCount === 0 ||
+        updateInfo.modifiedCount === 0
+    ) {
+        errorMessage(
+            MOD_NAME,
+            "addSPAccessData",
+            `Unable to modify database entry for ${id}. This object might not exist`
+        );
+    }
+};
+
 const exportedMethods = {
-    registerUser
+    registerUser,
+    addSPAccessData
 };
 
 export default exportedMethods;
