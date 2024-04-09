@@ -63,9 +63,27 @@ const registerUser = async (
 };
 
 /**
+ * fetch a user object from the database
+ * @param {string | ObjectId} id    unique user id
+ *
+ * @returns {Object} the full user object
+ * @throws if id is invalid or such a user does not exist
+ */
+const getUser = async (id) => {
+    id = vld.checkObjectId(id);
+
+    const userCol = await users();
+    const usr = await userCol.findOne({ _id: id });
+
+    if (!usr)
+        errorMessage(MOD_NAME, "getUser", `No user with '${id}' was found`);
+    return usr;
+};
+
+/**
  * given a user id, add the supplied api access data as a SPAuth subdocument
  *
- * @param {string} id               id of user to be updated
+ * @param {string | ObjectId} id               id of user to be updated
  * @param {string} accessToken      access token used to get data from SP API
  * @param {number} expiryTime       time in Unix epoch seconds at which the access token expires
  * @param {string} refreshToken     used to fetch a new accessToken after its expiry time
@@ -114,6 +132,7 @@ const addSPAccessData = async (id, accessToken, expiryTime, refreshToken) => {
 
 const exportedMethods = {
     registerUser,
+    getUser,
     addSPAccessData
 };
 
