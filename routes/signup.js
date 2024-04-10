@@ -15,14 +15,16 @@ router.route("/").get(async (req, res) => {
         dateOfBirth: "08/30/2003"
     };
 
-    try {
+    /*try {
         let inserted = await userData.registerUser(
             SAMPLE_DATA.username,
             SAMPLE_DATA.email,
             SAMPLE_DATA.password,
             SAMPLE_DATA.dateOfBirth
         );
-        return res.json({ status: "success", user: inserted });
+        return res.json({ status: "success", user: inserted }); */
+    try {
+        res.render('signup', {});
     } catch (e) {
         return res.status(500).json({ error: e });
     }
