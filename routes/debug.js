@@ -23,15 +23,13 @@ router.route("/").get(async (req, res) => {
             SAMPLE_DATA.password,
             SAMPLE_DATA.dateOfBirth
         );
-        await userData.addSPAccessData(
-            inserted._id,
-            "BQC0z1pwv-0NgXOxG4BAb8oeE2szlwoeeUB5pS95-i13SDeyukGd1ViltckMsCaV3louFe2PKcKeCcWIxBDWpskZFCEHYrGZivhYFoAdUmLUtbUoA6HgV9E9XY6wtKfzflxRapvQh15bTrVY6C7YL0f4pgeAFgtbBUaHeRV3ge9HeMOjNFsZHphIYU0e7jj62qrMKZRLfVb4ZygwISfn71hUVY24fPAtrhR-Ga6v",
-            42069,
-            "AQD5YxIvP8feb8aIfc2TBmOJ9XKskI7-r7W4edsPSHDBqWkqPaODwCxnTARHXFQyrw3b3ycM6QTaCxz65s7yfOeS7WFoyjR-KD6izqA-rl4b2W1701qVuID2WAlM1uFThvY"
-        ); // test inserting SPAuth subdoc
+        await userData.addSPAccessData(inserted._id, "abc", 42069, "edf"); // test inserting SPAuth subdoc
         let updated = await userData.getUser(inserted._id);
         let SPid = await spotify.getUserId(updated.SPAuth.accessToken);
-        return res.json({ SP_ID: SPid, usr: updated });
+        let playlists = await spotify.getPrivatePlaylistsForPreview(
+            updated.SPAuth.accessToken
+        );
+        return res.json({ SP_ID: SPid, usr: updated, playlists: playlists });
     } catch (e) {
         return res.status(500).json({ error: e });
     }
