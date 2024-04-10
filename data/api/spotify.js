@@ -72,13 +72,13 @@ const getPrivatePlaylistsForPreview = async (accessToken) => {
         if (!data)
             errorMessage(
                 MOD_NAME,
-                "getPrivatePlaylists",
+                "getPrivatePlaylistsForPreview",
                 "Could not complete API request."
             );
         if (!Object.keys(data).includes("items")) {
             errorMessage(
                 MOD_NAME,
-                "getPrivatePlaylists",
+                "getPrivatePlaylistsForPreview",
                 `Response does not contain 'items': ${data}`
             );
         }

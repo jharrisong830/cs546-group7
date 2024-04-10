@@ -83,7 +83,7 @@ const getUser = async (id) => {
 /**
  * given a user id, add the supplied api access data as a SPAuth subdocument
  *
- * @param {string | ObjectId} id               id of user to be updated
+ * @param {string | ObjectId} id    id of user to be updated
  * @param {string} accessToken      access token used to get data from SP API
  * @param {number} expiryTime       time in Unix epoch seconds at which the access token expires
  * @param {string} refreshToken     used to fetch a new accessToken after its expiry time
@@ -130,10 +130,52 @@ const addSPAccessData = async (id, accessToken, expiryTime, refreshToken) => {
     }
 };
 
+/**
+ * given a user id, add the supplied api access data as a AMAuth subdocument
+ *
+ * @param {string | ObjectId} id    id of user to be updated
+ * @param {string} musicUserToken   access token used to get data from AM API
+ *
+ * @throws if the update was unsuccessful (i.e. id was not found), or if input is invalid
+ */
+const addAMAccessData = async (id, musicUserToken) => {
+    id = vld.checkObjectId(id); // validates and converts to object id
+
+    musicUserToken = vld.returnValidString(musicUserToken);
+    vld.checkEmptyString(musicUserToken);
+
+    const userCol = await users();
+    const updateInfo = await userCol.updateOne(
+        { _id: id },
+        {
+            $set: {
+                // id is converted to ObjectId, so just set the thing
+                AMAuth: {
+                    // add the AMAuth subdocument
+                    musicUserToken: musicUserToken
+                }
+            }
+        }
+    );
+
+    if (
+        !updateInfo ||
+        updateInfo.matchedCount === 0 ||
+        updateInfo.modifiedCount === 0
+    ) {
+        errorMessage(
+            MOD_NAME,
+            "addAMAccessData",
+            `Unable to modify database entry for ${id}. This object might not exist`
+        );
+    }
+};
+
 const exportedMethods = {
     registerUser,
     getUser,
-    addSPAccessData
+    addSPAccessData,
+    addAMAccessData
 };
 
 export default exportedMethods;

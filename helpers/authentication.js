@@ -130,7 +130,7 @@ const getPKCECodes = async (length = 64) => {
  *
  * @returns {string}    signed JWT developer token
  */
-const AMGenerateDevToken = () => {
+export const AMGenerateDevToken = () => {
     let secret = process.env.AM_SECRET;
     secret = secret.replaceAll("\\n", "\n"); // replace all "\n" literals with proper newline
     const header = {
@@ -150,9 +150,6 @@ const AMGenerateDevToken = () => {
 
 const exportedMethods = {
     SPGetAuthorizationURL,
-    generatePKCEString,
-    encrypt,
-    base64encode,
     getPKCECodes,
     AMGenerateDevToken
 };
