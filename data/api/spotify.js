@@ -117,6 +117,9 @@ const getPrivatePlaylistsForPreview = async (accessToken) => {
  * @throws if input is invalid or if an error occurs in fetching the data
  */
 const getPlaylistTracks = async (accessToken, playlistId) => {
+    accessToken = vld.returnValidString(accessToken);
+    vld.checkEmptyString(accessToken);
+
     playlistId = vld.returnValidString(playlistId);
     vld.checkEmptyString(playlistId);
 
@@ -170,10 +173,66 @@ const getPlaylistTracks = async (accessToken, playlistId) => {
     return allTracks;
 };
 
+/**
+ * returns a playlist subdocument, representing the requested playlist
+ *
+ * @param {string} accessToken  user-specific access token for accessing the spotify api
+ * @param {string} playlistId   spotify id for the requested playlist
+ *
+ * @returns {Object} playlist subdocument with the data for playlistId
+ * @throws if input is invalid or if an error occurs in fetching the data
+ */
+const getPlaylist = async (accessToken, playlistId) => {
+    accessToken = vld.returnValidString(accessToken);
+    vld.checkEmptyString(accessToken);
+
+    playlistId = vld.returnValidString(playlistId);
+    vld.checkEmptyString(playlistId);
+
+    const accessHeader = {
+        Authorization: `Bearer ${accessToken}`
+    };
+
+    const { data } = await axios.get(
+        `https://api.spotify.com/v1/playlists/${playlistId}`,
+        {
+            headers: accessHeader,
+            params: { fields: "id,name,external_urls.spotify" }
+        }
+    );
+
+    if (!data)
+        errorMessage(
+            MOD_NAME,
+            "getPlaylist",
+            "Could not complete API request."
+        );
+    if (Object.keys(data).includes("error")) {
+        errorMessage(
+            MOD_NAME,
+            "getPlaylist",
+            `Response does not contain valid data: ${data}`
+        );
+    }
+
+    const tracks = await getPlaylistTracks(accessToken, playlistId);
+
+    return {
+        _id: data.id,
+        platform: "SP", // hardcode platform and type!
+        type: "playlist",
+        name: data.name,
+        platformURL: data.external_urls.spotify,
+        tracks: tracks,
+        ratings: [] // no ratings at time of fetch!
+    };
+};
+
 const exportedMethods = {
     getUserId,
     getPrivatePlaylistsForPreview,
-    getPlaylistTracks
+    getPlaylistTracks,
+    getPlaylist
 };
 
 export default exportedMethods;
