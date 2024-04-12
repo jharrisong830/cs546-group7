@@ -278,12 +278,12 @@ const getPlaylist = async (accessToken, playlistId) => {
 };
 
 /**
- * returns a playlist subdocument, representing the requested playlist
+ * returns an album subdocument, representing the requested album
  *
  * @param {string} accessToken  user-specific access token for accessing the spotify api
- * @param {string} playlistId   spotify id for the requested playlist
+ * @param {string} albumId   spotify id for the requested album
  *
- * @returns {Object} playlist subdocument with the data for playlistId
+ * @returns {Object} album subdocument with the data for albumId
  * @throws if input is invalid or if an error occurs in fetching the data
  */
 const getAlbum = async (accessToken, albumId) => {
