@@ -55,6 +55,9 @@ router.route("/spotify/success").get(async (req, res) => {
                 headers: accessHeader
             }
         ); // post request, with given body/header data
+
+        const { access_token, expires_in, refresh_token } = data; // extract important info, so we can insert in the db later
+
         return res.json({ authData: data, status: "success" }); // TODO: don't actually display this to user, handle and associate access token with user profile to use for api requests
     } catch (e) {
         return res.status(500).json({ error: e });

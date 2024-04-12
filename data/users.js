@@ -62,8 +62,120 @@ const registerUser = async (
     return await userCol.findOne({ _id: insertInfo.insertedId }); // return the object just added to the db
 };
 
+/**
+ * fetch a user object from the database
+ * @param {string | ObjectId} id    unique user id
+ *
+ * @returns {Object} the full user object
+ * @throws if id is invalid or such a user does not exist
+ */
+const getUser = async (id) => {
+    id = vld.checkObjectId(id);
+
+    const userCol = await users();
+    const usr = await userCol.findOne({ _id: id });
+
+    if (!usr)
+        errorMessage(MOD_NAME, "getUser", `No user with '${id}' was found`);
+    return usr;
+};
+
+/**
+ * given a user id, add the supplied api access data as a SPAuth subdocument
+ *
+ * @param {string | ObjectId} id    id of user to be updated
+ * @param {string} accessToken      access token used to get data from SP API
+ * @param {number} expiryTime       time in Unix epoch seconds at which the access token expires
+ * @param {string} refreshToken     used to fetch a new accessToken after its expiry time
+ *
+ * @throws if the update was unsuccessful (i.e. id was not found), or if input is invalid
+ */
+const addSPAccessData = async (id, accessToken, expiryTime, refreshToken) => {
+    id = vld.checkObjectId(id); // validates and converts to object id
+
+    accessToken = vld.returnValidString(accessToken);
+    vld.checkEmptyString(accessToken);
+
+    refreshToken = vld.returnValidString(refreshToken);
+    vld.checkEmptyString(refreshToken);
+
+    vld.checkUnsignedInt(expiryTime);
+
+    const userCol = await users();
+    const updateInfo = await userCol.updateOne(
+        { _id: id },
+        {
+            $set: {
+                // id is converted to ObjectId, so just set the thing
+                SPAuth: {
+                    // add the SPAuth subdocument
+                    accessToken: accessToken,
+                    expiryTime: expiryTime,
+                    refreshToken: refreshToken
+                }
+            }
+        }
+    );
+
+    if (
+        !updateInfo ||
+        updateInfo.matchedCount === 0 ||
+        updateInfo.modifiedCount === 0
+    ) {
+        errorMessage(
+            MOD_NAME,
+            "addSPAccessData",
+            `Unable to modify database entry for ${id}. This object might not exist`
+        );
+    }
+};
+
+/**
+ * given a user id, add the supplied api access data as a AMAuth subdocument
+ *
+ * @param {string | ObjectId} id    id of user to be updated
+ * @param {string} musicUserToken   access token used to get data from AM API
+ *
+ * @throws if the update was unsuccessful (i.e. id was not found), or if input is invalid
+ */
+const addAMAccessData = async (id, musicUserToken) => {
+    id = vld.checkObjectId(id); // validates and converts to object id
+
+    musicUserToken = vld.returnValidString(musicUserToken);
+    vld.checkEmptyString(musicUserToken);
+
+    const userCol = await users();
+    const updateInfo = await userCol.updateOne(
+        { _id: id },
+        {
+            $set: {
+                // id is converted to ObjectId, so just set the thing
+                AMAuth: {
+                    // add the AMAuth subdocument
+                    musicUserToken: musicUserToken
+                }
+            }
+        }
+    );
+
+    if (
+        !updateInfo ||
+        updateInfo.matchedCount === 0 ||
+        updateInfo.modifiedCount === 0
+    ) {
+        errorMessage(
+            MOD_NAME,
+            "addAMAccessData",
+            `Unable to modify database entry for ${id}. This object might not exist`
+        );
+    }
+};
+
 const exportedMethods = {
-    registerUser
+    registerUser,
+    getUser,
+    addSPAccessData,
+    addAMAccessData
 };
 
 export default exportedMethods;
