@@ -26,33 +26,49 @@ router.route("/").get(async (req, res) => {
         );
         await userData.addSPAccessData(
             inserted._id,
-            "BQDB7JPw-4aWga-cvZy9p6E-PSMzfBNf6SCE99uJ-qrCbls0-jJCri0eB_IoxD-iizjX13wrkSUStanIiELA8KHA_jyYLwQVPcYVF9yoFdn2Eyp44cpYJbIlgEGtp14HNSGxZToB6COrelRmirBoGMuk2HQPlOibGMZUUGY1aTfR1g835PN5gT3JzPz5cv-s0QfRz_fsz6AHR7R1A0741EN_1LnX2N7UROV9IQbO",
+            "BQDuFPJ3xi0zzLGTklJ3jnfFHiC3e_DY23X53ebQRp0-98PTMYjS5r7vPi0p5oSqQo1sZ0PR02RSLAjJsW6ytC-pzUZsuXxUGbt-7lwCWteSU7gHikf27LmQHY0ruV442xEFYtWU4N8fBkQWTvX34FlDt8kpeXsVrEPzswIUJBC_LlxvlakiRcMT8JltdoLFmwpD_4jQMCdo-hQ_wztboP2ie_4w4axSbvqckmMA",
             42069,
             "edf"
         ); // test inserting SPAuth subdoc
         let updated = await userData.getUser(inserted._id);
         // let SPid = await spotify.getUserId(updated.SPAuth.accessToken);
-        // let playlists = await spotify.getPrivatePlaylistsForPreview(
-        //     updated.SPAuth.accessToken
-        // );
-        // let firstPlaylistSongs = await spotify.getPlaylistTracks(
-        //     updated.SPAuth.accessToken,
-        //     playlists[0]._id
-        // );
-
-        await userData.addAMAccessData(
-            inserted._id,
-            "Al89Hd8D/hOFcrK7SAijfczbOgYA9X iT2xakqe6Q3y 3Vw1xEBoU0XZbozrl6lrfW7clE6/cKFyk2bbtNXQiFB3i gMxfGhogSvhnIDijONC7I/S25eRZQsSyJGudaL1MX0vDiZRpft4wsUWmt77chvQhwqOiUpDddgTEqZLcqUhvCud/XjLPMdjU hIAlQUU6O5BHxIimFFNG35Yo3UsIPvvE9y72WeYiM6TkdPvNS cyMfQ=="
-        ); // testing am
-        let updatedAM = await userData.getUser(inserted._id);
-        let playlistsAM = appleMusic.getLibraryPlaylistsForPreview(
-            updatedAM.AMAuth.musicUserToken
+        let playlists = await spotify.getPrivatePlaylistsForPreview(
+            updated.SPAuth.accessToken
+        );
+        let firstPlaylistSongs = await spotify.getPlaylistTracks(
+            updated.SPAuth.accessToken,
+            playlists[0]._id
+        );
+        let search = await spotify.searchCatalog(
+            updated.SPAuth.accessToken,
+            "never gonna give you up"
         );
 
-        return res.json({
-            usr: updatedAM,
-            playlists: playlistsAM
-        });
+        let song = await spotify.getSong(
+            updated.SPAuth.accessToken,
+            "4PTG3Z6ehGkBFwjybzWkR8"
+        );
+
+        let album = await spotify.getAlbum(
+            updated.SPAuth.accessToken,
+            "6eUW0wxWtzkFdaEFsTJto6"
+        );
+
+        return res.json(album);
+
+        // await userData.addAMAccessData(
+        //     inserted._id,
+        //     "abc"
+        // ); // testing am
+        // let updatedAM = await userData.getUser(inserted._id);
+        // let playlistsAM = appleMusic.getLibraryPlaylistsForPreview(
+        //     updatedAM.AMAuth.musicUserToken
+        // );
+
+        // return res.json({
+        //     usr: updatedAM,
+        //     playlists: playlistsAM
+        // });
     } catch (e) {
         return res.status(500).json({ error: e });
     }

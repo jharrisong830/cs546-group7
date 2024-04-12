@@ -108,6 +108,55 @@ const getPrivatePlaylistsForPreview = async (accessToken) => {
 };
 
 /**
+ * returns a song subdocument, representing the requested song
+ *
+ * @param {string} accessToken  user-specific access token for accessing the spotify api
+ * @param {string} songId   spotify id for the requested song
+ *
+ * @returns {Object} song subdocument with the data for songId
+ * @throws if input is invalid or if an error occurs in fetching the data
+ */
+const getSong = async (accessToken, songId) => {
+    accessToken = vld.returnValidString(accessToken);
+    vld.checkEmptyString(accessToken);
+
+    songId = vld.returnValidString(songId);
+    vld.checkEmptyString(songId);
+
+    const accessHeader = {
+        Authorization: `Bearer ${accessToken}`
+    };
+
+    const { data } = await axios.get(
+        `https://api.spotify.com/v1/tracks/${songId}`,
+        {
+            headers: accessHeader
+        }
+    );
+
+    if (!data)
+        errorMessage(MOD_NAME, "getSong", "Could not complete API request.");
+    if (Object.keys(data).includes("error")) {
+        errorMessage(
+            MOD_NAME,
+            "getSong",
+            `Response does not contain valid data: ${data}`
+        );
+    }
+
+    return {
+        _id: data.id, // all info is stored within a "track" subobject in the items array
+        platform: "SP", // hardcoded bc duh...
+        type: "song", // again...
+        isrc: data.external_ids.isrc,
+        name: data.name,
+        artists: data.artists.map((a) => a.name), // extract only the names
+        platformURL: data.external_urls.spotify,
+        albumId: data.album.id
+    };
+};
+
+/**
  * returns an array of song subdocuments, being all of the tracks
  *
  * @param {string} accessToken  user-specific access token for accessing the spotify api
@@ -228,11 +277,133 @@ const getPlaylist = async (accessToken, playlistId) => {
     };
 };
 
+/**
+ * returns a playlist subdocument, representing the requested playlist
+ *
+ * @param {string} accessToken  user-specific access token for accessing the spotify api
+ * @param {string} playlistId   spotify id for the requested playlist
+ *
+ * @returns {Object} playlist subdocument with the data for playlistId
+ * @throws if input is invalid or if an error occurs in fetching the data
+ */
+const getAlbum = async (accessToken, albumId) => {
+    accessToken = vld.returnValidString(accessToken);
+    vld.checkEmptyString(accessToken);
+
+    albumId = vld.returnValidString(albumId);
+    vld.checkEmptyString(albumId);
+
+    const accessHeader = {
+        Authorization: `Bearer ${accessToken}`
+    };
+
+    const { data } = await axios.get(
+        `https://api.spotify.com/v1/albums/${albumId}`,
+        {
+            headers: accessHeader
+        }
+    );
+
+    if (!data)
+        errorMessage(MOD_NAME, "getAlbum", "Could not complete API request.");
+    if (Object.keys(data).includes("error")) {
+        errorMessage(
+            MOD_NAME,
+            "getAlbum",
+            `Response does not contain valid data: ${data}`
+        );
+    }
+
+    return {
+        _id: data.id,
+        platform: "SP",
+        type: "album",
+        name: data.name,
+        artists: data.artists.map((a) => a.name), // extract only the names
+        platformURL: data.external_urls.spotify,
+        tracks: [] // TODO
+    };
+};
+
+/**
+ * searches the spotify catalog for items matching the search string
+ * @param {string} accessToken  user-specific access token for accessing the spotify api
+ * @param {string} str          search query string
+ *
+ * @returns {[Object]} results from the spotify catalog
+ * @throws if input is invalid or if an error occurs in fetching the data
+ */
+const searchCatalog = async (accessToken, str) => {
+    accessToken = vld.returnValidString(accessToken);
+    vld.checkEmptyString(accessToken);
+
+    str = vld.returnValidString(str);
+    if (str.length === 0) return []; // no need to throw error, just return empty array on empty input
+
+    const accessHeader = {
+        Authorization: `Bearer ${accessToken}`
+    };
+
+    const { data } = await axios.get(`https://api.spotify.com/v1/search`, {
+        headers: accessHeader,
+        params: {
+            q: str.replace(/\s/g, "%20"), // replace all whitespace with +
+            type: "album,track"
+        }
+    });
+
+    if (!data)
+        errorMessage(
+            MOD_NAME,
+            "searchCatalog",
+            "Could not complete API request."
+        );
+    if (Object.keys(data).includes("error")) {
+        errorMessage(
+            MOD_NAME,
+            "searchCatalog",
+            `Response does not contain valid data: ${data}`
+        );
+    }
+
+    let results = [];
+
+    results.push(
+        ...data.tracks.items.map((song) => ({
+            _id: song.id, // all info is stored within a "track" subobject in the items array
+            platform: "SP", // hardcoded bc duh...
+            type: "song", // again...
+            isrc: song.external_ids.isrc,
+            name: song.name,
+            artists: song.artists.map((a) => a.name), // extract only the names
+            platformURL: song.external_urls.spotify,
+            albumId: song.album.id
+        }))
+    );
+
+    results.push(
+        ...data.albums.items.map((album) => ({
+            _id: album.id,
+            platform: "SP",
+            type: "album",
+            name: album.name,
+            artists: album.artists.map((a) => a.name), // extract only the names
+            platformURL: album.external_urls.spotify,
+            tracks: [] // TODO
+        }))
+    );
+
+    return results;
+};
+
 const exportedMethods = {
     getUserId,
     getPrivatePlaylistsForPreview,
     getPlaylistTracks,
-    getPlaylist
+    getPlaylist,
+    searchCatalog,
+    getSong,
+    getAlbum
 };
 
 export default exportedMethods;
