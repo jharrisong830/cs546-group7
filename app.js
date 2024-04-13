@@ -4,7 +4,7 @@ import exphbs from "express-handlebars";
 
 const app = express();
 
-// app.use("/public", express.static("public"));
+app.use("/public", express.static("public"));
 app.use(express.json()); // for http bodies
 app.use(express.urlencoded({ extended: true }));
 
