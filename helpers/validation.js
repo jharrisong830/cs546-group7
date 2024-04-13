@@ -65,9 +65,11 @@ const validateUserParams = (
 ) => {
     username = returnValidString(username);
     checkEmptyString(username);
+    username = username.toLowerCase(); // case insensitive
 
     email = returnValidString(email);
     checkEmptyString(email);
+    email = email.toLowerCase(); // case insensitive
 
     password = returnValidString(password);
     checkEmptyString(password);

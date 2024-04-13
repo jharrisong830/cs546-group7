@@ -26,12 +26,13 @@ There will be two main collections for our database. **Users** will store identi
 | `username` | `string` | login and username handle |
 | `name` | `string` (optional) | display name |
 | `email` | `string` | login and contact email |
-| `password` | `string` | login password |
+| `password` | `string` | hash of the login password |
 | `dateOfBirth` | `Date`(as ISO `string`) | ISO formatted string representing the user's date of birth (for registration purposes) |
 | `SPAuth` | `Object` (subdocument, optional) | subdocument with fields for spotify authentication |
 | `AMAuth` | `Object` (subdocument, optional) | subdocument with fields for apple music authentication |
 | `publicProfile` | `boolean` | denotes whether this profile is public (`true`) or private (`false`) |
 | `friends` | `[ObjectId]` | list of `_id`s of the current users friends |
+| `blocked` | `[ObjectId]` | list of `_id`s of users that are blocked by the current user |
 | `posts` | `[ObjectId]` | list of post `_id`s authored by this user |
 | `comments` | `[ObjectId]` | list of comment `_id`s authored by this user |
 | `postLikes` | `[ObjectId]` | list of post `_id`s liked by this user |
@@ -75,7 +76,8 @@ const user = {
         ObjectId("456"),
         ObjectId("789")
     ],
-    posts: [...], // all arrays of ObjectIds...
+    blocked: [...], // all arrays of ObjectIds...
+    posts: [...],
     comments: [...],
     postLikes: [...],
     commentLikes: [...],
