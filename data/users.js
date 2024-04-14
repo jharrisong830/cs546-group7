@@ -41,6 +41,13 @@ const registerUser = async (
         name
     );
 
+    if ((await findByUsername(username)) !== null)
+        errorMessage(
+            MOD_NAME,
+            "validateUserParams",
+            `The username ${username} is already taken.`
+        );
+
     newUser.password = await bcrypt.hash(newUser.password, saltRounds); // hash password with 16 salt rounds
 
     // add other fields as [] or null (content not populated yet)
@@ -100,14 +107,16 @@ const findByUsername = async (username) => {
 
     // find matching username (this should either return 1 or none, no duplicate usernames)
     const userCol = await users();
-    const matchingUsernames = userCol.find(
+    const matchingUsernames = await userCol.find(
         { username: username },
         { username: 1 }
     ); // return the _id and username of matching users
 
-    if (matchingUsernames.size() === 0) return null;
+    const unames = await matchingUsernames.toArray();
 
-    return matchingUsernames.toArray()[0]._id; // return the _id!
+    if ((await unames.length) === 0) return null;
+
+    return unames[0]._id; // return the _id!
 };
 
 /**
@@ -264,7 +273,7 @@ const unblockUser = async (currId, otherId) => {
     const updateInfo = await userCol.updateOne(
         { _id: currId },
         {
-            $pull: { friends: otherId }
+            $pull: { blocked: otherId }
         }
     );
 
