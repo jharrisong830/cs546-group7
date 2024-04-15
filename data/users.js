@@ -413,11 +413,71 @@ const addAMAccessData = async (id, musicUserToken) => {
     }
 };
 
+/**
+ * given a user id, remove their spotify access data from the database
+ *
+ * @param {string | ObjectId} id    id of user to be updated
+ *
+ * @throws if the update was unsuccessful (i.e. id was not found), or if input is invalid
+ */
+const removeSPAccessData = async (id) => {
+    id = vld.checkObjectId(id);
+
+    const userCol = await users();
+    const updateInfo = await userCol.updateOne(
+        { _id: id },
+        { $set: { SPAuth: null } }
+    ); // set sp auth data to null
+
+    if (
+        !updateInfo ||
+        updateInfo.matchedCount === 0 ||
+        updateInfo.modifiedCount === 0
+    ) {
+        errorMessage(
+            MOD_NAME,
+            "removeSPAccessData",
+            `Unable to modify database entry for ${id}. This object might not exist`
+        );
+    }
+};
+
+/**
+ * given a user id, remove their apple music access data from the database
+ *
+ * @param {string | ObjectId} id    id of user to be updated
+ *
+ * @throws if the update was unsuccessful (i.e. id was not found), or if input is invalid
+ */
+const removeAMAccessData = async (id) => {
+    id = vld.checkObjectId(id);
+
+    const userCol = await users();
+    const updateInfo = await userCol.updateOne(
+        { _id: id },
+        { $set: { AMAuth: null } }
+    ); // set am auth data to null
+
+    if (
+        !updateInfo ||
+        updateInfo.matchedCount === 0 ||
+        updateInfo.modifiedCount === 0
+    ) {
+        errorMessage(
+            MOD_NAME,
+            "removeAMAccessData",
+            `Unable to modify database entry for ${id}. This object might not exist`
+        );
+    }
+};
+
 const exportedMethods = {
     registerUser,
     getUser,
     addSPAccessData,
     addAMAccessData,
+    removeSPAccessData,
+    removeAMAccessData,
     findByUsername,
     comparePassword,
     addFriend,
