@@ -10,6 +10,8 @@ import bcrypt from "bcrypt";
 const MOD_NAME = "data/users.js";
 const saltRounds = 16;
 
+const updatable = ["username", "email", "password", "name"];
+
 /**
  * registers a user and places identifying information in the database
  *
@@ -151,6 +153,7 @@ const comparePassword = async (id, pswd) => {
  * @param {string | ObjectId} currId    current user to be updated with a new friend
  * @param {string | ObjectId} friendId  friend to be added
  *
+ * @returns {Object} updated user
  * @throws on invalid input or if there are errors in getting/setting database entries
  */
 const addFriend = async (currId, friendId) => {
@@ -184,6 +187,8 @@ const addFriend = async (currId, friendId) => {
             `Unable to modify database entry for ${currId}. This object might not exist`
         );
     }
+
+    return await getUser(id); // return the updated user
 };
 
 /**
@@ -191,6 +196,7 @@ const addFriend = async (currId, friendId) => {
  * @param {string | ObjectId} currId    current user to be updated
  * @param {string | ObjectId} friendId  friend id to be removed
  *
+ * @returns {Object} updated user
  * @throws on invalid input or if there are errors in getting/setting database entries
  */
 const removeFriend = async (currId, friendId) => {
@@ -216,6 +222,8 @@ const removeFriend = async (currId, friendId) => {
             `Unable to modify database entry for ${currId}. This object might not exist, or ${friendId} might not be in the array`
         );
     }
+
+    return await getUser(id); // return the updated user
 };
 
 /**
@@ -223,6 +231,7 @@ const removeFriend = async (currId, friendId) => {
  * @param {string | ObjectId} currId   current user to be updated with a new blocked user
  * @param {string | ObjectId} otherId  user to be blocked
  *
+ * @returns {Object} updated user
  * @throws on invalid input or if there are errors in getting/setting database entries
  */
 const blockUser = async (currId, otherId) => {
@@ -256,6 +265,8 @@ const blockUser = async (currId, otherId) => {
             `Unable to modify database entry for ${currId}. This object might not exist`
         );
     }
+
+    return await getUser(id); // return the updated user
 };
 
 /**
@@ -263,6 +274,7 @@ const blockUser = async (currId, otherId) => {
  * @param {string | ObjectId} currId    current user to be updated
  * @param {string | ObjectId} otherId   other id to be removed
  *
+ * @returns {Object} updated user
  * @throws on invalid input or if there are errors in getting/setting database entries
  */
 const unblockUser = async (currId, otherId) => {
@@ -288,6 +300,8 @@ const unblockUser = async (currId, otherId) => {
             `Unable to modify database entry for ${currId}. This object might not exist, or ${otherId} might not be in the array`
         );
     }
+
+    return await getUser(id); // return the updated user
 };
 
 /**
@@ -295,6 +309,7 @@ const unblockUser = async (currId, otherId) => {
  *
  * @param {string | ObjectId} id    user to be altered
  *
+ * @returns {Object} updated user
  * @throws on invalid input or if there are errors in getting/setting database entries
  */
 const toggleProfileVisibility = async (id) => {
@@ -320,6 +335,74 @@ const toggleProfileVisibility = async (id) => {
             `Unable to modify database entry for ${id}. This object might not exist`
         );
     }
+
+    return await getUser(id); // return the updated user
+};
+
+/**
+ * updates the fields of a users profile to the specified values
+ * (note: only username, email, password, and name can be updated. any other field will throw error)
+ *
+ * @param {string | ObjectID} id    id of user to be updated
+ * @param {Object} updatedFields    object containing at least one valid field to be updated
+ *
+ * @returns {Object} newly updated user object
+ * @throws on invalid input or if there are errors in getting/setting database entries
+ */
+const updateUser = async (id, updatedFields) => {
+    id = vld.checkObjectId(id);
+
+    if (
+        updatedFields === undefined ||
+        updatedFields === null ||
+        typeof updatedFields !== "object"
+    ) {
+        errorMessage(
+            MOD_NAME,
+            "updateUser",
+            "Invalid input for 'updatedFields', expected an object."
+        );
+    }
+
+    if (Object.keys(updatedFields).length === 0)
+        errorMessage(
+            MOD_NAME,
+            "updateUser",
+            "'updatedFields' has no key/value pairs!"
+        );
+
+    Object.keys(updatedFields).forEach((field) => {
+        // validation!!!
+        if (!updatable.includes(field))
+            errorMessage(
+                MOD_NAME,
+                "updateUser",
+                `Unexpected field '${field}'; either does not exist or can't be updated.`
+            );
+
+        updatedFields[field] = vld.returnValidString(updatedFields[field]); // TODO: character validation for different fields
+        vld.checkEmptyString(updatedFields[field]);
+    });
+
+    const userCol = await users();
+    const updateInfo = await userCol.updateOne(
+        { _id: id },
+        { $set: updatedFields }
+    ); // update all fields at once
+
+    if (
+        !updateInfo ||
+        updateInfo.matchedCount === 0 ||
+        updateInfo.modifiedCount === 0
+    ) {
+        errorMessage(
+            MOD_NAME,
+            "updateUser",
+            `Unable to modify database entry for ${id}. This object might not exist`
+        );
+    }
+
+    return await getUser(id);
 };
 
 /**
@@ -330,6 +413,7 @@ const toggleProfileVisibility = async (id) => {
  * @param {number} expiryTime       time in Unix epoch seconds at which the access token expires
  * @param {string} refreshToken     used to fetch a new accessToken after its expiry time
  *
+ * @returns {Object} updated user
  * @throws if the update was unsuccessful (i.e. id was not found), or if input is invalid
  */
 const addSPAccessData = async (id, accessToken, expiryTime, refreshToken) => {
@@ -370,6 +454,8 @@ const addSPAccessData = async (id, accessToken, expiryTime, refreshToken) => {
             `Unable to modify database entry for ${id}. This object might not exist`
         );
     }
+
+    return await getUser(id);
 };
 
 /**
@@ -378,6 +464,7 @@ const addSPAccessData = async (id, accessToken, expiryTime, refreshToken) => {
  * @param {string | ObjectId} id    id of user to be updated
  * @param {string} musicUserToken   access token used to get data from AM API
  *
+ * @returns {Object} updated user
  * @throws if the update was unsuccessful (i.e. id was not found), or if input is invalid
  */
 const addAMAccessData = async (id, musicUserToken) => {
@@ -411,6 +498,8 @@ const addAMAccessData = async (id, musicUserToken) => {
             `Unable to modify database entry for ${id}. This object might not exist`
         );
     }
+
+    return await getUser(id);
 };
 
 /**
@@ -418,6 +507,7 @@ const addAMAccessData = async (id, musicUserToken) => {
  *
  * @param {string | ObjectId} id    id of user to be updated
  *
+ * @returns {Object} updated user
  * @throws if the update was unsuccessful (i.e. id was not found), or if input is invalid
  */
 const removeSPAccessData = async (id) => {
@@ -440,6 +530,8 @@ const removeSPAccessData = async (id) => {
             `Unable to modify database entry for ${id}. This object might not exist`
         );
     }
+
+    return await getUser(id);
 };
 
 /**
@@ -447,6 +539,7 @@ const removeSPAccessData = async (id) => {
  *
  * @param {string | ObjectId} id    id of user to be updated
  *
+ * @returns {Object} updated user
  * @throws if the update was unsuccessful (i.e. id was not found), or if input is invalid
  */
 const removeAMAccessData = async (id) => {
@@ -469,6 +562,8 @@ const removeAMAccessData = async (id) => {
             `Unable to modify database entry for ${id}. This object might not exist`
         );
     }
+
+    return await getUser(id);
 };
 
 const exportedMethods = {

@@ -63,7 +63,7 @@ const validateUserParams = (
     publicProfile = true,
     name
 ) => {
-    username = returnValidString(username);
+    username = returnValidString(username); // TODO: character validation for different fields
     checkEmptyString(username);
     username = username.toLowerCase(); // case insensitive
 
