@@ -384,6 +384,15 @@ const updateUser = async (id, updatedFields) => {
         vld.checkEmptyString(updatedFields[field]);
     });
 
+    if (Object.keys(updatedFields).includes("password")) {
+        if (field === "password") {
+            updatedFields.password = await bcrypt.hash(
+                updatedFields.password,
+                saltRounds
+            ); // hash password with 16 salt rounds
+        }
+    }
+
     const userCol = await users();
     const updateInfo = await userCol.updateOne(
         { _id: id },
@@ -579,7 +588,8 @@ const exportedMethods = {
     removeFriend,
     blockUser,
     unblockUser,
-    toggleProfileVisibility
+    toggleProfileVisibility,
+    updateUser
 };
 
 export default exportedMethods;
