@@ -8,6 +8,7 @@
         "start": "node app.js",
         "test": "echo \"Error: no test specified\" && exit 1",
         "commit": "npx prettier . --write && git add -A && git commit",
+        "seed": "node seed.js",
         "drop": "node tasks/drop.js"
     },
     "author": "CS 546 Group 7",
@@ -19,6 +20,8 @@
         "express-handlebars": "^7.1.2",
         "jsonwebtoken": "^9.0.2",
         "mongodb": "^6.5.0",
-        "prettier": "^3.2.5"
+        "prettier": "^3.2.5",
+        "sanitize": "^2.1.2",
+        "sanitize-html": "^2.13.0"
     }
 }
