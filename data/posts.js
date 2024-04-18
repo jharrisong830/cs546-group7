@@ -71,6 +71,8 @@ const createPost = async (
     return await postCol.findOne({ _id: insertInfo.insertedId }); // return the object just added to the db
 };
 
-const exportedMethods = {};
+const exportedMethods = {
+    createPost
+};
 
 export default exportedMethods;

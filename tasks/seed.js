@@ -114,4 +114,18 @@ try {
     console.log(e);
 }
 
+user1 = await userData.unblockUser(user1._id, user2._id);
+
+// lets test posts!
+
+let firstPost = await postData.createPost(
+    user1._id,
+    {},
+    "Hello, world! This is my first post!"
+);
+user1 = await userData.getUser(user1._id);
+
+console.log(user1); // should include a post id
+console.log(firstPost);
+
 await closeConnection();
