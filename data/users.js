@@ -157,6 +157,14 @@ const addFriend = async (currId, friendId) => {
     currId = vld.checkObjectId(currId);
     friendId = vld.checkObjectId(friendId);
 
+    if (await checkBlocked(currId, friendId)) {
+        errorMessage(
+            MOD_NAME,
+            "addFriend",
+            `${currId} and ${friendId} might be blocked, cannot add friends`
+        );
+    }
+
     const friend = await getUser(friendId); // make sure the user exists
     if (!friend)
         errorMessage(
@@ -185,7 +193,7 @@ const addFriend = async (currId, friendId) => {
         );
     }
 
-    return await getUser(id); // return the updated user
+    return await getUser(currId); // return the updated user
 };
 
 /**
@@ -220,11 +228,33 @@ const removeFriend = async (currId, friendId) => {
         );
     }
 
-    return await getUser(id); // return the updated user
+    return await getUser(currId); // return the updated user
 };
 
 /**
- * adds otherId to the current users blocked list
+ * unlinks the friendship status of two users (both users will be removed from each other's friend lists)
+ * @param {string | ObjectId} currId    current user
+ * @param {string | ObjectId} friendId  friend id
+ */
+const forceUnfriend = async (currId, friendId) => {
+    try {
+        await removeFriend(currId, friendId);
+    } catch {
+        console.log(
+            `${friendId} was already not in current users friend list. Skipping!`
+        );
+    }
+    try {
+        await removeFriend(friendId, currId);
+    } catch {
+        console.log(
+            `current user was already not in ${friendId}s friend list. Skipping!`
+        );
+    }
+};
+
+/**
+ * adds otherId to the current users blocked list, and removes the users from each other's friend lists
  * @param {string | ObjectId} currId   current user to be updated with a new blocked user
  * @param {string | ObjectId} otherId  user to be blocked
  *
@@ -263,7 +293,9 @@ const blockUser = async (currId, otherId) => {
         );
     }
 
-    return await getUser(id); // return the updated user
+    await forceUnfriend(currId, otherId); // force the removal of these users from each other's friend lists
+
+    return await getUser(currId); // return the updated user
 };
 
 /**
@@ -298,7 +330,33 @@ const unblockUser = async (currId, otherId) => {
         );
     }
 
-    return await getUser(id); // return the updated user
+    return await getUser(currId); // return the updated user
+};
+
+/**
+ * returns true if either user appears in the others block list, false otherwise
+ * (any blocked users will not be able to interact with each other on the feed)
+ *
+ * @param {*} currId    first user
+ * @param {*} otherId   second user
+ *
+ * @returns {boolean}   true if any blocking has occured, false otherwise
+ * @throws on invalid input
+ */
+const checkBlocked = async (currId, otherId) => {
+    currId = vld.checkObjectId(currId);
+    otherId = vld.checkObjectId(otherId);
+
+    const usr1 = await getUser(currId);
+    const usr2 = await getUser(otherId);
+
+    const currBlocked = usr1.blocked.map((objId) => objId.toString()); // convert to strings for array includes
+    const otherBlocked = usr2.blocked.map((objId) => objId.toString());
+
+    return (
+        currBlocked.includes(otherId.toString()) ||
+        otherBlocked.includes(currId.toString())
+    ); // returns false only if neither user is blocked by one another
 };
 
 /**
@@ -314,12 +372,12 @@ const toggleProfileVisibility = async (id) => {
     vld.checkEmptyString(id);
 
     const userCol = await users();
-    const updateInfo = await userCol.updateOne(
-        { _id: id },
+    const updateInfo = await userCol.updateOne({ _id: id }, [
+        // NOTE: use array of set commands to be able to use aggregation ($not)
         {
             $set: { publicProfile: { $not: "$publicProfile" } } // toggle the value of publicProfile
         }
-    );
+    ]);
 
     if (
         !updateInfo ||
@@ -583,8 +641,10 @@ const exportedMethods = {
     comparePassword,
     addFriend,
     removeFriend,
+    forceUnfriend,
     blockUser,
     unblockUser,
+    checkBlocked,
     toggleProfileVisibility,
     updateUser
 };

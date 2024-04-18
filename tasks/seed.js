@@ -10,71 +10,108 @@ import { userData, postData } from "../data/index.js";
 const db = await dbConnection();
 await db.dropDatabase();
 
-const user1 = await userData.registerUser(
+// testing registration of valid users
+
+let user1 = await userData.registerUser(
     "jgraham5",
     "password",
     "08/30/2003",
     undefined,
     "John Graham"
 );
-const user2 = await userData.registerUser(
+let user2 = await userData.registerUser(
     "ehodor",
     "1234",
     "02/10/2003",
     undefined, // defaults to true
     "Emma Hodor"
 );
-const user3 = await userData.registerUser(
+let user3 = await userData.registerUser(
     "anonymous",
     "test",
     "03/11/2004",
     false,
     undefined // should be set to null (ignored)
 );
+let user4 = await userData.registerUser(
+    "jduran",
+    "test2",
+    "04/12/2005",
+    true,
+    "Justin Duran"
+);
+let user5 = await userData.registerUser(
+    "rperalt1",
+    "test3",
+    "05/13/2006",
+    true,
+    "Ramses Peralta"
+);
+let user6 = await userData.registerUser(
+    "ran3",
+    "test3",
+    "06/14/2007",
+    true,
+    "Rebecca An"
+);
 
-const userCol = await users();
-const allUsers = await userCol.find({}).toArray();
+try {
+    let failed = await userData.registerUser(
+        "jGraham5", // despite differeing case, should be rejected for being the same username
+        "pswd",
+        "08/31/2003"
+    );
+    console.log(failed);
+} catch (e) {
+    console.log("Duplicate username rejection works!");
+    console.log(e);
+}
 
-console.log(allUsers.length); // should be 3
-console.log(allUsers);
+// testing the friend feature
 
-// console.log(`Should be false (failed password attempt) ${await userData.comparePassword(user1._id, "helloWrongPassword")}`);
-// console.log(`Should be true (successful password attempt) ${await userData.comparePassword(user1._id, "password")}`);
+user1 = await userData.addFriend(user1._id, user2._id); // one-way, so only user 1 will have friend list altered
+user2 = await userData.addFriend(user2._id, user1._id); // reciporcation!
 
-// await userData.addFriend(user1._id, user2._id);
-// await userData.blockUser(user2._id, user1._id);
+user1 = await userData.addFriend(user1._id, user4._id); // one-way
+user4 = await userData.getUser(user4._id); // should be unchanged
 
-// const user1New = await userData.getUser(user1._id);
-// const user2New = await userData.getUser(user2._id);
+user4 = await userData.toggleProfileVisibility(user4._id); // profile visibility should now be false
 
-// console.log(user1New);
-// console.log(user2New);
+console.log(user1, user2, user4);
 
-// await userData.removeFriend(user1._id, user2._id);
-// await userData.unblockUser(user2._id, user1._id);
+await userData.forceUnfriend(user4._id, user1._id);
+user1 = await userData.getUser(user1._id);
 
-// const user1Newer = await userData.getUser(user1._id);
-// const user2Newer = await userData.getUser(user2._id);
+console.log("Force unfriend by user4, removes user4 from user1's friend list");
+console.log(user1);
+console.log(
+    `User 1 and User 4 blocked? ${await userData.checkBlocked(user1._id, user4._id)}`
+); // should be false
 
-// console.log(user1Newer);
-// console.log(user2Newer);
+user1 = await userData.blockUser(user1._id, user2._id); // user2 will be in user1 block list, both will be removed from each other's friend lists
+user2 = await userData.getUser(user2._id);
 
-// const usernameFind1 = await userData.findByUsername("jgraham5");
-// console.log(usernameFind1);
+console.log("Two-way forced friend removal and block of user2 by user1");
+console.log(user1);
+console.log(user2);
+console.log(
+    `User 1 and User 2 blocked? ${await userData.checkBlocked(user1._id, user2._id)}`
+); // should be true
 
-// const usernameFind2 = await userData.findByUsername("ehodor5");
-// console.log(usernameFind2); // no such username, should return null
+try {
+    let failed = await userData.addFriend(user2._id, user1._id);
+    console.log(failed);
+} catch (e) {
+    console.log("Blocking works! Can't add someone who blocked you");
+    console.log(e);
+}
 
-// try {
-//     const notAllowed = await userData.registerUser(
-//         "jgraham5",
-//         "pp",
-//         "pp",
-//         "pp"
-//     );
-//     console.log(notAllowed);
-// } catch (e) {
-//     console.log(e);
-// }
+try {
+    let failed = await userData.addFriend(user1._id, user2._id);
+    console.log(failed);
+} catch (e) {
+    console.log("Again! works both ways");
+    console.log(e);
+}
 
 await closeConnection();
