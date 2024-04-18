@@ -16,10 +16,9 @@ const updatable = ["username", "email", "password", "name"];
  * registers a user and places identifying information in the database
  *
  * @param {string} username             login/site handle
- * @param {string} email                registration/login/contact email
  * @param {string} password             login password
  * @param {string} dateOfBirth          date of birth as ISO-formatted date string
- * @param {boolean} publicProfile=true  whether posts and profile data are public to all users
+ * @param {boolean} [publicProfile]     whether posts and profile data are public to all users (default -> true)
  * @param {string} [name]               display name (optional)
  *
  * @returns {Object} the registered user object, as it was inserted into the database collection
@@ -27,7 +26,6 @@ const updatable = ["username", "email", "password", "name"];
  */
 const registerUser = async (
     username,
-    email,
     password,
     dateOfBirth,
     publicProfile = true,
@@ -36,7 +34,6 @@ const registerUser = async (
     let newUser = vld.validateUserParams(
         // validate parameters
         username,
-        email,
         password,
         dateOfBirth,
         publicProfile,

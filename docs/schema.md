@@ -25,7 +25,6 @@ There will be two main collections for our database. **Users** will store identi
 | `_id`| `ObjectId` | unique identifier for each user |
 | `username` | `string` | login and username handle |
 | `name` | `string` (optional) | display name |
-| `email` | `string` | login and contact email |
 | `password` | `string` | hash of the login password |
 | `dateOfBirth` | `Date`(as ISO `string`) | ISO formatted string representing the user's date of birth (for registration purposes) |
 | `SPAuth` | `Object` (subdocument, optional) | subdocument with fields for spotify authentication |
@@ -62,7 +61,6 @@ const user = {
     _id: ObjectId("123"),
     username: "deviousTweeter",
     name: "Michael Devious",
-    email: "deviousTweeter@tweeter.com",
     password: "123",
     dateOfBirth: "1969-04-20T05:00:00.000Z",
     SPAuth: {
