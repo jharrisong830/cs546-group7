@@ -138,7 +138,7 @@ export const AMGenerateDevToken = () => {
         kid: process.env.AM_KEY_ID
     };
 
-    const currTime = Math.floor(Date.now() / 1000); // unix epoch in seconds
+    const currTime = Math.floor(new Date().getTime() / 1000); // unix epoch in seconds
     const payload = {
         iss: process.env.AM_TEAM_ID,
         iat: currTime,

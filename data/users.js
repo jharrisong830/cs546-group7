@@ -2,7 +2,7 @@
  * methods to interact with data from the "users" collection
  */
 
-import { users } from "../config/mongoCollections.js";
+import { users, posts } from "../config/mongoCollections.js";
 import vld from "../helpers/validation.js";
 import errorMessage from "../helpers/error.js";
 import bcrypt from "bcrypt";
@@ -10,7 +10,7 @@ import bcrypt from "bcrypt";
 const MOD_NAME = "data/users.js";
 const saltRounds = 16;
 
-const updatable = ["username", "email", "password", "name"];
+const updatable = ["username", "password", "name"];
 
 /**
  * registers a user and places identifying information in the database
@@ -630,6 +630,47 @@ const removeAMAccessData = async (id) => {
     return await getUser(id);
 };
 
+/**
+ * removes a user and all of their associated data from the database (including their posts)
+ *
+ * @param {string | ObjectId} id    id of the user to be removed
+ *
+ * @throws on invalid input or if there are errors in getting/setting database entries
+ */
+const deleteUser = async (id) => {
+    id = vld.checkObjectId(id);
+
+    const usr = await getUser(id);
+    if (!usr)
+        errorMessage(MOD_NAME, "deleteUser", `No user with '${id}' was found`);
+
+    const postCol = await posts();
+    const postDeleteInfo = await postCol.deleteMany({ authorId: id }); // delete all posts with an associated author id
+
+    if (
+        !postDeleteInfo ||
+        !postDeleteInfo.acknowledged ||
+        postDeleteInfo.deletedCount !== usr.posts.length
+    ) {
+        errorMessage(
+            MOD_NAME,
+            "deleteUser",
+            `Unable to delete all posts for user ${id}`
+        );
+    }
+
+    const userCol = await users();
+    const userDeleteInfo = await userCol.deleteOne({ _id: id });
+
+    if (
+        !userDeleteInfo ||
+        !userDeleteInfo.acknowledged ||
+        userDeleteInfo.deletedCount !== 1
+    ) {
+        errorMessage(MOD_NAME, "deleteUser", `Unable to delete user ${id}`);
+    }
+};
+
 const exportedMethods = {
     registerUser,
     getUser,
@@ -646,7 +687,8 @@ const exportedMethods = {
     unblockUser,
     checkBlocked,
     toggleProfileVisibility,
-    updateUser
+    updateUser,
+    deleteUser
 };
 
 export default exportedMethods;

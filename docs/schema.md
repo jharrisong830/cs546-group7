@@ -99,6 +99,7 @@ const user = {
 | `likes` | `[ObjectId]` | an array of `_id`s of the users who liked this post
 | `comments` | `[Object]` (subdocument) | an array of comment objects, representing comments made on this post
 | `createTime` | `number` | time since Unix epoch of when the post was created |
+| `lastUpdated` | `number` | time since Unix epoch of when the post was last changed |
 
 
 ### Comment (Subdocument of Post)

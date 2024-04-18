@@ -126,6 +126,29 @@ let firstPost = await postData.createPost(
 user1 = await userData.getUser(user1._id);
 
 console.log(user1); // should include a post id
+console.log(await postData.getPost(firstPost._id)); // testing getPost
+
+await new Promise((resolve) => setTimeout(resolve, 5000)); // getting sleepy, 5 secs
+
+let nextPost = await postData.createPost(
+    user1._id,
+    {},
+    "Hello again! This is my second post. Better than the first"
+);
+
+await new Promise((resolve) => setTimeout(resolve, 5000));
+
+firstPost = await postData.updatePost(
+    firstPost._id,
+    "I updated this post. The update time should be after that of my second post"
+);
+
+console.log(nextPost);
 console.log(firstPost);
+
+await postData.deletePost(nextPost._id); // delete a single post, should not be in users post data
+user1 = await userData.getUser(user1._id);
+
+await userData.deleteUser(user1._id); // user1 should disappear from database, along with all posts
 
 await closeConnection();
