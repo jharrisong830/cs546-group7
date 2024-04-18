@@ -46,10 +46,9 @@ const checkEmptyString = (str) => {
  * validates parameters supplied when creating/editing a user's identifying information
  *
  * @param {string} username             login/site handle
- * @param {string} email                registration/login/contact email
  * @param {string} password             login password
  * @param {string} dateOfBirth          date of birth as ISO-formatted date string
- * @param {boolean} publicProfile=true  whether posts and profile data are public to all users
+ * @param {boolean} publicProfile       whether posts and profile data are public to all users
  * @param {string} [name]               display name (optional)
  *
  * @returns {Object} object containing updated and validated paramaters
@@ -57,17 +56,14 @@ const checkEmptyString = (str) => {
  */
 const validateUserParams = (
     username,
-    email,
     password,
     dateOfBirth,
-    publicProfile = true,
+    publicProfile,
     name
 ) => {
-    username = returnValidString(username);
+    username = returnValidString(username); // TODO: character validation for different fields
     checkEmptyString(username);
-
-    email = returnValidString(email);
-    checkEmptyString(email);
+    username = username.toLowerCase(); // case insensitive
 
     password = returnValidString(password);
     checkEmptyString(password);
@@ -90,7 +86,6 @@ const validateUserParams = (
 
     return {
         username: username,
-        email: email,
         password: password,
         dateOfBirth: dateOfBirth,
         name: name,
