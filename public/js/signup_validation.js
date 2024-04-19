@@ -1,5 +1,3 @@
-import moment from moment
-
 
 $('#signup').submit((event) => {
     event.preventDefault();
@@ -28,14 +26,19 @@ $('#signup').submit((event) => {
         $('#yearError').hide();
     }
     const userBirth = `${userYear}/${userMonth}/${userDay}`;
-    if (!moment(userBirth, 'YYYY/MM/DD').isValid()) {
+    const birthObj = new Date(userBirth);
+    if (isNaN(birthObj)) {
         //add error
         $('#birthError').show();
         $('#birthError').html('Birthday is an invalid date');
         $('#signup').trigger('reset');
     }
-    var yearsOld = moment().diff(userBirth, 'years');
-    if (yearsOld < 13) {
+    var today = new Date();
+    var userAge = today.getFullYear() - birthObj.getFullYear();
+    var months = today.getMonth() - birthObj.getMonth();
+    if (months < 0 || (months === 0 && today.getDate() < birthObj.getDate())) {
+        userAge--;
+    if (userAge < 13) {
 
         $('#birthError').show();
         $('#birthError').html('You must be at least 13 years old to create an account');
@@ -93,4 +96,4 @@ $('#signup').submit((event) => {
     if (displayName.length < 1) {
         displayName = username;
     }
-})
+}})
