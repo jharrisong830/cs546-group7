@@ -1,7 +1,7 @@
 
 <div id="signupDiv">
     <div id="error" class="error" hidden>Error will be written here.</div>
-    <form method="POST" id="signup">
+    <form method="POST" id="signup" action="/">
         <ul id="user_fields">
             <div id="usernameError" class="error" hidden>I'm an error. I will change through Client-Side JS</div>
             <li>
@@ -186,6 +186,13 @@
                 <option value="1907">1907</option>
                 <option value="1906">1906</option>
         </select>
+        <label for="profileOptions">Choose if you want your profile to be public or private:</label>
+        <div id="profileOptions">
+        <input type="radio" id="public" value="public" name="privacy" checked>
+        <label for="public">Public</label><br>
+        <input type="radio" id="private" value="private" name="privacy">
+        <label for="private">Private</label>
+        </div>
         </ul>
         <button type="submit">Submit</button>
     </form>
