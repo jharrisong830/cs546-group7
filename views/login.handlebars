@@ -1,0 +1,15 @@
+{{#if error}}
+{{error}}
+{{/if}}
+<form method="POST" id="signin-form" action="/login" name="signin-form">
+		<label for="username">
+			Enter Username:
+			<input type="text" id="username" name="username" />
+			</label>
+			<label for="password">
+			Enter password:
+            <input type="password" id="password" name="password"/>
+			</label>
+			<button type="submit">Log in!</button>
+	</form>
+<a href="/signup">Click here to sign up for Tweeter!</a>
