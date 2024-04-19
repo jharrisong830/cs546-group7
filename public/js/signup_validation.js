@@ -27,7 +27,8 @@ $('#signup').submit((event) => {
     } else {
         $('#yearError').hide();
     }
-    if (!moment(userBirth, 'MM/DD/YYYY').isValid()) {
+    const userBirth = `${userYear}/${userMonth}/${userDay}`;
+    if (!moment(userBirth, 'YYYY/MM/DD').isValid()) {
         //add error
         $('#birthError').show();
         $('#birthError').html('Birthday is an invalid date');
