@@ -1,23 +1,24 @@
 
-<div id="signup">
+<div id="signupDiv">
     <div id="error" class="error" hidden>Error will be written here.</div>
     <form method="POST" id="signup">
         <ul id="user_fields">
+            <div id="usernameError" class="error" hidden>I'm an error. I will change through Client-Side JS</div>
             <li>
-                <input id="userName" type="text" placeholder="Enter password here" required="required">
+                <input id="userName" type="text" placeholder="Enter username here">
             </li>
+            <div id="displayError" class="error" hidden>I'm an error. I will change through Client-Side JS</div>
             <li>
-                <input id="displayName" type="text" placeholder="Enter username here" required="required">
+                <input id="displayName" type="text" placeholder="Enter display name here">
             </li>
+            <div id="passwordError" class="error" hidden>I'm an error. I will change through Client-Side JS</div>
             <li>
-                <input id="email" type="text" placeholder="Enter email here" required="required">
-            </li>
-            <li>
-                <input id="userPassword" type="password" placeholder="" required="required">
-                <input type="checkbox" onclick="">Show Password
+                <input id="userPassword" type="password" placeholder="Enter password here">
             </li>
             <!--add birthday field -->
+            <div id="birthError" class="error" hidden>Hi</div>
             <label for="user_month">Input birthday:</label>
+            <div id="monthError" class="error" hidden>I'm an error. I will change through Client-Side JS</div>
             <select class="birthday" id="user_month">
                 <option value="">--Birth month--</option>
                 <option value="01">January</option>
@@ -33,6 +34,7 @@
                 <option value="11">November</option>
                 <option value="12">December</option>
             </select>
+            <div id="dayError" class="error" hidden>I'm an error. I will change through Client-Side JS</div>
             <select id="user_day" class="birthday">
                 <option value="">--Birth day--</option>
                 <option value="01">1</option>
@@ -67,6 +69,7 @@
                 <option value="30">30</option>
                 <option value="31">31</option>
             </select>
+            <div id="yearError" class="error" hidden>I'm an error. I will change through Client-Side JS</div>
             <select id="user_year" class="birthday">
                 <option value="">--Birth year--</option>
                 <option value="2018">2018</option>
