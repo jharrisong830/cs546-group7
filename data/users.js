@@ -23,7 +23,6 @@ const MOD_NAME = "data/users.js";
  */
 const registerUser = async (
     username,
-    email,
     password,
     dateOfBirth,
     publicProfile = true,
@@ -32,7 +31,6 @@ const registerUser = async (
     let newUser = vld.validateUserParams(
         // validate parameters
         username,
-        email,
         password,
         dateOfBirth,
         publicProfile,
