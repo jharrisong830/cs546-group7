@@ -3,6 +3,7 @@
  */
 
 import errorMessage from "./error.js";
+import { ObjectId } from "mongodb";
 
 const MOD_NAME = "helpers/validation.js";
 
@@ -45,10 +46,9 @@ const checkEmptyString = (str) => {
  * validates parameters supplied when creating/editing a user's identifying information
  *
  * @param {string} username             login/site handle
- * @param {string} email                registration/login/contact email
  * @param {string} password             login password
  * @param {string} dateOfBirth          date of birth as ISO-formatted date string
- * @param {boolean} publicProfile=true  whether posts and profile data are public to all users
+ * @param {boolean} publicProfile       whether posts and profile data are public to all users
  * @param {string} [name]               display name (optional)
  *
  * @returns {Object} object containing updated and validated paramaters
@@ -56,17 +56,14 @@ const checkEmptyString = (str) => {
  */
 const validateUserParams = (
     username,
-    email,
     password,
     dateOfBirth,
-    publicProfile = true,
+    publicProfile,
     name
 ) => {
-    username = returnValidString(username);
+    username = returnValidString(username); // TODO: character validation for different fields
     checkEmptyString(username);
-
-    email = returnValidString(email);
-    checkEmptyString(email);
+    username = username.toLowerCase(); // case insensitive
 
     password = returnValidString(password);
     checkEmptyString(password);
@@ -89,7 +86,6 @@ const validateUserParams = (
 
     return {
         username: username,
-        email: email,
         password: password,
         dateOfBirth: dateOfBirth,
         name: name,
@@ -97,10 +93,72 @@ const validateUserParams = (
     };
 };
 
+/**
+ * checks that the given id is a valid object id, and returns it as an ObjectId
+ * @param {string | ObjectId} id   to be validated
+ *
+ * @returns {ObjectId}  above id converted to ObjectId
+ * @throws if id is not a valid ObjectId or string
+ */
+const checkObjectId = (id) => {
+    if (id === undefined || id === null) {
+        errorMessage(MOD_NAME, "checkObjectId", "'id' does not exist!");
+    }
+    if (typeof id === "object" && ObjectId.isValid(id)) {
+        // if already given an ObjectId instance, return it!
+        return id;
+    }
+    // otherwise, validate the string (or throw for invalid types)
+    id = returnValidString(id);
+    checkEmptyString(id);
+    if (!ObjectId.isValid(id)) {
+        errorMessage(
+            MOD_NAME,
+            "checkObjectId",
+            `'${id}' is not a valid ObjectId`
+        );
+    }
+    return new ObjectId(id); // return validated ObjectId instance
+};
+
+/**
+ * checks that the given number is a unsigned integer
+ *
+ * @param {number} num  number to be validated
+ *
+ * @throws if number does not exist, is not a number, or is not an unsigned integer
+ */
+const checkUnsignedInt = (num) => {
+    if (num === undefined || num === null) {
+        errorMessage(MOD_NAME, "checkUnsignedInt", "'num' does not exist!");
+    }
+    if (typeof num !== "number") {
+        errorMessage(
+            MOD_NAME,
+            "checkUnsignedInt",
+            `'num' is not a number! got ${typeof num}`
+        );
+    }
+    if (num < 0)
+        errorMessage(
+            MOD_NAME,
+            "checkUnsignedInt",
+            `'num' must be positive! got ${num}`
+        );
+    if (num % 1 !== 0)
+        errorMessage(
+            MOD_NAME,
+            "checkUnsignedInt",
+            `'num' must be an integer! got ${num}`
+        );
+};
+
 const exportedMethods = {
     returnValidString,
     checkEmptyString,
-    validateUserParams
+    validateUserParams,
+    checkObjectId,
+    checkUnsignedInt
 };
 
 export default exportedMethods;
