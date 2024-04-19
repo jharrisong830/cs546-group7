@@ -4,10 +4,12 @@
 
 import { Router } from "express";
 import { userData } from "../data/index.js";
+import {validateUserParams} from "../helpers/validation.js"
 
 const router = Router();
 
-router.route("/").get(async (req, res) => {
+router.route("/")
+.get(async (req, res) => {
     const SAMPLE_DATA = {
         username: "jgraham5",
         email: "jgraham5@stevens.edu",
@@ -28,6 +30,17 @@ router.route("/").get(async (req, res) => {
     } catch (e) {
         return res.status(500).json({ error: e });
     }
-});
+})
+.post(async (req, res) => {
+    const newData = req.body;
+    try {
+        const newUser = validateUserParams(newData.userName, newData.userPassword, newData.dateOfBirth, newData.privacy, newData.displayName);
+
+        const added = await userData.registerUser(newUser.username, newUser.password, newUser.dateOfBirth, newUser.publicProfile, newUser.name);
+
+    } catch (e) {
+        return res.status(500).json({error: e})
+    }
+})
 
 export default router;
