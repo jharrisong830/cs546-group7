@@ -1,39 +1,46 @@
+<h1>{{title}}</h1>
 
 <div id="signupDiv">
-    <div id="error" class="error" hidden>Error will be written here.</div>
     <form method="POST" id="signup" action="/">
-        <ul id="user_fields">
-            <div id="usernameError" class="error" hidden>I'm an error. I will change through Client-Side JS</div>
-            <li>
-                <input id="userName" type="text" placeholder="Enter username here">
-            </li>
-            <div id="displayError" class="error" hidden>I'm an error. I will change through Client-Side JS</div>
-            <li>
-                <input id="displayName" type="text" placeholder="Enter display name here">
-            </li>
-            <div id="passwordError" class="error" hidden>I'm an error. I will change through Client-Side JS</div>
-            <li>
-                <input id="userPassword" type="password" placeholder="Enter password here">
-            </li>
-            <!--add birthday field -->
-            <div id="birthError" class="error" hidden>Hi</div>
+        <label for="username">Username</label>
+        <input required id="username" type="text" placeholder="Username" required>
 
-            <label for="user_month">Input birthday:</label>
-            <input type="date" id="dateOfBirth" >
-            
-            <div id="monthError" class="error" hidden>I'm an error. I will change through Client-Side JS</div>
-            <div id="dayError" class="error" hidden>I'm an error. I will change through Client-Side JS</div>
-            <div id="yearError" class="error" hidden>I'm an error. I will change through Client-Side JS</div>
-        <label for="profileOptions">Choose if you want your profile to be public or private:</label>
-        <div id="profileOptions">
-        <input type="radio" id="public" value="public" name="privacy" checked>
-        <label for="public">Public</label><br>
-        <input type="radio" id="private" value="private" name="privacy">
+        <br>
+
+        <label for="name">Display Name</label>
+        <input id="name" type="text" placeholder="Display name (optional)">
+
+        <br>
+
+        <label for="password">Password</label>
+        <input required id="password" type="password" placeholder="Password" required>
+
+        <br>
+
+        <label for="dateOfBirth">Date of Birth</label>
+        <input required type="date" id="dateOfBirth">
+
+        <br>
+
+
+        <label>Profile Type</label>
+
+        <br>
+
+        <input required type="radio" id="public" value="public" name="publicProfile">
+        <label for="public">Public</label>
+
+        <br>
+
+        <input required type="radio" id="private" value="private" name="publicProfile">
         <label for="private">Private</label>
-        </div>
-        </ul>
+
+        <br>
+
         <button type="submit">Submit</button>
     </form>
+
+    <div hidden id="error"></div>
 </div>
 
 
