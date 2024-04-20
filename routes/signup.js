@@ -4,20 +4,21 @@
 
 import { Router } from "express";
 import { userData } from "../data/index.js";
-import {validateUserParams} from "../helpers/validation.js"
+import vld from "../helpers/validation.js";
 
 const router = Router();
 
-router.route("/")
-.get(async (req, res) => {
-    const SAMPLE_DATA = {
-        username: "jgraham5",
-        email: "jgraham5@stevens.edu",
-        password: "1234",
-        dateOfBirth: "08/30/2003"
-    };
+router
+    .route("/")
+    .get(async (req, res) => {
+        // const SAMPLE_DATA = {
+        //     username: "jgraham5",
+        //     email: "jgraham5@stevens.edu",
+        //     password: "1234",
+        //     dateOfBirth: "08/30/2003"
+        // };
 
-    /*try {
+        /*try {
         let inserted = await userData.registerUser(
             SAMPLE_DATA.username,
             SAMPLE_DATA.email,
@@ -25,22 +26,30 @@ router.route("/")
             SAMPLE_DATA.dateOfBirth
         );
         return res.json({ status: "success", user: inserted }); */
-    try {
-        res.render('signup', {});
-    } catch (e) {
-        return res.status(500).json({ error: e });
-    }
-})
-.post(async (req, res) => {
-    const newData = req.body;
-    try {
-        const newUser = validateUserParams(newData.userName, newData.userPassword, newData.dateOfBirth, newData.privacy, newData.displayName);
 
-        const added = await userData.registerUser(newUser.username, newUser.password, newUser.dateOfBirth, newUser.publicProfile, newUser.name);
+        res.render("signup", { title: "Sign Up" });
+    })
+    .post(async (req, res) => {
+        const newData = req.body;
+        try {
+            const newUser = validateUserParams(
+                newData.userName,
+                newData.userPassword,
+                newData.dateOfBirth,
+                newData.privacy,
+                newData.displayName
+            );
 
-    } catch (e) {
-        return res.status(500).json({error: e})
-    }
-})
+            const added = await userData.registerUser(
+                newUser.username,
+                newUser.password,
+                newUser.dateOfBirth,
+                newUser.publicProfile,
+                newUser.name
+            );
+        } catch (e) {
+            return res.status(500).json({ error: e });
+        }
+    });
 
 export default router;
