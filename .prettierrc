@@ -2,5 +2,6 @@
     "tabWidth": 4,
     "trailingComma": "none",
     "bracketSameLine": true,
-    "endOfLine": "lf"
+    "endOfLine": "lf",
+    "proseWrap": "never"
 }

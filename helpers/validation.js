@@ -74,7 +74,7 @@ const validateUserParams = (
     if (name !== undefined) {
         // validate name if it is passed as a parameter...
         name = returnValidString(name);
-        checkEmptyString(name);
+        if (name.length === 0) name = null;
     } else name = null; // ...otherwise null
 
     if (typeof publicProfile !== "boolean")
