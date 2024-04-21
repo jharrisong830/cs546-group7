@@ -93,6 +93,21 @@ const getPost = async (id) => {
 };
 
 /**
+ * get all of the posts authored by a specific user, returned in reverse-chronological order
+ *
+ * @param {string | ObjectId} id    id of user for which to get the posts
+ */
+const getUserPosts = async (id) => {
+    id = vld.checkObjectId(id);
+
+    const postCol = await posts();
+    const userPosts = await postCol
+        .find({ authorId: id })
+        .sort({ createTime: -1 }); // sort in descending order
+    // TODO
+};
+
+/**
  * updates the text content of a post, and changes the last updated field
  *
  * @param {string | ObjectID} id    id of user to be updated
@@ -177,6 +192,16 @@ const deletePost = async (id) => {
         errorMessage(MOD_NAME, "deletePost", `Unable to delete ${id}`);
     }
 };
+
+/**
+ * generate a feed of posts for the given user based on their friends list
+ *
+ * @param {string | ObjectId} id    id of user for which the feed will be generated
+ *
+ * @returns {[Object]} list of post objects in reverse chronological order, to populate the feed
+ * @throws @throws on invalid input or if there are errors in getting database entries
+ */
+const generateFeed = async (id) => {};
 
 const exportedMethods = {
     createPost,
