@@ -1,24 +1,24 @@
 <h1>{{title}}</h1>
 
 <div id="signupDiv">
-    <form method="POST" id="signup" action="/">
+    <form method="POST" id="signup" action="/signup">
         <label for="username">Username</label>
-        <input required id="username" type="text" placeholder="Username" required>
+        <input required id="username" name="username" type="text" placeholder="Username" required>
 
         <br>
 
         <label for="name">Display Name</label>
-        <input id="name" type="text" placeholder="Display name (optional)">
+        <input id="name" name="name" type="text" placeholder="Display name (optional)">
 
         <br>
 
         <label for="password">Password</label>
-        <input required id="password" type="password" placeholder="Password" required>
+        <input required id="password" name="password" type="password" placeholder="Password" required>
 
         <br>
 
         <label for="dateOfBirth">Date of Birth</label>
-        <input required type="date" id="dateOfBirth">
+        <input required type="date" id="dateOfBirth" name="dateOfBirth">
 
         <br>
 
@@ -37,7 +37,7 @@
 
         <br>
 
-        <button type="submit">Submit</button>
+        <input type="submit">
     </form>
 
     <div hidden id="error"></div>
