@@ -3,14 +3,18 @@
  */
 
 import authRoutes from "./auth.js";
-import signupRoutes from "./signup.js";
+import debugRoutes from "./debug.js";
 
 const constructorMethod = (app) => {
     app.use("/auth", authRoutes);
-    app.use("/signup", signupRoutes);
+    app.use("/debug", debugRoutes);
+
+    app.use("/", (req, res) => {
+        return res.render("index", { title: "Home" });
+    });
 
     app.use("*", (req, res) => {
-        res.status(404).json({ error: "Route not found" }); // ignore all other endpoints
+        return res.status(404).json({ error: "Route not found" }); // ignore all other endpoints
     });
 };
 

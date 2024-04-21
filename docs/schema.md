@@ -25,12 +25,14 @@ There will be two main collections for our database. **Users** will store identi
 | `_id`| `ObjectId` | unique identifier for each user |
 | `username` | `string` | login and username handle |
 | `name` | `string` (optional) | display name |
-| `password` | `string` | login password |
+| `email` | `string` | login and contact email |
+| `password` | `string` | hash of the login password |
 | `dateOfBirth` | `Date`(as `string`) | string (formatted as 'YYYY-MM-DD') representing the user's date of birth (for registration purposes) |
 | `SPAuth` | `Object` (subdocument, optional) | subdocument with fields for spotify authentication |
 | `AMAuth` | `Object` (subdocument, optional) | subdocument with fields for apple music authentication |
 | `publicProfile` | `boolean` | denotes whether this profile is public (`true`) or private (`false`) |
 | `friends` | `[ObjectId]` | list of `_id`s of the current users friends |
+| `blocked` | `[ObjectId]` | list of `_id`s of users that are blocked by the current user |
 | `posts` | `[ObjectId]` | list of post `_id`s authored by this user |
 | `comments` | `[ObjectId]` | list of comment `_id`s authored by this user |
 | `postLikes` | `[ObjectId]` | list of post `_id`s liked by this user |
@@ -60,7 +62,6 @@ const user = {
     _id: ObjectId("123"),
     username: "deviousTweeter",
     name: "Michael Devious",
-    email: "deviousTweeter@tweeter.com",
     password: "123",
     dateOfBirth: "1969-04-20T05:00:00.000Z",
     SPAuth: {
@@ -74,7 +75,8 @@ const user = {
         ObjectId("456"),
         ObjectId("789")
     ],
-    posts: [...], // all arrays of ObjectIds...
+    blocked: [...], // all arrays of ObjectIds...
+    posts: [...],
     comments: [...],
     postLikes: [...],
     commentLikes: [...],
@@ -98,6 +100,7 @@ const user = {
 | `likes` | `[ObjectId]` | an array of `_id`s of the users who liked this post
 | `comments` | `[Object]` (subdocument) | an array of comment objects, representing comments made on this post
 | `createTime` | `number` | time since Unix epoch of when the post was created |
+| `lastUpdated` | `number` | time since Unix epoch of when the post was last changed |
 
 
 ### Comment (Subdocument of Post)

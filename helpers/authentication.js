@@ -130,7 +130,7 @@ const getPKCECodes = async (length = 64) => {
  *
  * @returns {string}    signed JWT developer token
  */
-const AMGenerateDevToken = () => {
+export const AMGenerateDevToken = () => {
     let secret = process.env.AM_SECRET;
     secret = secret.replaceAll("\\n", "\n"); // replace all "\n" literals with proper newline
     const header = {
@@ -138,7 +138,7 @@ const AMGenerateDevToken = () => {
         kid: process.env.AM_KEY_ID
     };
 
-    const currTime = Math.floor(Date.now() / 1000); // unix epoch in seconds
+    const currTime = Math.floor(new Date().getTime() / 1000); // unix epoch in seconds
     const payload = {
         iss: process.env.AM_TEAM_ID,
         iat: currTime,
@@ -150,9 +150,6 @@ const AMGenerateDevToken = () => {
 
 const exportedMethods = {
     SPGetAuthorizationURL,
-    generatePKCEString,
-    encrypt,
-    base64encode,
     getPKCECodes,
     AMGenerateDevToken
 };
