@@ -10,7 +10,7 @@ const MOD_NAME = "routes/login.js";
 router
     .route("/")
     .get(async (req, res) => {
-        res.render("login", {});
+        res.render("login", { title: "Log In" });
     })
     .post(async (req, res) => {
         const loginData = req.body;
