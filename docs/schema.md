@@ -25,8 +25,9 @@ There will be two main collections for our database. **Users** will store identi
 | `_id`| `ObjectId` | unique identifier for each user |
 | `username` | `string` | login and username handle |
 | `name` | `string` (optional) | display name |
+| `email` | `string` | login and contact email |
 | `password` | `string` | hash of the login password |
-| `dateOfBirth` | `Date`(as ISO `string`) | ISO formatted string representing the user's date of birth (for registration purposes) |
+| `dateOfBirth` | `Date`(as `string`) | string (formatted as 'YYYY-MM-DD') representing the user's date of birth (for registration purposes) |
 | `SPAuth` | `Object` (subdocument, optional) | subdocument with fields for spotify authentication |
 | `AMAuth` | `Object` (subdocument, optional) | subdocument with fields for apple music authentication |
 | `publicProfile` | `boolean` | denotes whether this profile is public (`true`) or private (`false`) |

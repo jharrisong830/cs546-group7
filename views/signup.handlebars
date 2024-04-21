@@ -1,0 +1,51 @@
+<h1>{{title}}</h1>
+
+<div id="signupDiv">
+    <form method="POST" id="signup" action="/signup">
+        <label for="username">Username</label>
+        <input required id="username" name="username" type="text" placeholder="Username" required>
+
+        <br>
+
+        <label for="name">Display Name</label>
+        <input id="name" name="name" type="text" placeholder="Display name (optional)">
+
+        <br>
+
+        <label for="password">Password</label>
+        <input required id="password" name="password" type="password" placeholder="Password" required>
+
+        <br>
+
+        <label for="dateOfBirth">Date of Birth</label>
+        <input required type="date" id="dateOfBirth" name="dateOfBirth">
+
+        <br>
+
+
+        <label>Profile Type</label>
+
+        <br>
+
+        <input required type="radio" id="public" value="public" name="publicProfile">
+        <label for="public">Public</label>
+
+        <br>
+
+        <input required type="radio" id="private" value="private" name="publicProfile">
+        <label for="private">Private</label>
+
+        <br>
+
+        <input type="submit">
+    </form>
+
+    <div hidden id="error"></div>
+</div>
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"
+		integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script type='text/javascript' src='/public/js/signup_validation.js'></script>
