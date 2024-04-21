@@ -31,7 +31,7 @@ const registerUser = async (
     publicProfile = true,
     name
 ) => {
-    let newUser = vld.validateUserParams(
+    let newUser = await vld.validateUserParams(
         // validate parameters
         username,
         password,
