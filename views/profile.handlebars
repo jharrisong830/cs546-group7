@@ -1,0 +1,32 @@
+<section>
+<h1>{{displayName}}</h1>
+<h2>@{{userName}}</h2>
+<h2>Birthday: {{birthday}}</h2>
+</section>
+<hr>
+<section>
+{{#if posts.length}}
+<h3>Recent posts by {{displayName}}</h3>
+
+{{#each posts}}
+{{this.createTime}}
+{{this.textContent}}
+{{this.musicContent}}
+Likes: {{this.likes}}
+Comments: {{this.comments}}
+{{/each}}
+
+{{/if}}
+{{#unless posts.length}}
+<h2>{{displayName}} has not created any posts yet.</h2>
+{{/unless}}
+
+{{#if comments.length}}
+{{#each comments}}
+{{this.comment}}
+{{/each}}
+{{/if}}
+{{#unless comments.length}}
+<h2>{{displayName}} has not created any comments yet.</h2>
+{{/unless}}
+</section>
