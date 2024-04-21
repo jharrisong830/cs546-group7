@@ -2,31 +2,39 @@
 <h1>{{displayName}}</h1>
 <h2>@{{userName}}</h2>
 <h2>Birthday: {{birthday}}</h2>
+{{#if current}}
+<a href="/profileSettings">Edit your profile here.</a>
+{{/if}}
 </section>
 <hr>
-<section>
-{{#if posts.length}}
-<h3>Recent posts by {{displayName}}</h3>
+{{#if public}}
+    <section>
+    {{#if posts.length}}
+    <h3>Recent posts by {{displayName}}</h3>
 
-{{#each posts}}
-{{this.createTime}}
-{{this.textContent}}
-{{this.musicContent}}
-Likes: {{this.likes}}
-Comments: {{this.comments}}
-{{/each}}
+    {{#each posts}}
+    {{this.createTime}}
+    {{this.textContent}}
+    {{this.musicContent}}
+    Likes: {{this.likes}}
+    Comments: {{this.comments}}
+    {{/each}}
 
+    {{/if}}
+    {{#unless posts.length}}
+    <h2>{{displayName}} has not created any posts yet.</h2>
+    {{/unless}}
+
+    {{#if comments.length}}
+    {{#each comments}}
+    {{this.comment}}
+    {{/each}}
+    {{/if}}
+    {{#unless comments.length}}
+    <h2>{{displayName}} has not created any comments yet.</h2>
+    {{/unless}}
+    </section>
 {{/if}}
-{{#unless posts.length}}
-<h2>{{displayName}} has not created any posts yet.</h2>
+{{#unless public}}
+<h1>{{displayName}} has made their profile private. Send them a friend request to see their profile.</h1>
 {{/unless}}
-
-{{#if comments.length}}
-{{#each comments}}
-{{this.comment}}
-{{/each}}
-{{/if}}
-{{#unless comments.length}}
-<h2>{{displayName}} has not created any comments yet.</h2>
-{{/unless}}
-</section>
