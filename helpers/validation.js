@@ -4,6 +4,7 @@
 
 import errorMessage from "./error.js";
 import { ObjectId } from "mongodb";
+import { userData } from "../data/index.js";
 
 const MOD_NAME = "helpers/validation.js";
 
@@ -54,27 +55,31 @@ const checkEmptyString = (str) => {
  * @returns {Object} object containing updated and validated paramaters
  * @throws on invalid input
  */
-const validateUserParams = (
+const validateUserParams = async (
     username,
     password,
     dateOfBirth,
     publicProfile,
     name
 ) => {
-    username = returnValidString(username); // TODO: character validation for different fields
-    checkEmptyString(username);
-    username = username.toLowerCase(); // case insensitive
+    username = await validateUsername(username);
 
-    password = returnValidString(password);
-    checkEmptyString(password);
+    password = validatePassword(password);
 
-    dateOfBirth = returnValidString(dateOfBirth);
-    checkEmptyString(dateOfBirth);
+    dateOfBirth = valiDate(dateOfBirth);
 
-    if (name !== undefined) {
-        // validate name if it is passed as a parameter...
+    if (name !== undefined && name !== null) {
+        // if not already undefined/null...
+        // ...validate name if it is passed as a parameter...
         name = returnValidString(name);
         if (name.length === 0) name = null;
+        else if (name.length > 30) {
+            errorMessage(
+                MOD_NAME,
+                "validateUserParams",
+                "'name' must not have length greater than 30 chars!"
+            );
+        }
     } else name = null; // ...otherwise null
 
     if (typeof publicProfile !== "boolean")
@@ -153,12 +158,126 @@ const checkUnsignedInt = (num) => {
         );
 };
 
+/**
+ * validates a username and ensures it is not a duplicate
+ *
+ * @param {string} username     username to be validated
+ *
+ * @returns {string} fully validated username
+ * @throws on invalid username contents or if username is a duplicate
+ */
+const validateUsername = async (username) => {
+    username = returnValidString(username);
+    username = username.toLowerCase();
+
+    if (
+        username.length < 5 ||
+        username.length > 25 ||
+        username.match(/\W/g) !== null
+    ) {
+        errorMessage(MOD_NAME, "validateUsername", "Invalid username");
+    }
+
+    const matchingUsername = await userData.findByUsername(username);
+    if (matchingUsername !== null) {
+        errorMessage(
+            MOD_NAME,
+            "validateUsername",
+            `Username '${username}' already exists!`
+        );
+    }
+
+    return username;
+};
+
+/**
+ * validates a password
+ *
+ * @param {string} password     password to be validated
+ *
+ * @returns {string} fully validated password
+ * @throws on invalid password contents
+ */
+const validatePassword = (pswd) => {
+    pswd = returnValidString(pswd);
+    checkEmptyString(pswd);
+
+    const invalidPasswordChars = /[^\w*&%$#@!-]/g; // matches anything not in this character class
+    const specialChars = /[_*&%$#@!-]/g;
+    if (pswd.length < 8 || pswd.match(invalidPasswordChars) !== null) {
+        errorMessage(MOD_NAME, "validatePassword", "Invalid password");
+    }
+    if (
+        pswd.match(specialChars) === null || // at least one special char
+        pswd.match(/\d/g) === null || // at least one number
+        pswd.match(/[A-Z]/g) === null || // at least one uppercase letter
+        pswd.match(/[a-z]/g) === null // at least one lowercase letter
+    ) {
+        // if any of the following matches are null, password is invalid
+        errorMessage(MOD_NAME, "validatePassword", "Invalid password");
+    }
+
+    return pswd;
+};
+
+/**
+ * validates a date of birth string, in the form of 'YYYY-MM-DD'
+ *
+ * @param {string} dateOfBirth     DOB to be validated
+ *
+ * @returns {string} fully validated date of birth
+ * @throws on invalid date or format
+ */
+const valiDate = (dateOfBirth) => {
+    dateOfBirth = returnValidString(dateOfBirth);
+    checkEmptyString(dateOfBirth);
+
+    const dobArray = dateOfBirth.split("-").map((num) => parseInt(num)); // [YYYY, MM, DD]
+
+    if (!Array.isArray(dobArray) || dobArray.length !== 3) {
+        errorMessage(MOD_NAME, "valiDate", "Invalid date supplied");
+    } else {
+        const [year, month, day] = dobArray;
+        if (
+            // date validation, error triggered if any of the following are true
+            year < 0 ||
+            month < 0 ||
+            month > 11 || // why tf is it month index lmao
+            day < 1 ||
+            day > 31 || // day must be in [1, 31] or else immediately invalid
+            (month === 1 && day > (year % 4 === 0 ? 29 : 28)) || // feb, year % 4 -> leap year, max 29 days, else 28
+            ([3, 5, 8, 10].includes(month) && day > 30) // april, june, september, november only have 30 days
+        ) {
+            errorMessage(MOD_NAME, "valiDate", "Invalid date supplied");
+        } else {
+            const dateOfBirth = new Date(year, month - 1, day);
+            const today = new Date();
+            if (
+                today.getTime() - dateOfBirth.getTime() <
+                3600 * 24 * 365 * 13 * 1000
+            ) {
+                // 3600 s/hr * 24 hrs/d * 365 d/yr * 13 yrs * 1000 for s -> ms = 13 years in milliseconds
+                errorMessage(
+                    MOD_NAME,
+                    "valiDate",
+                    "You must be at least 13 years of age to register for an account"
+                );
+            }
+        }
+    }
+
+    return dateOfBirth;
+};
+
 const exportedMethods = {
     returnValidString,
     checkEmptyString,
     validateUserParams,
     checkObjectId,
-    checkUnsignedInt
+    checkUnsignedInt,
+    validateUsername,
+    validatePassword,
+    valiDate
 };
 
 export default exportedMethods;
