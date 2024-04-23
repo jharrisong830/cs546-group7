@@ -31,9 +31,10 @@ router.route("/spotify").get((req, res) => {
 router.route("/spotify/success").get(async (req, res) => {
     let authCode = req.query.code || null;
     if (authCode === null) {
-        return res
-            .status(500)
-            .json({ error: "issue getting spotify user auth code" });
+        return res.status(500).render("error", {
+            title: "Error",
+            errmsg: "500: issue getting spotify user auth code"
+        });
     }
 
     const accessBody = {
@@ -75,9 +76,10 @@ router.route("/apple-music").get((req, res) => {
 router.route("/apple-music/success").get(async (req, res) => {
     let mut = req.query.mut || null; // try to get music user token from query params
     if (mut === null) {
-        return res
-            .status(500)
-            .json({ error: "issue getting apple music user token" });
+        return res.status(500).render("error", {
+            title: "Error",
+            errmsg: "500: issue getting apple music user token"
+        });
     }
 
     return res.json({ authData: req.query.mut, status: "success" }); // TODO: don't actually display this to user, handle and associate access token with user profile to use for api requests

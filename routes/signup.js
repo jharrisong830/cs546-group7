@@ -29,7 +29,7 @@ router
                     "invalid option for public profile"
                 );
             }
-            const newUser = vld.validateUserParams(
+            const newUser = await vld.validateUserParams(
                 newData.username,
                 newData.password,
                 newData.dateOfBirth,
@@ -51,9 +51,11 @@ router
                 name: added.name
             };
 
-            return res.json(req.session.user); // TODO: bring to feed from here
+            return res.redirect("/");
         } catch (e) {
-            return res.status(400).json({ error: e });
+            return res
+                .status(400)
+                .render("signup", { title: "Sign Up", errmsg: `400: ${e}` });
         }
     });
 
