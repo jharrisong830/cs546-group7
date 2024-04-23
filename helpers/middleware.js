@@ -31,6 +31,7 @@ const feedRender = async (req, res, next) => {
                 const feedPosts = await postData.generateFeed(
                     req.session.user._id
                 ); // get the feed posts for the current user
+                console.log(feedPosts);
                 return res.render("feed", {
                     title: "Feed",
                     username: req.session.user.username,

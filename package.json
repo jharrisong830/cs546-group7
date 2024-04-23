@@ -13,6 +13,7 @@
     "author": "CS 546 Group 7",
     "license": "MIT",
     "dependencies": {
+        "ajax": "^0.0.4",
         "axios": "^1.6.7",
         "bcrypt": "^5.1.1",
         "dotenv": "^16.4.5",
@@ -23,6 +24,7 @@
         "mongodb": "^6.5.0",
         "prettier": "^3.2.5",
         "sanitize": "^2.1.2",
-        "sanitize-html": "^2.13.0"
+        "sanitize-html": "^2.13.0",
+        "xss": "^1.0.15"
     }
 }

@@ -1,14 +1,29 @@
 <h1>Welcome, {{username}}.</h1>
 
-<h2>Let's see what your friends are listening to:</h2>
+<div class="newPost">
+<form id="newPostForm">
+    <label for="post">
+        What are you listening to?
+    </label>
+    <input type="text" id="post">
+    <input type="submit" value="Post to feed">
+</form>
+</div>
 
-{{#each feedPosts}}
-    <div>
+<h2>Let's see what your friends are listening to:</h2>
+<div id="feedArea">
+{{!--{{#each feedPosts}}
+     <div>
         <h5>{{authorUsername}}</h5>
         <h6>{{lastUpdated}}</h6>
 
         <br>
 
         <p>{{textContent}}</p>
-    </div>
-{{/each}}
+    </div> 
+    {{> feed_post }}  
+{{/each}} --}}
+</div>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<script src="/public/js/ajax_jquery_json.js"></script>
