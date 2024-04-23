@@ -418,6 +418,12 @@ const updateUser = async (id, updatedFields) => {
 
         updatedFields[field] = vld.returnValidString(updatedFields[field]); // TODO: character validation for different fields
         vld.checkEmptyString(updatedFields[field]);
+        if (field === "username") {
+           await vld.validateUsername(updatedFields[[field]]);
+        }
+        if (field === 'password') {
+            vld.validatePassword(updatedFields[field]);
+        }
     });
 
     if (Object.keys(updatedFields).includes("password")) {
