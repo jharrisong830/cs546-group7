@@ -1,0 +1,30 @@
+<section>
+<form method="POST" action="/changeProfile" id="changeProfile">
+<h1>{{displayName}}</h1>
+<label for="changeDisplay">
+    Change your display name:
+</label>
+<input type="text" id="changeDisplay">
+<label for="changeUsername">
+    Change your username:
+</label>
+<input type="text" id="changeUsername">
+<label for="changePass">
+    Change your password:
+</label>
+<input type="password" id="changePassword">
+<label for="changePrivacy">
+    Change your profile visibility:
+</label>
+<input type="radio" id="public" value="public" name="publicProfile">
+<label for="public">Public</label>
+<br>
+<input type="radio" id="private" value="private" name="publicProfile">
+        <label for="private">Private</label>
+<input type="submit">
+<div hidden id="error"></div>
+
+
+</form>
+<a href="/profile">Go back to your profile.</a>
+</section>

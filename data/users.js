@@ -426,7 +426,7 @@ const updateUser = async (id, updatedFields) => {
             "'updatedFields' has no key/value pairs!"
         );
 
-    Object.keys(updatedFields).forEach((field) => {
+    Object.keys(updatedFields).forEach(async (field) => {
         // validation!!!
         if (!updatable.includes(field))
             errorMessage(
@@ -437,7 +437,13 @@ const updateUser = async (id, updatedFields) => {
 
         updatedFields[field] = vld.returnValidString(updatedFields[field]); // TODO: character validation for different fields
         vld.checkEmptyString(updatedFields[field]);
-    });
+        if (field === "username") {
+           await vld.validateUsername(updatedFields[[field]]);
+        }
+        if (field === 'password') {
+            vld.validatePassword(updatedFields[field]);
+        }
+});
 
     if (Object.keys(updatedFields).includes("password")) {
         if (field === "password") {
