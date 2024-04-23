@@ -2,6 +2,8 @@
  * middleware functions
  */
 
+import { postData } from "../data/index.js";
+
 const MOD_NAME = "helpers/middleware.js";
 
 /**
@@ -11,7 +13,7 @@ const MOD_NAME = "helpers/middleware.js";
  */
 const logMessages = (req, res, next) => {
     console.log(
-        `[${new Date().toUTCString()}]: ${req.method} ${req.originalUrl} (${!req.session.user ? "Non-Authenticated" : "Authenticated"} User)`
+        `[${new Date().toUTCString()}]: ${req.method} ${req.originalUrl} (${!req.session.user ? "Non-Authenticated User" : req.session.user.username})`
     );
     next();
 };
@@ -21,11 +23,24 @@ const logMessages = (req, res, next) => {
  *
  * @route `/`
  */
-const feedRender = (req, res, next) => {
+const feedRender = async (req, res, next) => {
     if (req.originalUrl === "/") {
         // make sure we onlt render if we're on the `/` route
         if (req.session.user) {
-            return res.render("feed", {});
+            try {
+                const feedPosts = await postData.generateFeed(
+                    req.session.user._id
+                ); // get the feed posts for the current user
+                return res.render("feed", {
+                    title: "Feed",
+                    username: req.session.user.username,
+                    feedPosts: feedPosts
+                });
+            } catch (e) {
+                return res
+                    .status(500)
+                    .render("error", { title: "Error", errmsg: e });
+            }
         }
     }
     next();

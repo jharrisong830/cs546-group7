@@ -26,6 +26,8 @@ const createPost = async (
 ) => {
     authorId = vld.checkObjectId(authorId);
 
+    const usr = await userData.getUser(authorId);
+
     textContent = vld.returnValidString(textContent);
     vld.checkEmptyString(textContent);
 
@@ -33,6 +35,7 @@ const createPost = async (
 
     let newPost = {
         authorId: authorId,
+        authorUsername: usr.username,
         musicContent: musicContent,
         textContent: textContent,
         likes: [],

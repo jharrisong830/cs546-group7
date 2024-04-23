@@ -95,6 +95,7 @@ const user = {
 | ---  | ---  | ---         |
 | `_id`| `ObjectId` | unique identifier for the post |
 | `authorId` | `ObjectId` | `_id` of the user who authored the post |
+| `authorUsername` | `string` | username of the user who authored the post |
 | `musicContent` | `Object` (subdocument, music item) | the music item object, which is the main content of a post |
 | `textContent` | `string` | the text content of the post | 
 | `likes` | `[ObjectId]` | an array of `_id`s of the users who liked this post
@@ -175,6 +176,7 @@ const user = {
 const post = {
     _id: ObjectId("012"),
     authorId: ObjectId("123"),
+    authorUsername: "deviousTweeter",
     musicContent: { // example playlist object, with data from Spotify API
         _id: "3gBrgOKZRKfOSgKrTNWE2y",
         platform: "SP",
