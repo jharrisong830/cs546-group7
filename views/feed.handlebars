@@ -1,0 +1,14 @@
+<h1>Welcome, {{username}}.</h1>
+
+<h2>Let's see what your friends are listening to:</h2>
+
+{{#each feedPosts}}
+    <div>
+        <h5>{{authorUsername}}</h5>
+        <h6>{{lastUpdated}}</h6>
+
+        <br>
+
+        <p>{{textContent}}</p>
+    </div>
+{{/each}}

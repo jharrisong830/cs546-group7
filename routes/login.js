@@ -51,6 +51,7 @@ router
             const usr = await userData.getUser(loginUserId);
 
             req.session.user = {
+                _id: loginUserId,
                 username: usr.username,
                 publicProfile: usr.publicProfile,
                 name: usr.name

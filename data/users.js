@@ -135,13 +135,6 @@ const comparePassword = async (id, pswd) => {
 
     const usr = await getUser(id); // get the user
 
-    if (!usr)
-        errorMessage(
-            MOD_NAME,
-            "comparePassword",
-            `No user with '${id}' was found`
-        );
-
     return await bcrypt.compare(pswd, usr.password); // compare pswd plaintext with the user's hashed password
 };
 
@@ -166,12 +159,6 @@ const addFriend = async (currId, friendId) => {
     }
 
     const friend = await getUser(friendId); // make sure the user exists
-    if (!friend)
-        errorMessage(
-            MOD_NAME,
-            "addFriend",
-            `No user with '${friendId}' was found`
-        );
 
     const userCol = await users();
     const updateInfo = await userCol.updateOne(
@@ -266,12 +253,6 @@ const blockUser = async (currId, otherId) => {
     otherId = vld.checkObjectId(otherId);
 
     const other = await getUser(otherId); // make sure the user exists
-    if (!other)
-        errorMessage(
-            MOD_NAME,
-            "blockUser",
-            `No user with '${otherId}' was found`
-        );
 
     const userCol = await users();
     const updateInfo = await userCol.updateOne(
@@ -641,8 +622,6 @@ const deleteUser = async (id) => {
     id = vld.checkObjectId(id);
 
     const usr = await getUser(id);
-    if (!usr)
-        errorMessage(MOD_NAME, "deleteUser", `No user with '${id}' was found`);
 
     const postCol = await posts();
     const postDeleteInfo = await postCol.deleteMany({ authorId: id }); // delete all posts with an associated author id
