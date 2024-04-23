@@ -96,6 +96,9 @@ const getPost = async (id) => {
  * get all of the posts authored by a specific user, returned in reverse-chronological order
  *
  * @param {string | ObjectId} id    id of user for which to get the posts
+ *
+ * @returns {[Object]} array of current user's post in reverse-chronological order of the lastUpdated time
+ * @throws on invalid input or if there are errors in getting/setting database entries
  */
 const getUserPosts = async (id) => {
     id = vld.checkObjectId(id);
@@ -103,8 +106,17 @@ const getUserPosts = async (id) => {
     const postCol = await posts();
     const userPosts = await postCol
         .find({ authorId: id })
-        .sort({ createTime: -1 }); // sort in descending order
-    // TODO
+        .sort({ lastUpdated: -1 }) // sort in descending order
+        .toArray();
+
+    if (!userPosts)
+        errorMessage(
+            MOD_NAME,
+            "getUserPosts",
+            `Unable to get posts for user '${id}'`
+        );
+
+    return userPosts;
 };
 
 /**
@@ -159,8 +171,6 @@ const deletePost = async (id) => {
     id = vld.checkObjectId(id);
 
     const post = await getPost(id);
-    if (!post)
-        errorMessage(MOD_NAME, "deletePost", `No post with '${id}' was found`);
 
     const userCol = await users();
     const postCol = await posts();
@@ -201,13 +211,34 @@ const deletePost = async (id) => {
  * @returns {[Object]} list of post objects in reverse chronological order, to populate the feed
  * @throws @throws on invalid input or if there are errors in getting database entries
  */
-const generateFeed = async (id) => {};
+const generateFeed = async (id) => {
+    id = vld.checkObjectId(id);
+
+    const usr = await userData.getUser(id);
+
+    const postCol = await posts();
+    const feedPosts = await postCol
+        .find({ authorId: { $in: usr.friends } }) // get all posts by this user's friends
+        .sort({ lastUpdated: -1 }) // sort in descending order
+        .toArray();
+
+    if (!feedPosts)
+        errorMessage(
+            MOD_NAME,
+            "generateFeed",
+            `Unable to get feed posts for user '${id}'`
+        );
+
+    return feedPosts;
+};
 
 const exportedMethods = {
     createPost,
     getPost,
     updatePost,
-    deletePost
+    deletePost,
+    getUserPosts,
+    generateFeed
 };
 
 export default exportedMethods;
