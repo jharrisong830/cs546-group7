@@ -415,24 +415,36 @@ const updateUser = async (id, updatedFields) => {
                 "updateUser",
                 `Unexpected field '${field}'; either does not exist or can't be updated.`
             );
-
-        updatedFields[field] = vld.returnValidString(updatedFields[field]); // TODO: character validation for different fields
-        vld.checkEmptyString(updatedFields[field]);
-        if (field === "username") {
-           vld.validateUsername(updatedFields[[field]]);
-        }
-        if (field === 'password') {
-            vld.validatePassword(updatedFields[field]);
-        }
     });
 
     if (Object.keys(updatedFields).includes("password")) {
-        if (field === "password") {
-            updatedFields.password = await bcrypt.hash(
-                updatedFields.password,
-                saltRounds
-            ); // hash password with 16 salt rounds
+        updatedFields.password = vld.validatePassword(updatedFields.password);
+        updatedFields.password = await bcrypt.hash(
+            updatedFields.password,
+            saltRounds
+        ); // hash password with 16 salt rounds
+    }
+    if (Object.keys(updatedFields).includes("username")) {
+        updatedFields.username = await vld.validateUsername(
+            updatedFields.username
+        );
+    }
+    if (Object.keys(updatedFields).includes("name")) {
+        updatedFields.name = vld.returnValidString(updatedFields.name);
+        vld.checkEmptyString(updatedFields.name);
+        if (updatedFields.name.length > 30) {
+            errorMessage(
+                MOD_NAME,
+                "updateUser",
+                "'name' must not have length greater than 30 chars!"
+            );
         }
+
+        updatedFields.password = vld.validatePassword(updatedFields.password);
+        updatedFields.password = await bcrypt.hash(
+            updatedFields.password,
+            saltRounds
+        ); // hash password with 16 salt rounds
     }
 
     const userCol = await users();
