@@ -5,6 +5,7 @@
 import authRoutes from "./auth.js";
 import debugRoutes from "./debug.js";
 import signupRoutes from "./signup.js";
+import loginRoutes from "./login.js"
 import profileRoutes from "./profile.js";
 import settingsRoutes from "./changeProfile.js";
 
@@ -12,6 +13,7 @@ const constructorMethod = (app) => {
     app.use("/auth", authRoutes);
     app.use("/debug", debugRoutes);
     app.use("/signup", signupRoutes);
+    app.use("/login", loginRoutes);
     app.use("/user", profileRoutes);
     app.use("/settings", settingsRoutes);
 

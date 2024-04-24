@@ -377,12 +377,57 @@ const likeComment = async (commentId, userId) => {
  * @param {number} starRating             The star rating given to the playlist (scale of 1 to 5).
  * @param {string} reviewText            Optional text content explaining the rating.
  *
- * @returns {Promise<Object>}             The updated post object.
  * @throws {Error}                        Throws an error if the operation fails.
  */
 const ratePlaylist = async (id, userId, starRating, reviewText) => {
     
-    
+    id = vld.checkObjectId(id);
+    userId = vld.checkObjectId(userId);
+    starRating = vld.checkUnsignedInt(starRating);
+
+    reviewText = vld.returnValidString(reviewText);
+    vld.checkEmptyString(reviewText);
+
+    if (starRating < 1 || starRating > 5 ) {
+        errorMessage(MOD_NAME, "ratePlaylist", `Invalid rating: Ratings must be an integer between 1 and 5.`);
+    }
+
+    const postCol = await posts();
+    const currTime = Math.floor(Date.now() / 1000); // get unix epoch seconds
+    let ratingId = new ObjectId();
+
+    const rating = {
+        _id: ratingId,
+        authorId: userId,
+        parentId: postId,
+        starRating: starRating,
+        textContent: reviewText,
+        likes: [],
+        createTime: currTime
+    };
+
+    const updateResult = await postCol.updateOne(
+        { "musicContent._id": ratingId },
+        { 
+            $push: {'musicContent.$.ratings': rating} 
+        }
+    );
+
+    if (updateResult.matchedCount === 0 || updateResult.modifiedCount === 0) {
+        errorMessage(MOD_NAME, "ratePlaylist", `Failed to add rating: Post not found or update failed.`);
+    }
+
+    const userCol = await users();
+    const userUpdateInfo = await userCol.updateOne(
+        { _id: userId },
+        {
+            $push: { ratings: ratingId}
+        }
+    );
+
+    if (!userUpdateInfo || userUpdateInfo.matchedCount === 0 || userUpdateInfo.modifiedCount === 0) {
+        errorMessage(MOD_NAME, "ratePlaylist", `Unable to like this rating. It might not exist.`);
+    }    
 };
 
 const exportedMethods = {
