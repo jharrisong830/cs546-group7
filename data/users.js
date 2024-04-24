@@ -580,13 +580,17 @@ const addSPAccessData = async (id, accessToken, expiryTime, refreshToken) => {
  * given a user id, add the supplied api access data as a AMAuth subdocument
  *
  * @param {string | ObjectId} id    id of user to be updated
+ * @param {string} AMDevToken       JWT developer token
  * @param {string} musicUserToken   access token used to get data from AM API
  *
  * @returns {Object} updated user
  * @throws if the update was unsuccessful (i.e. id was not found), or if input is invalid
  */
-const addAMAccessData = async (id, musicUserToken) => {
+const addAMAccessData = async (id, AMDevToken, musicUserToken) => {
     id = vld.checkObjectId(id); // validates and converts to object id
+
+    AMDevToken = vld.returnValidString(AMDevToken);
+    vld.checkEmptyString(AMDevToken);
 
     musicUserToken = vld.returnValidString(musicUserToken);
     vld.checkEmptyString(musicUserToken);
@@ -599,6 +603,7 @@ const addAMAccessData = async (id, musicUserToken) => {
                 // id is converted to ObjectId, so just set the thing
                 AMAuth: {
                     // add the AMAuth subdocument
+                    AMDevToken: AMDevToken,
                     musicUserToken: musicUserToken
                 }
             }
