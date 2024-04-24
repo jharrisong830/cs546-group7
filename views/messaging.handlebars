@@ -1,0 +1,9 @@
+<h1> Welcome {{username}}</h1>
+<h2> Messages </h2>
+{{#each messages}}
+    <div>
+        <h5>From: {{fromUser}}</h5>
+        <h6>Time: {{time}}</h6>
+        <p>{{message}}</p>
+    </div>
+{{/each}}

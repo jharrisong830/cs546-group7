@@ -54,12 +54,14 @@ const registerUser = async (
     newUser.AMAuth = null;
 
     newUser.friends = [];
+    newUser.messages = [];
     newUser.blocked = [];
     newUser.posts = [];
     newUser.comments = [];
     newUser.postLikes = [];
     newUser.commentLikes = [];
     newUser.ratings = [];
+
 
     const userCol = await users();
     const insertInfo = await userCol.insertOne(newUser);
@@ -339,6 +341,59 @@ const checkBlocked = async (currId, otherId) => {
         otherBlocked.includes(currId.toString())
     ); // returns false only if neither user is blocked by one another
 };
+
+const createMessage = async (messageContent, senderId, recipientId) => {
+    if (!messageContent || typeof messageContent !== 'string' || messageContent.trim().length === 0) {
+        throw "You must provide something to send!";
+    }
+
+    if (messageContent.trim().length > 2000) {
+        throw "message content must be less than 2000 characters."
+    }
+    messageContent = messageContent.trim();
+
+    senderId = vld.checkObjectId(senderId);
+    recipientId = vld.checkObjectId(recipientId);
+
+    const sender = await getUser(senderId);
+    const recipient = await getUser(recipientId);
+    if (!sender || !recipient) {
+        throw "Both sender and recipient must be valid users.";
+    }
+
+    const currTime = Math.floor(Date.now() / 1000);
+    const newMessage = {
+        content: messageContent,
+        senderId,
+        recipientId,
+        timestamp: currTime,
+    };
+
+    const messageCol = await messages();
+    const insertInfo = await messageCol.insertOne(newMessage);
+    if (!insertInfo.acknowledged || !insertInfo.insertedId) {
+        throw (`Failed to add new message from ${senderId} to ${recipientId}`);
+    }
+
+    return await messageCol.findOne({ _id: insertInfo.insertedId });
+};
+
+
+const testSendMessage = async () => {
+    const messageContent = "Hello, this is a test message!";
+    const senderId = "66284015b43c680f14af6e26";
+    const recipientId = "6628401ab43c680f14af6e27";
+
+    try {
+        const newMessage = await createMessage(messageContent, senderId, recipientId);
+        console.log("Message sent successfully:", newMessage);
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+testSendMessage();
+
 
 /**
  * toggles the visibility status of a user's profile
