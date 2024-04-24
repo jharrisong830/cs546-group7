@@ -5,24 +5,26 @@
 import authRoutes from "./auth.js";
 import debugRoutes from "./debug.js";
 import signupRoutes from "./signup.js";
-import profileRoutes from "./profile.js";
-import settingsRoutes from "./changeProfile.js";
+import loginRoutes from "./login.js";
+import rootRoute from "./root.js";
+import userRoutes from "./user.js";
 
 const constructorMethod = (app) => {
     app.use("/auth", authRoutes);
     app.use("/debug", debugRoutes);
     app.use("/signup", signupRoutes);
-    app.use("/user", profileRoutes);
-    app.use("/settings", settingsRoutes);
+    app.use("/login", loginRoutes);
+    app.use("/user", userRoutes);
 
-    app.use("/", (req, res) => {
-        return res.render("index", { title: "Home" });
-    });
+    app.use("/", rootRoute); // root renders the homepage (needed to separate into router to prevent undefined routes from working)
 
     app.use("*", (req, res) => {
         return res
             .status(404)
-            .render("error", { title: "Error", error: "404: Route not found" }); // ignore all other endpoints
+            .render("error", {
+                title: "Error",
+                errmsg: `404: Route '${req.originalUrl}' not found`
+            }); // ignore all other endpoints
     });
 };
 

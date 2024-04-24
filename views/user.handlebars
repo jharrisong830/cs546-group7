@@ -1,13 +1,20 @@
 <section>
-<h1>{{displayName}}</h1>
-<h2>@{{userName}}</h2>
-<h2>Birthday: {{birthday}}</h2>
+    {{#if isCurrent}}
+        <h2>{{user.name}}</h2>
+        <h4>@{{user.username}}</h4>
+    {{else}}
+        <h2>@{{user.username}}</h2>
+    {{/if}}
+
+
 {{#if current}}
-<a href="/profileSettings">Edit your profile here.</a>
+<a href="/user/{{user.username}}/edit">Edit your profile here.</a>
 {{/if}}
-</section>
+
 <hr>
-{{#if public}}
+
+</section>
+{{#if showProfile}}
     <section>
     {{#if posts.length}}
     <h3>Recent posts by {{displayName}}</h3>
@@ -33,8 +40,9 @@
     {{#unless comments.length}}
     <h2>{{displayName}} has not created any comments yet.</h2>
     {{/unless}}
-    </section>
-{{/if}}
-{{#unless public}}
+
+{{else}}
 <h1>{{displayName}} has made their profile private. Send them a friend request to see their profile.</h1>
-{{/unless}}
+{{/if}}
+
+</section>
