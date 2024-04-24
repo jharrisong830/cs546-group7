@@ -11,9 +11,9 @@ import settingsRoutes from "./changeProfile.js";
 const constructorMethod = (app) => {
     app.use("/auth", authRoutes);
     app.use("/debug", debugRoutes);
-    app.use('/signup', signupRoutes);
-    app.use('/user', profileRoutes);
-    app.use('/settings', settingsRoutes);
+    app.use("/signup", signupRoutes);
+    app.use("/user", profileRoutes);
+    app.use("/settings", settingsRoutes);
 
     app.use("/", (req, res) => {
         return res.render("index", { title: "Home" });
