@@ -407,7 +407,7 @@ const updateUser = async (id, updatedFields) => {
             "'updatedFields' has no key/value pairs!"
         );
 
-    Object.keys(updatedFields).forEach((field) => {
+    Object.keys(updatedFields).forEach(async (field) => {
         // validation!!!
         if (!updatable.includes(field))
             errorMessage(
