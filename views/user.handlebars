@@ -10,39 +10,43 @@
 {{#if isCurrent}}
 <a href="/user/{{user.username}}/edit">Edit your profile here.</a>
 {{/if}}
+</section>
 
 <hr>
 
-</section>
 {{#if showProfile}}
-    <section>
-    {{#if posts.length}}
-    <h3>Recent posts by {{displayName}}</h3>
+<section>
 
-    {{#each posts}}
-    {{this.createTime}}
-    {{this.textContent}}
-    {{this.musicContent}}
-    Likes: {{this.likes}}
-    Comments: {{this.comments}}
-    {{/each}}
+    {{#with user}}
+        <section>
+            <h4>Posts</h4>
+            {{#if posts.length}}
+                <ul>
+                    {{#each posts}}
+                        <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+            {{else}}
+                <p>{{username}} hasn't made any posts yet.</p>
+            {{/if}}
+        </section>
 
-    {{/if}}
-    {{#unless posts.length}}
-    <h2>{{displayName}} has not created any posts yet.</h2>
-    {{/unless}}
-
-    {{#if comments.length}}
-    {{#each comments}}
-    {{this.comment}}
-    {{/each}}
-    {{/if}}
-    {{#unless comments.length}}
-    <h2>{{displayName}} has not created any comments yet.</h2>
-    {{/unless}}
+        <section>
+            <h4>Comments</h4>
+            {{#if comments.length}}
+                <ul>
+                    {{#each comments}}
+                        <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+            {{else}}
+                <p>{{username}} hasn't made any comments yet.</p>
+            {{/if}}
+        </section>
+    {{/with}}
 
 {{else}}
-<h1>{{displayName}} has made their profile private. Send them a friend request to see their profile.</h1>
+<h1>{{user.username}} has made their profile private. Send them a <a href="/TODO">friend request to see their profile.</a></h1>
 {{/if}}
 
 </section>

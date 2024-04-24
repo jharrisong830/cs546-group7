@@ -3,7 +3,7 @@
 <div id="signupDiv">
     <form method="POST" id="signup" action="/signup">
         <label for="username">Username</label>
-        <input required id="username" name="username" type="text" placeholder="Username" required>
+        <input required id="username" name="username" type="text" placeholder="Username">
 
         <br>
 
@@ -13,7 +13,7 @@
         <br>
 
         <label for="password">Password</label>
-        <input required id="password" name="password" type="password" placeholder="Password" required>
+        <input required id="password" name="password" type="password" placeholder="Password">
 
         <br>
 
@@ -37,7 +37,7 @@
 
         <br>
 
-        <input type="submit">
+        <button type="submit">Sign Up</button>
     </form>
 
     <div hidden id="error">{{errmsg}}</div>
