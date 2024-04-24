@@ -51,6 +51,7 @@ There will be two main collections for our database. **Users** will store identi
 ### AMAuth (Subdocument of User)
 | Field | Type | Description |
 | ---  | ---  | ---         |
+| `AMDevToken` | `string` | json web token used to access apple music api endpoints |
 | `musicUserToken` | `string` | token with which we can access a specific user's data using the Apple Music web API |
 
 
