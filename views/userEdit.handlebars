@@ -11,17 +11,15 @@
 
 
 <section>
-    {{#with user}}
-        <form method="POST" action="/user/{{username}}/edit" id="changeProfile">
+
+        <form method="POST" action="/user/{{user.username}}/edit" id="editUser">
             <label for="username">Username</label>
-            <input id="username" name="username" type="text" placeholder="Username" value="{{username}}">
+            <input id="username" name="username" type="text" placeholder="Username">
 
             <br>
 
             <label for="name">Display Name</label>
-            <input id="name" name="name" type="text" 
-                placeholder="Display name (optional)" 
-                {{#if hasName}} value="{{name}}" {{/if}}> <!-- populate only if they have a name already -->
+            <input id="name" name="name" type="text" placeholder="Display name (optional)">
 
             <br>
 
@@ -30,25 +28,30 @@
 
             <br>
 
+            <label for="confirmPassword">Comfirm New Password</label>
+            <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm New Password">
+
+            <br>
+
             <label>Profile Type</label>
 
             <br>
 
             <input required type="radio" id="public" value="public" name="publicProfile" 
-                {{#if publicProfile}} checked {{/if}}> <!-- check if profile is public -->
+                {{#if user.publicProfile}} checked {{/if}}> <!-- check if profile is public -->
             <label for="public">Public</label>
 
             <br>
 
             <input required type="radio" id="private" value="private" name="publicProfile" 
-                {{#unless publicProfile}} checked {{/unless}}> <!-- check if profile is NOT public -->
+                {{#unless user.publicProfile}} checked {{/unless}}> <!-- check if profile is NOT public -->
             <label for="private">Private</label>
 
             <br>
 
             <button type="submit">Submit Changes</button>
         </form>
-    {{/with}}
+
 
     <div hidden id="error">{{errmsg}}</div>
 </section>
