@@ -367,6 +367,24 @@ const likeComment = async (commentId, userId) => {
     }
 }
 
+// implement the adding of ratings to playlists, will work similar to comments, with extra fields to add ratings (x/5)
+
+/**
+ * Rates a playlist within a post by adding a rating object to the musicContent.ratings array.
+ * 
+ * @param {string | ObjectId} id      The ID of the post containing the playlist to rate.
+ * @param {string | ObjectId} userId      The ID of the user who is rating the playlist.
+ * @param {number} starRating             The star rating given to the playlist (scale of 1 to 5).
+ * @param {string} reviewText            Optional text content explaining the rating.
+ *
+ * @returns {Promise<Object>}             The updated post object.
+ * @throws {Error}                        Throws an error if the operation fails.
+ */
+const ratePlaylist = async (id, userId, starRating, reviewText) => {
+    
+    
+};
+
 const exportedMethods = {
     createPost,
     getPost,
@@ -376,7 +394,8 @@ const exportedMethods = {
     generateFeed,
     likePost,
     commentPost,
-    likeComment
+    likeComment,
+    ratePlaylist
 };
 
 export default exportedMethods;
