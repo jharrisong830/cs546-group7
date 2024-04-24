@@ -1,0 +1,23 @@
+<h1>Log in to Tweeter.</h1>
+
+<form method="POST" id="login" action="/login" name="login">
+	<label for="username">Username</label>
+	<input type="text" id="username" name="username" placeholder="Username">
+
+	<br>
+
+	<label for="password">Password</label>
+    <input type="password" id="password" name="password" placeholder="Password">
+
+	<br>
+
+	<button type="submit">Log In</button>
+</form>
+
+<a href="/signup">Click here to sign up for Tweeter!</a>
+
+<div hidden id="error">{{errmsg}}</div>
+
+<!-- jquery and validation scripts -->
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<script type='text/javascript' src='/public/js/login_validation.js'></script>

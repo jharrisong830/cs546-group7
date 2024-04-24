@@ -33,6 +33,7 @@ There will be two main collections for our database. **Users** will store identi
 | `publicProfile` | `boolean` | denotes whether this profile is public (`true`) or private (`false`) |
 | `friends` | `[ObjectId]` | list of `_id`s of the current users friends |
 | `blocked` | `[ObjectId]` | list of `_id`s of users that are blocked by the current user |
+| `incomingRequests` | `[ObjectId]` | list of `_id`s of users that are requesting to be friends with this user |
 | `posts` | `[ObjectId]` | list of post `_id`s authored by this user |
 | `comments` | `[ObjectId]` | list of comment `_id`s authored by this user |
 | `postLikes` | `[ObjectId]` | list of post `_id`s liked by this user |
@@ -51,6 +52,7 @@ There will be two main collections for our database. **Users** will store identi
 ### AMAuth (Subdocument of User)
 | Field | Type | Description |
 | ---  | ---  | ---         |
+| `AMDevToken` | `string` | json web token used to access apple music api endpoints |
 | `musicUserToken` | `string` | token with which we can access a specific user's data using the Apple Music web API |
 
 
@@ -95,6 +97,7 @@ const user = {
 | ---  | ---  | ---         |
 | `_id`| `ObjectId` | unique identifier for the post |
 | `authorId` | `ObjectId` | `_id` of the user who authored the post |
+| `authorUsername` | `string` | username of the user who authored the post |
 | `musicContent` | `Object` (subdocument, music item) | the music item object, which is the main content of a post |
 | `textContent` | `string` | the text content of the post | 
 | `likes` | `[ObjectId]` | an array of `_id`s of the users who liked this post
@@ -175,6 +178,7 @@ const user = {
 const post = {
     _id: ObjectId("012"),
     authorId: ObjectId("123"),
+    authorUsername: "deviousTweeter",
     musicContent: { // example playlist object, with data from Spotify API
         _id: "3gBrgOKZRKfOSgKrTNWE2y",
         platform: "SP",
@@ -220,3 +224,28 @@ const post = {
     createTime: 1710374400
 };
 ```
+
+
+
+
+
+---
+
+
+
+## Message Session
+
+| Field | Type | Description |
+| ---  | ---  | ---         |
+| `user1`| `ObjectId` | unique identifier for the post |
+| `user2`| `ObjectId` | unique identifier for the post |
+| `messages` | `[Object]` | array of message subdocuments |
+
+
+### Message
+
+
+| Field | Type | Description |
+| ---  | ---  | ---         |
+| `text` | `string` | message content (max 2000 characters) |
+| `timestamp` | `number` | time of when message was sent in Unix epoch seconds |

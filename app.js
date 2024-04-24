@@ -2,6 +2,7 @@ import express from "express";
 import session from "express-session";
 import configRoutes from "./routes/index.js";
 import exphbs from "express-handlebars";
+import mid from "./helpers/middleware.js";
 
 const app = express();
 
@@ -20,6 +21,12 @@ app.use(
 
 app.engine("handlebars", exphbs.engine({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
+
+app.use("/", mid.logMessages);
+app.use("/", mid.feedRender);
+app.use("/login", mid.loginSignupReroute);
+app.use("/signup", mid.loginSignupReroute);
+app.use("/logout", mid.logoutReroute);
 
 configRoutes(app);
 

@@ -20,7 +20,9 @@ const constructorMethod = (app) => {
     });
 
     app.use("*", (req, res) => {
-        return res.status(404).json({ error: "Route not found" }); // ignore all other endpoints
+        return res
+            .status(404)
+            .render("error", { title: "Error", error: "404: Route not found" }); // ignore all other endpoints
     });
 };
 

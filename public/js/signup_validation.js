@@ -1,3 +1,8 @@
+if ($("#error").is(":hidden") && $("#error").html().length > 0) {
+    // if the page is re-rendered and has error content already, then un-hide it
+    $("#error").removeAttr("hidden");
+}
+
 const today = new Date().toISOString().split("T")[0]; // get current date as string in form of 'YYYY-MM-DD'
 
 $("#dateOfBirth").attr({ max: today }); // dynamically set max date value to today

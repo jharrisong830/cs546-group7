@@ -21,8 +21,6 @@
         "express-session": "^1.18.0",
         "jsonwebtoken": "^9.0.2",
         "mongodb": "^6.5.0",
-        "prettier": "^3.2.5",
-        "sanitize": "^2.1.2",
-        "sanitize-html": "^2.13.0"
+        "prettier": "^3.2.5"
     }
 }

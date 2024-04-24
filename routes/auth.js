@@ -9,6 +9,7 @@ import { Router } from "express";
 import { config } from "dotenv";
 import axios from "axios";
 import authentication from "../helpers/authentication.js";
+import { userData } from "../data/index.js";
 
 config(); // load environment vars from .env file
 
@@ -31,9 +32,10 @@ router.route("/spotify").get((req, res) => {
 router.route("/spotify/success").get(async (req, res) => {
     let authCode = req.query.code || null;
     if (authCode === null) {
-        return res
-            .status(500)
-            .json({ error: "issue getting spotify user auth code" });
+        return res.status(500).render("error", {
+            title: "Error",
+            errmsg: "500: issue getting spotify user auth code"
+        });
     }
 
     const accessBody = {
@@ -74,11 +76,14 @@ router.route("/apple-music").get((req, res) => {
 
 router.route("/apple-music/success").get(async (req, res) => {
     let mut = req.query.mut || null; // try to get music user token from query params
-    if (mut === null) {
-        return res
-            .status(500)
-            .json({ error: "issue getting apple music user token" });
+    let devToken = req.query.devToken || null; // try to get music user token from query params
+    if (mut === null || devToken === null) {
+        return res.status(500).render("error", {
+            title: "Error",
+            errmsg: "500: issue getting apple music user token"
+        });
     }
+    await userData.addAMAccessData(req.session.user._id, devToken, mut);
 
     return res.json({ authData: req.query.mut, status: "success" }); // TODO: don't actually display this to user, handle and associate access token with user profile to use for api requests
 });
