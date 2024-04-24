@@ -19,12 +19,10 @@ const constructorMethod = (app) => {
     app.use("/", rootRoute); // root renders the homepage (needed to separate into router to prevent undefined routes from working)
 
     app.use("*", (req, res) => {
-        return res
-            .status(404)
-            .render("error", {
-                title: "Error",
-                errmsg: `404: Route '${req.originalUrl}' not found`
-            }); // ignore all other endpoints
+        return res.status(404).render("error", {
+            title: "Error",
+            errmsg: `404: Route '${req.originalUrl}' not found`
+        }); // ignore all other endpoints
     });
 };
 

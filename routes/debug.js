@@ -11,12 +11,10 @@ const router = Router();
 
 router.route("/").get(async (req, res) => {
     if (!req.session.user) {
-        return res
-            .status(401)
-            .render("error", {
-                title: "Error",
-                errmsg: "401: You need to be logged in to access this page."
-            });
+        return res.status(401).render("error", {
+            title: "Error",
+            errmsg: "401: You need to be logged in to access this page."
+        });
     }
     // await userData.addAMAccessData(
     //     inserted._id,

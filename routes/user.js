@@ -1,22 +1,15 @@
 import { Router } from "express";
 import { userData } from "../data/index.js";
 import vld from "../helpers/validation.js";
-import errorMessage from "../helpers/error.js";
 
 const router = Router();
 
-// router.route("/").get(async (req, res) => {
-//     return res.json({ error: "YOU SHOULD NOT BE HERE!" });
-// });
-
 router.route("/:username").get(async (req, res) => {
     if (!req.session.user) {
-        return res
-            .status(401)
-            .render("error", {
-                title: "Error",
-                errmsg: "401: You need to be logged in to access this page."
-            });
+        return res.status(401).render("error", {
+            title: "Error",
+            errmsg: "401: You need to be logged in to access this page."
+        });
     }
     try {
         req.params.username = vld
@@ -27,17 +20,16 @@ router.route("/:username").get(async (req, res) => {
         const userId = await userData.findByUsername(req.params.username); // get the id of the requested user
 
         if (!userId) {
-            return res
-                .status(404)
-                .render("error", {
-                    title: "Error",
-                    errmsg: `404: user '${req.params.username}' was not found`
-                });
+            return res.status(404).render("error", {
+                title: "Error",
+                errmsg: `404: user '${req.params.username}' was not found`
+            });
         }
 
         const usr = await userData.getUser(userId);
 
         return res.render("user", {
+            title: usr.username,
             hasName: usr.name != null,
             isCurrent: isCurrent,
             showProfile: usr.publicProfile || isCurrent, // we will show content if profile is public or if this is the current user (false when private and not current user)
@@ -50,12 +42,10 @@ router.route("/:username").get(async (req, res) => {
 
 router.route("/:username/edit").get((req, res) => {
     if (!req.session.user) {
-        return res
-            .status(401)
-            .render("error", {
-                title: "Error",
-                errmsg: "401: You need to be logged in to access this page."
-            });
+        return res.status(401).render("error", {
+            title: "Error",
+            errmsg: "401: You need to be logged in to access this page."
+        });
     }
 });
 
