@@ -33,6 +33,7 @@ There will be two main collections for our database. **Users** will store identi
 | `publicProfile` | `boolean` | denotes whether this profile is public (`true`) or private (`false`) |
 | `friends` | `[ObjectId]` | list of `_id`s of the current users friends |
 | `blocked` | `[ObjectId]` | list of `_id`s of users that are blocked by the current user |
+| `incomingRequests` | `[ObjectId]` | list of `_id`s of users that are requesting to be friends with this user |
 | `posts` | `[ObjectId]` | list of post `_id`s authored by this user |
 | `comments` | `[ObjectId]` | list of comment `_id`s authored by this user |
 | `postLikes` | `[ObjectId]` | list of post `_id`s liked by this user |
@@ -223,3 +224,28 @@ const post = {
     createTime: 1710374400
 };
 ```
+
+
+
+
+
+---
+
+
+
+## Message Session
+
+| Field | Type | Description |
+| ---  | ---  | ---         |
+| `user1`| `ObjectId` | unique identifier for the post |
+| `user2`| `ObjectId` | unique identifier for the post |
+| `messages` | `[Object]` | array of message subdocuments |
+
+
+### Message
+
+
+| Field | Type | Description |
+| ---  | ---  | ---         |
+| `text` | `string` | message content (max 2000 characters) |
+| `timestamp` | `number` | time of when message was sent in Unix epoch seconds |
