@@ -263,7 +263,7 @@ const likePost = async (id, userId) => {
 
     const userCol = await users();
     const userUpdateInfo = await userCol.updateOne(
-        { _id: authorId },
+        { _id: userId },
         {
             $push: { postLikes: id }
         }
