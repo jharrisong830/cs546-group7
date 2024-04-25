@@ -1,17 +1,15 @@
 (function ($) {
-    let newPostForm = $('#newPostForm'),
-    newPostText = $('#post'),
-    feedArea = $('#feedArea');
-
-
+    let newPostForm = $("#newPostForm"),
+        newPostText = $("#post"),
+        feedArea = $("#feedArea");
 
     let requestConfig = {
-        method: 'GET',
-        url: '/api/post/json'
+        method: "GET",
+        url: "/api/post/json"
     };
 
     $.ajax(requestConfig).then(function (responseMessage) {
-       // console.log(responseMessage);
+        // console.log(responseMessage);
         responseMessage.map((feedPost) => {
             console.log(feedPost);
             let ele = $(
@@ -31,8 +29,8 @@
         if (newPost) {
             let requestConfig = {
                 method: "POST",
-                url: '/api/post/json',
-                contentType: 'application/json',
+                url: "/api/post/json",
+                contentType: "application/json",
                 data: JSON.stringify({
                     post: newPost
                 })
@@ -51,5 +49,4 @@
             });
         }
     });
-
 })(window.jQuery);
