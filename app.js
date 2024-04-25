@@ -10,6 +10,11 @@ app.use("/public", express.static("public"));
 app.use(express.json()); // for http bodies
 app.use(express.urlencoded({ extended: true }));
 
+const handlebarsInstance = exphbs.create({
+    defaultLayout: 'main',
+    partialsDir: ['views/partials/']
+})
+
 app.use(
     session({
         name: "AuthenticationState",
