@@ -3,12 +3,35 @@
 
 <div class="newPost">
 <form id="newPostForm">
-    <label for="post">
-        What are you listening to?
-    </label>
-    <input type="text" id="post">
-    <input type="submit" value="Post to feed">
+    <div class="input-group">
+    <input type="text" id="post" class="form-control" placeholder="What are you listening to?">
+    <button type="button" data-bs-toggle="modal" data-bs-target="#playlistModal" class="btn btn-primary">Attach Playlist
+    </button>
+    <div class="modal fade" id="playlistModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Select playlist:</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" >
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Insert playlist selection here</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Go back</button>
+                    <button type="button" class="btn btn-primary">Pick playlist</button>
+                </div>
+            </div>
+        </div>
+</div>
+
+</div>
+    <br>
+    <input type="submit" value="Post to feed" class="btn btn-secondary">
 </form>
+<hr>
 </div>
     <h2 class="lead text-body-secondary">Let's see what your friends are listening to:</h2>
     <div class="row pt-2">
