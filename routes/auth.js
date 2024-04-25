@@ -9,6 +9,7 @@ import { Router } from "express";
 import { config } from "dotenv";
 import axios from "axios";
 import authentication from "../helpers/authentication.js";
+import { userData } from "../data/index.js";
 
 config(); // load environment vars from .env file
 
@@ -17,10 +18,22 @@ const router = Router();
 const codes = await authentication.getPKCECodes(64);
 
 router.route("/").get((req, res) => {
+    if (!req.session.user) {
+        return res.status(401).render("error", {
+            title: "Error",
+            errmsg: "401: You need to be logged in to access this page."
+        });
+    }
     return res.render("auth", { title: "Authorize" });
 });
 
 router.route("/spotify").get((req, res) => {
+    if (!req.session.user) {
+        return res.status(401).render("error", {
+            title: "Error",
+            errmsg: "401: You need to be logged in to access this page."
+        });
+    }
     const authURL = authentication.SPGetAuthorizationURL(
         codes["codeChallenge"]
     );
@@ -29,6 +42,12 @@ router.route("/spotify").get((req, res) => {
 });
 
 router.route("/spotify/success").get(async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).render("error", {
+            title: "Error",
+            errmsg: "401: You need to be logged in to access this page."
+        });
+    }
     let authCode = req.query.code || null;
     if (authCode === null) {
         return res.status(500).render("error", {
@@ -66,6 +85,12 @@ router.route("/spotify/success").get(async (req, res) => {
 });
 
 router.route("/apple-music").get((req, res) => {
+    if (!req.session.user) {
+        return res.status(401).render("error", {
+            title: "Error",
+            errmsg: "401: You need to be logged in to access this page."
+        });
+    }
     const devToken = authentication.AMGenerateDevToken();
     return res.render("auth/apple-music", {
         title: "am test",
@@ -74,13 +99,21 @@ router.route("/apple-music").get((req, res) => {
 });
 
 router.route("/apple-music/success").get(async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).render("error", {
+            title: "Error",
+            errmsg: "401: You need to be logged in to access this page."
+        });
+    }
     let mut = req.query.mut || null; // try to get music user token from query params
-    if (mut === null) {
+    let devToken = req.query.devToken || null; // try to get music user token from query params
+    if (mut === null || devToken === null) {
         return res.status(500).render("error", {
             title: "Error",
             errmsg: "500: issue getting apple music user token"
         });
     }
+    await userData.addAMAccessData(req.session.user._id, devToken, mut);
 
     return res.json({ authData: req.query.mut, status: "success" }); // TODO: don't actually display this to user, handle and associate access token with user profile to use for api requests
 });

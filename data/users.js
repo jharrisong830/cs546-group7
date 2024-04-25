@@ -415,23 +415,29 @@ const updateUser = async (id, updatedFields) => {
                 "updateUser",
                 `Unexpected field '${field}'; either does not exist or can't be updated.`
             );
-
-        updatedFields[field] = vld.returnValidString(updatedFields[field]); // TODO: character validation for different fields
-        vld.checkEmptyString(updatedFields[field]);
-        if (field === "username") {
-           vld.validateUsername(updatedFields[[field]]);
-        }
-        if (field === 'password') {
-            vld.validatePassword(updatedFields[field]);
-        }
     });
 
     if (Object.keys(updatedFields).includes("password")) {
-        if (field === "password") {
-            updatedFields.password = await bcrypt.hash(
-                updatedFields.password,
-                saltRounds
-            ); // hash password with 16 salt rounds
+        updatedFields.password = vld.validatePassword(updatedFields.password);
+        updatedFields.password = await bcrypt.hash(
+            updatedFields.password,
+            saltRounds
+        ); // hash password with 16 salt rounds
+    }
+    if (Object.keys(updatedFields).includes("username")) {
+        updatedFields.username = await vld.validateUsername(
+            updatedFields.username
+        );
+    }
+    if (Object.keys(updatedFields).includes("name")) {
+        updatedFields.name = vld.returnValidString(updatedFields.name);
+        vld.checkEmptyString(updatedFields.name);
+        if (updatedFields.name.length > 30) {
+            errorMessage(
+                MOD_NAME,
+                "updateUser",
+                "'name' must not have length greater than 30 chars!"
+            );
         }
     }
 
@@ -513,13 +519,17 @@ const addSPAccessData = async (id, accessToken, expiryTime, refreshToken) => {
  * given a user id, add the supplied api access data as a AMAuth subdocument
  *
  * @param {string | ObjectId} id    id of user to be updated
+ * @param {string} AMDevToken       JWT developer token
  * @param {string} musicUserToken   access token used to get data from AM API
  *
  * @returns {Object} updated user
  * @throws if the update was unsuccessful (i.e. id was not found), or if input is invalid
  */
-const addAMAccessData = async (id, musicUserToken) => {
+const addAMAccessData = async (id, AMDevToken, musicUserToken) => {
     id = vld.checkObjectId(id); // validates and converts to object id
+
+    AMDevToken = vld.returnValidString(AMDevToken);
+    vld.checkEmptyString(AMDevToken);
 
     musicUserToken = vld.returnValidString(musicUserToken);
     vld.checkEmptyString(musicUserToken);
@@ -532,6 +542,7 @@ const addAMAccessData = async (id, musicUserToken) => {
                 // id is converted to ObjectId, so just set the thing
                 AMAuth: {
                     // add the AMAuth subdocument
+                    AMDevToken: AMDevToken,
                     musicUserToken: musicUserToken
                 }
             }
