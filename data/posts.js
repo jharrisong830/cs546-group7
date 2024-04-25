@@ -221,7 +221,7 @@ const generateFeed = async (id) => {
 
     const postCol = await posts();
     const feedPosts = await postCol
-        .find({ authorId: { $in: usr.friends } }) // get all posts by this user's friends
+        .find({ authorId: { $in: usr.friends.concat([id]) } }) // get all posts by this user's friends, and this user
         .sort({ lastUpdated: -1 }) // sort in descending order
         .toArray();
 
