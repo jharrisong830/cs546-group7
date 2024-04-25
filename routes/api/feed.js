@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 import xss from "xss";
-import { postData } from "../data/index.js";
+import { postData } from "../../data/index.js";
 
 router
     .route("/post/json")

@@ -8,7 +8,7 @@ import signupRoutes from "./signup.js";
 import loginRoutes from "./login.js";
 import rootRoute from "./root.js";
 import userRoutes from "./user.js";
-import feedAPI from "./feedapi.js";
+import feedAPI from "./api/feed.js";
 
 const constructorMethod = (app) => {
     app.use("/auth", authRoutes);

@@ -10,16 +10,19 @@
 
     $.ajax(requestConfig).then(function (responseMessage) {
         // console.log(responseMessage);
-        responseMessage.map((feedPost) => {
-            console.log(feedPost);
-            let ele = $(
-                `<div class='feed-post'>
-                <h1>${feedPost.authorUsername}</h1>
-                <p>${feedPost.textContent}</p>
-                <p>Likes: ${feedPost.likes.length}</p>
-                </div>`
-            );
-            feedArea.append(ele);
+        responseMessage.forEach((feedPost) => {
+            const postCard = $(`
+            <div class="card mx-5 my-4">
+                <div class="card-body">
+                    <h5 class="card-title text-body-emphasis">${feedPost.authorUsername}</h5>
+                    <h6 class="card-subtitle mb-2">${feedPost.lastUpdated}</h6>
+
+                    <p class="card-text">${feedPost.textContent}</p>
+                    <a href="/post/${feedPost._id}" role="button" class="btn btn-outline-dark btn-sm stretched-link">View Post</a>
+                </div>
+            </div>
+            `);
+            feedArea.append(postCard);
         });
     });
 
