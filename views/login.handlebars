@@ -1,22 +1,29 @@
-<h1>Log in to Tweeter.</h1>
+<div class="container text-center py-5 px-3" id="titleContainer">
+    <h1 class="display-6 text-body-emphasis fw-medium">Log in to Tweeter.</h1>
+</div>
 
-<form method="POST" id="login" action="/login" name="login">
-	<label for="username">Username</label>
-	<input type="text" id="username" name="username" placeholder="Username">
+<div class="container" id="formContainer">
+	<form method="POST" id="login" action="/login" name="login">
+		<label for="username" class="form-label">Username</label>
+		<div class="input-group">
+			<span class="input-group-text">@</span>
+			<input required id="username" name="username" type="text" placeholder="Username" class="form-control">
+		</div>
 
-	<br>
+		<br>
 
-	<label for="password">Password</label>
-    <input type="password" id="password" name="password" placeholder="Password">
+		<label for="password" class="form-label">Password</label>
+		<input required id="password" name="password" type="password" placeholder="Password" class="form-control">
 
-	<br>
+		<br>
 
-	<button type="submit">Log In</button>
-</form>
+		<button type="submit" class="btn btn-primary">Log In</button>
+	</form>
 
-<a href="/signup">Click here to sign up for Tweeter!</a>
+	<a href="/signup">Click here to sign up for Tweeter!</a>
 
-<div hidden id="error">{{errmsg}}</div>
+	<div hidden id="error">{{errmsg}}</div>
+</div>
 
 <!-- jquery and validation scripts -->
 <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
