@@ -19,7 +19,10 @@ app.use(
     })
 );
 
-app.engine("handlebars", exphbs.engine({ defaultLayout: "main" }));
+app.engine(
+    "handlebars",
+    exphbs.engine({ defaultLayout: "main", partialsDir: ["views/partials/"] })
+);
 app.set("view engine", "handlebars");
 
 app.use("/", mid.logMessages);
