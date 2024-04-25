@@ -28,13 +28,13 @@ const feedRender = async (req, res, next) => {
         // make sure we onlt render if we're on the `/` route
         if (req.session.user) {
             try {
-                const feedPosts = await postData.generateFeed(
-                    req.session.user._id
-                ); // get the feed posts for the current user
+                // const feedPosts = await postData.generateFeed(
+                //     req.session.user._id
+                // ); // get the feed posts for the current user
                 return res.render("feed", {
                     title: "Feed",
-                    username: req.session.user.username,
-                    feedPosts: feedPosts
+                    username: req.session.user.username
+                    // feedPosts: feedPosts
                 });
             } catch (e) {
                 return res
