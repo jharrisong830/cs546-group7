@@ -1,48 +1,62 @@
-<h1>Sign up for Tweeter.</h1>
+<div class="container text-center py-5 px-3" id="titleContainer">
+    <h1 class="display-6 text-body-emphasis fw-medium">Sign up for Tweeter.</h1>
+</div>
 
-<div id="signupDiv">
+<div class="container" id="signupContainer">
     <form method="POST" id="signup" action="/signup">
-        <label for="username">Username</label>
-        <input required id="username" name="username" type="text" placeholder="Username">
+        <!-- put username and display name on a single row -->
+        <div class="row">
+            <div class="col">
+                <label for="username" class="form-label">Username</label>
+                <div class="input-group">
+                    <span class="input-group-text">@</span>
+                    <input required id="username" name="username" type="text" placeholder="Username" class="form-control">
+                </div>
+            </div>
+
+            <div class="col">
+                <label for="name" class="form-label">Display Name</label>
+                <input id="name" name="name" type="text" placeholder="Display name (optional)" class="form-control">
+            </div>
+        </div>
+
+        
 
         <br>
 
-        <label for="name">Display Name</label>
-        <input id="name" name="name" type="text" placeholder="Display name (optional)">
+        <label for="password" class="form-label">Password</label>
+        <input required id="password" name="password" type="password" placeholder="Password" class="form-control">
 
         <br>
 
-        <label for="password">Password</label>
-        <input required id="password" name="password" type="password" placeholder="Password">
+        <label for="confirmPassword" class="form-label">Comfirm Password</label>
+        <input required id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm Password" class="form-control">
 
         <br>
 
-        <label for="confirmPassword">Comfirm Password</label>
-        <input required id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm Password">
-
-        <br>
-
-        <label for="dateOfBirth">Date of Birth</label>
-        <input required type="date" id="dateOfBirth" name="dateOfBirth">
+        <label for="dateOfBirth" class="form-label">Date of Birth</label>
+        <input required type="date" id="dateOfBirth" name="dateOfBirth" class="form-control">
 
         <br>
 
 
-        <label>Profile Type</label>
+        <div class="form-check">
+            <label>Profile Type</label>
 
+            <br>
+
+            <input required type="radio" id="public" value="public" name="publicProfile" class="form-check-input">
+            <label for="public" class="form-check-label">Public</label>
+
+            <br>
+
+            <input required type="radio" id="private" value="private" name="publicProfile" class="form-check-input">
+            <label for="private" class="form-check-label">Private</label>
+        </div>
+        
         <br>
 
-        <input required type="radio" id="public" value="public" name="publicProfile">
-        <label for="public">Public</label>
-
-        <br>
-
-        <input required type="radio" id="private" value="private" name="publicProfile">
-        <label for="private">Private</label>
-
-        <br>
-
-        <button type="submit">Sign Up</button>
+        <button type="submit" class="btn btn-primary">Sign Up</button>
     </form>
 
     <div hidden id="error">{{errmsg}}</div>
