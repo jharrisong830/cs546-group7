@@ -76,9 +76,15 @@ router.route("/spotify/success").get(async (req, res) => {
             }
         ); // post request, with given body/header data
 
-        const { access_token, expires_in, refresh_token } = data; // extract important info, so we can insert in the db later
+        const now = Math.floor(Date.now() / 1000); // add to expires_in, the time that the access token expires at
+        const usr = await userData.addSPAccessData(
+            req.session.user._id,
+            data.access_token,
+            data.expires_in + now,
+            data.refresh_token
+        ); // store in database!
 
-        return res.json({ authData: data, status: "success" }); // TODO: don't actually display this to user, handle and associate access token with user profile to use for api requests
+        return res.json({ updatedUser: usr, status: "success" }); // TODO: don't actually display this to user, handle and associate access token with user profile to use for api requests
     } catch (e) {
         return res.status(500).json({ error: e });
     }
