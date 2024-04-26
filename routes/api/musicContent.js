@@ -23,4 +23,17 @@ router.route("/spotify/playlists").get(async (req, res) => {
     }
 });
 
+router.route("/appleMusic/devToken").get((req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({
+            success: false,
+            errmsg: "You must be logged in to access this data."
+        });
+    }
+    return res.json({
+        success: true,
+        AMDevToken: authentication.AMGenerateDevToken()
+    }); // return the dev token
+});
+
 export default router;
