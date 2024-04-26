@@ -37,7 +37,7 @@ $(document).on("musickitloaded", async (event) => {
         $("#error").html(errorString);
     } else {
         // MusicKit instance is available at this point!
-        $("#musickit-js-auth").click(async () => {
+        $("#musickit-js-auth").click(async (event) => {
             let music = MusicKit.getInstance();
             const mut = await music.authorize(); // get music user token to store in db
             if (mut === undefined || mut === null) {
@@ -46,6 +46,18 @@ $(document).on("musickitloaded", async (event) => {
             } else {
                 window.location.href = `/auth/appleMusic/success?mut=${mut}`; // redirect to the success page
             }
+        });
+
+        $("#musickit-js-unauth").click(async (event) => {
+            let music = MusicKit.getInstance();
+            await music.unauthorize(); // unauthorize the user
+        });
+
+        $("#testButton").click(async () => {
+            let music = MusicKit.getInstance();
+            const mut = await music.authorize();
+            const playlist = await music.api.music("v1/me/library/playlists");
+            console.log(playlist);
         });
     }
 });

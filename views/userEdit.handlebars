@@ -76,10 +76,11 @@
                 <a href="/auth/spotify" role="button" class="btn btn-success">Connect Spotify Account</a>
             {{/if}}
             {{#if user.AMAuth}}
-                <a href="/auth/appleMusic/remove" role="button" class="btn btn-outline-danger">Remove Apple Music Account</a>
+                <a href="/auth/appleMusic/remove" role="button" class="btn btn-outline-danger" id="musickit-js-unauth">Remove Apple Music Account</a>
             {{else}}
                 <a href="javascript:void(0)" role="button" class="btn btn-danger" id="musickit-js-auth">Connect Apple Music Account</a>
             {{/if}}
+            <a href="javascript:void(0)" role="button" class="btn btn-dark" id="testButton">Test to console log playlist!</a>
         </div>
     </div>
 </div>
