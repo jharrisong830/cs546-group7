@@ -37,17 +37,23 @@
                             <button type="button" class="btn btn-outline-danger" id="AMShowPlaylists">Apple Music Playlists</button>
                         </div> --}}
 
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-outline-success active" id="SPPlaylists">Playlists</button>
-                            <button type="button" class="btn btn-outline-success" id="SPAlbums">Songs</button>
+                        <div class="btn-group" role="group" id="musicContentTypeButtons">
+                            <input type="radio" id="playlists" value="playlists" name="musicContentType" class="btn-check" checked>
+                            <label for="playlists" class="btn btn-outline-success">Playlists</label>
+
+                            <input type="radio" id="songs" value="songs" name="musicContentType" class="btn-check">
+                            <label for="songs" class="btn btn-outline-success">Songs</label>
+
+                            <input type="radio" id="albums" value="albums" name="musicContentType" class="btn-check">
+                            <label for="albums" class="btn btn-outline-success">Albums</label>
                         </div>
 
-                        <div class="d-flex justify-content-center" id="playlistLoading">
+                        <div class="d-flex justify-content-center" id="contentLoading">
                             <div class="spinner-border" role="status">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
                         </div>
-                        <div class="container" id="playlistSelector" hidden></div> {{!-- playlists will be populated here! will be multiple form-check divs for radio buttons --}}
+                        <div class="container" id="contentSelector" hidden></div> {{!-- playlists will be populated here! will be multiple form-check divs for radio buttons --}}
                         <div class="error form-text" id="error" hidden>{{errmsg}}</div>
                         {{!-- <button type="button" class="btn btn-success">Choose music</button> --}}
                     </form>
