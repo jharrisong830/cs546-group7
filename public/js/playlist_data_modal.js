@@ -2,8 +2,18 @@ $("#postModal").on("shown.bs.modal", (event) => {
     // when the modal is shown...
     const outerText = $("#textContentOuter").val().trim();
     $("#textContentInner").val(outerText); // set the value of the text area to be whatever the user was typing before
-    // $("#playlists").attr("checked", true); // reset to the playlist view on each showing of the modal
     $("#musicContentTypeButtons").off(); // remove all event handlers from the buttons (otherwise they start to stack lol)
+
+    // prevents clicks of children elements from being double-registered
+    $("#playlists").click((event) => {
+        event.stopPropagation();
+    });
+    $("#songs").click((event) => {
+        event.stopPropagation();
+    });
+    $("#albums").click((event) => {
+        event.stopPropagation();
+    });
 
     $("#musicContentTypeButtons").click((event) => {
         // on click of the button group (listens on all buttons in the container)...
@@ -166,7 +176,7 @@ $("#postModal").on("shown.bs.modal", (event) => {
         }
     });
 
-    // $("#playlists").trigger("click"); // click on playlists option to render them by default
+    $("#musicContentTypeButtons").trigger("click"); // click to start loading content (since playlists is selected by default, that is what will be rendered)
 });
 
 $("#postModal").on("hidden.bs.modal", (event) => {
