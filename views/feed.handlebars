@@ -31,6 +31,17 @@
 
                         <label for="musicContent" class="form-label">Choose some music:</label>
                         <br>
+
+                        {{!-- <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-success" id="SPShowPlaylists">Spotify Playlists</button>
+                            <button type="button" class="btn btn-outline-danger" id="AMShowPlaylists">Apple Music Playlists</button>
+                        </div> --}}
+
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-success active" id="SPPlaylists">Playlists</button>
+                            <button type="button" class="btn btn-outline-success" id="SPAlbums">Songs</button>
+                        </div>
+
                         <div class="d-flex justify-content-center" id="playlistLoading">
                             <div class="spinner-border" role="status">
                                 <span class="visually-hidden">Loading...</span>
@@ -57,5 +68,9 @@
 
 <script src="https://code.jquery.com/jquery-2.2.4.min.js"
         integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+{{!-- <script src="https://js-cdn.music.apple.com/musickit/v3/musickit.js" async></script> --}}
+
 <script src="/public/js/ajax_jquery_json.js"></script>
 <script src="/public/js/playlist_data_modal.js"></script>
+{{!-- <script src="/public/js/musickit/musickit_library_playlists.js"></script>
+ --}}

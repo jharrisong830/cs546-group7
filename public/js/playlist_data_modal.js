@@ -20,15 +20,15 @@ $("#postModal").on("shown.bs.modal", (event) => {
                 response.playlists.forEach((pl) => {
                     // begin to generate html for each playlist (will be radio buttons)
                     const newPlaylistOption = $(`
-                <div class="form-check">
-                    <input required type="radio" id="${pl._id}" value="${pl._id}" name="musicContentId" class="form-check-input">
-                    <label for="${pl._id}" class="form-check-label">
-                        <img class="" alt="${pl.name} playlist thumbnail" src="${pl.thumbnailURL}">
-                        <br>
-                        ${pl.name}
-                    </label>
-                </div>
-                `);
+                    <div class="form-check">
+                        <input required type="radio" id="${pl._id}" value="${pl._id}" name="musicContentId" class="form-check-input">
+                        <label for="${pl._id}" class="form-check-label">
+                            <img class="" alt="${pl.name} playlist thumbnail" src="${pl.thumbnailURL}">
+                            <br>
+                            ${pl.name}
+                        </label>
+                    </div>
+                    `);
                     $("#playlistSelector").append(newPlaylistOption); // add the playlist html to the div
                 });
                 $("#playlistLoading").attr("hidden", true);
