@@ -1,4 +1,4 @@
-<section>
+<div class="container">
     {{#if hasName}}
         <h2>{{user.name}}</h2>
         <h4>@{{user.username}}</h4>
@@ -7,54 +7,77 @@
     {{/if}}
 
     <a href="/user/{{user.username}}">Back to profile.</a>
-</section>
+</div>
 
 
-<section>
-
+<div class="container">
         <form method="POST" action="/user/{{user.username}}/edit" id="editUser">
-            <label for="username">Username</label>
-            <input id="username" name="username" type="text" placeholder="Username">
+            <div class="row">
+                <div class="col">
+                    <label for="username" class="form-label">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text">@</span>
+                        <input id="username" name="username" type="text" placeholder="Username" class="form-control">
+                    </div>
+                </div>
+
+                <div class="col">
+                    <label for="name" class="form-label">Display Name</label>
+                    <input id="name" name="name" type="text" placeholder="Display name (optional)" class="form-control">
+                </div>
+            </div>
+
 
             <br>
 
-            <label for="name">Display Name</label>
-            <input id="name" name="name" type="text" placeholder="Display name (optional)">
+            <label for="password" class="form-label">Password</label>
+            <input required id="password" name="password" type="password" placeholder="Password" class="form-control">
 
             <br>
 
-            <label for="password">New Password</label>
-            <input id="password" name="password" type="password" placeholder="Password">
+            <label for="confirmPassword" class="form-label">Comfirm Password</label>
+            <input required id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm Password" class="form-control">
 
             <br>
 
-            <label for="confirmPassword">Comfirm New Password</label>
-            <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm New Password">
-
-            <br>
 
             <label>Profile Type</label>
 
+            <div class="form-check"> {{! TODO: fix formatting for bootstrap --}}
+                <input required type="radio" id="public" value="public" name="publicProfile" class="form-check-input"
+                    {{#if user.publicProfile}} checked {{/if}}>
+                <label for="public" class="form-check-label">Public</label>
+            </div>
+
+            <div class="form-check">
+                <br>
+
+                <input required type="radio" id="private" value="private" name="publicProfile" class="form-check-input"
+                    {{#unless user.publicProfile}} checked {{/unless}}>
+                <label for="private" class="form-check-label">Private</label>
+            </div>
+
             <br>
 
-            <input required type="radio" id="public" value="public" name="publicProfile" 
-                {{#if user.publicProfile}} checked {{/if}}> <!-- check if profile is public -->
-            <label for="public">Public</label>
-
-            <br>
-
-            <input required type="radio" id="private" value="private" name="publicProfile" 
-                {{#unless user.publicProfile}} checked {{/unless}}> <!-- check if profile is NOT public -->
-            <label for="private">Private</label>
-
-            <br>
-
-            <button type="submit">Submit Changes</button>
+            <button type="submit" class="btn btn-primary">Submit Changes</button>
         </form>
 
 
     <div hidden id="error">{{errmsg}}</div>
-</section>
+</div>
+
+<div class="container">
+    <div class="row pt-2 text-center">
+        <div class="col">
+            {{#if user.SPAuth}}
+                <a href="/auth/spotify/remove" role="button" class="btn btn-outline-success">Remove Spotify Account</a>
+            {{else}}
+                <a href="/auth/spotify" role="button" class="btn btn-success">Connect Spotify Account</a>
+            {{/if}}
+            <a href="/auth/apple-music" role="button" class="btn btn-danger">Connect Apple Music Account</a>
+        </div>
+    </div>
+</div>
 
 
 <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>

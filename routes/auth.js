@@ -17,15 +17,15 @@ const router = Router();
 
 const codes = await authentication.getPKCECodes(64);
 
-router.route("/").get((req, res) => {
-    if (!req.session.user) {
-        return res.status(401).render("error", {
-            title: "Error",
-            errmsg: "401: You need to be logged in to access this page."
-        });
-    }
-    return res.render("auth", { title: "Authorize" });
-});
+// router.route("/").get((req, res) => {
+//     if (!req.session.user) {
+//         return res.status(401).render("error", {
+//             title: "Error",
+//             errmsg: "401: You need to be logged in to access this page."
+//         });
+//     }
+//     return res.render("auth", { title: "Authorize" });
+// });
 
 router.route("/spotify").get((req, res) => {
     if (!req.session.user) {
@@ -84,9 +84,24 @@ router.route("/spotify/success").get(async (req, res) => {
             data.refresh_token
         ); // store in database!
 
-        return res.json({ updatedUser: usr, status: "success" }); // TODO: don't actually display this to user, handle and associate access token with user profile to use for api requests
+        return res.redirect(`/user/${req.session.user.username}/edit`); // redirect to user's profile edit page
     } catch (e) {
-        return res.status(500).json({ error: e });
+        return res.status(500).render("error", {
+            title: "Error",
+            errmsg: e
+        });
+    }
+});
+
+router.route("/spotify/remove").get(async (req, res) => {
+    try {
+        const usr = await userData.removeSPAccessData(req.session.user._id); // ezpz, just remove the spotify info and redirect on success
+        return res.redirect(`/user/${req.session.user.username}/edit`);
+    } catch (e) {
+        return res.status(500).render("error", {
+            title: "Error",
+            errmsg: e
+        });
     }
 });
 

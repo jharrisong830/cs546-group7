@@ -6,12 +6,10 @@ const router = Router();
 
 router.route("/spotify/playlists").get(async (req, res) => {
     if (!req.session.user) {
-        return res
-            .status(401)
-            .json({
-                success: false,
-                errmsg: "You must be logged in to access this data."
-            });
+        return res.status(401).json({
+            success: false,
+            errmsg: "You must be logged in to access this data."
+        });
     }
 
     try {
