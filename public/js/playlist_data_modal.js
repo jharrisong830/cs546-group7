@@ -59,20 +59,10 @@ $("#postModal").on("shown.bs.modal", (event) => {
     // when the modal is shown...
     const outerText = $("#textContentOuter").val().trim();
     $("#textContentInner").val(outerText); // set the value of the text area to be whatever the user was typing before
-    $("#musicContentTypeButtons").off(); // remove all event handlers from the buttons (otherwise they start to stack lol)
-    $("#playlists").off();
-    $("#catalog").off();
+    $('input[name="musicContentType"]').off(); // remove all event handlers from the buttons (otherwise they start to stack lol)
 
-    // prevents clicks of children elements from being double-registered
-    $("#playlists").click((event) => {
-        event.stopPropagation();
-    });
-    $("#catalog").click((event) => {
-        event.stopPropagation();
-    });
-
-    $("#musicContentTypeButtons").click((event) => {
-        // on click of the button group (listens on all buttons in the container)...
+    $('input[name="musicContentType"]').on("change", (event) => {
+        // on change of the musicContentType radio buttons...
         $("#contentLoading").removeAttr("hidden"); // render loading when clicked, and clear all output
         $(".spinner-border").removeAttr("hidden");
 
@@ -148,7 +138,7 @@ $("#postModal").on("shown.bs.modal", (event) => {
         }
     });
 
-    $("#musicContentTypeButtons").trigger("click"); // click to start loading content (since playlists is selected by default, that is what will be rendered)
+    $('input[name="musicContentType"]:checked').trigger("change"); // trigger to start loading content
 });
 
 $("#postModal").on("hidden.bs.modal", (event) => {

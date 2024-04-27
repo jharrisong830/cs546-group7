@@ -43,12 +43,10 @@ router.route("/").post(async (req, res) => {
                 newPost.musicContentId
             );
         } else {
-            return res
-                .status(400)
-                .json({
-                    success: false,
-                    errmsg: "Unexpected music content type."
-                });
+            return res.status(400).json({
+                success: false,
+                errmsg: "Unexpected music content type."
+            });
         }
 
         let addedPost = await postData.createPost(
