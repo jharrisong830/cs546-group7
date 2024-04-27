@@ -57,7 +57,10 @@ $("#editUser").submit((event) => {
         errors.push("Invalid display name. Length be less than 30 characters");
     }
 
-    const publicProfile = $("#publicProfile").val().trim().toLowerCase();
+    const publicProfile = $('input[name="publicProfile"]:checked')
+        .val()
+        .trim()
+        .toLowerCase();
     if (publicProfile !== "public" && publicProfile !== "private") {
         errors.push('Profile setting must be in either ["public", "private"]');
     }

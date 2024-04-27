@@ -1,4 +1,4 @@
-<section>
+<div class="container">
     {{#if hasName}}
         <h2>{{user.name}}</h2>
         <h4>@{{user.username}}</h4>
@@ -9,16 +9,18 @@
 
 {{#if isCurrent}}
 <a href="/user/{{user.username}}/edit">Edit your profile here.</a>
+<br>
 {{/if}}
-</section>
+<a href="/">Go to home.</a>
+</div>
 
 <hr>
 
 {{#if showProfile}}
-<section>
+<div class="container">
 
     {{#with user}}
-        <section>
+        <div class="container">
             <h4>Posts</h4>
             {{#if posts.length}}
                 <ul>
@@ -29,9 +31,9 @@
             {{else}}
                 <p>{{username}} hasn't made any posts yet.</p>
             {{/if}}
-        </section>
+        </div>
 
-        <section>
+        <div class="container">
             <h4>Comments</h4>
             {{#if comments.length}}
                 <ul>
@@ -42,11 +44,11 @@
             {{else}}
                 <p>{{username}} hasn't made any comments yet.</p>
             {{/if}}
-        </section>
+        </div>
     {{/with}}
 
 {{else}}
 <h1>{{user.username}} has made their profile private. Send them a <a href="/TODO">friend request to see their profile.</a></h1>
 {{/if}}
 
-</section>
+</div>

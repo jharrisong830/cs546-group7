@@ -39,6 +39,7 @@
     newPostForm.submit(function (event) {
         event.preventDefault();
         let newPost = newPostText.val();
+        let musicContent = $('input[name="musicContentId"]:checked');
         if (newPost) {
             let requestConfig = {
                 method: "POST",
@@ -46,10 +47,8 @@
                 contentType: "application/json",
                 data: JSON.stringify({
                     textContent: newPost,
-                    musicContentId: $(
-                        'input[name="musicContentId"]:checked'
-                    ).val(),
-                    musicContentType: "playlist" // TODO: vary this
+                    musicContentId: musicContent.val(),
+                    musicContentType: musicContent.attr("content-type") // custom attribute for the input tag, to vary between song/album/playlist
                 })
             };
 
