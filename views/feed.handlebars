@@ -41,11 +41,20 @@
                             <input type="radio" id="playlists" value="playlists" name="musicContentType" class="btn-check" checked>
                             <label for="playlists" class="btn btn-outline-success">Playlists</label>
 
-                            <input type="radio" id="songs" value="songs" name="musicContentType" class="btn-check">
-                            <label for="songs" class="btn btn-outline-success">Songs</label>
+                            <input type="radio" id="catalog" value="catalog" name="musicContentType" class="btn-check">
+                            <label for="catalog" class="btn btn-outline-success">Catalog</label>
+                        </div>
 
-                            <input type="radio" id="albums" value="albums" name="musicContentType" class="btn-check">
-                            <label for="albums" class="btn btn-outline-success">Albums</label>
+                        <br>
+                        <br>
+
+                        <div class="container" id="searchCatalogContainer" hidden>
+                            <label for="searchCatalog" class="form-label">Search the Spotify Catalog</label>
+                            <br>
+                            <div class="input-group">
+                                <input id="searchCatalog" name="searchCatalog" type="text" placeholder="Search goes here..." class="form-control">
+                                <button type="button" id="submitSearchCatalog" class="btn btn-primary">Search</button>
+                            </div>
                         </div>
 
                         <br>
@@ -55,7 +64,11 @@
                                 <span class="visually-hidden">Loading...</span>
                             </div>
                         </div>
-                        <div class="container" id="contentSelector" hidden></div> {{!-- playlists will be populated here! will be multiple form-check divs for radio buttons --}}
+
+                        
+
+
+                        <div class="container" id="contentSelector" hidden></div> {{!-- playlists and other stuffwill be populated here! will be multiple form-check divs for radio buttons --}}
                         <div class="error form-text" id="error" hidden>{{errmsg}}</div>
                         {{!-- <button type="button" class="btn btn-success">Choose music</button> --}}
                     </form>

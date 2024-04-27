@@ -1,6 +1,7 @@
 import { Router } from "express";
 import xss from "xss";
 import { postData, SPData, userData } from "../../data/index.js";
+import authentication from "../../helpers/authentication.js";
 
 const router = Router();
 
@@ -18,11 +19,36 @@ router.route("/").post(async (req, res) => {
         let musicItem = {};
 
         if (newPost.musicContentType === "playlist") {
-            const usr = await userData.getUser(req.session.user._id);
+            const usr = await authentication.SPRequestRefresh(
+                req.session.user._id
+            );
             musicItem = await SPData.getPlaylist(
                 usr.SPAuth.accessToken,
                 newPost.musicContentId
             );
+        } else if (newPost.musicContentType === "song") {
+            const usr = await authentication.SPRequestRefresh(
+                req.session.user._id
+            );
+            musicItem = await SPData.getSong(
+                usr.SPAuth.accessToken,
+                newPost.musicContentId
+            );
+        } else if (newPost.musicContentType === "album") {
+            const usr = await authentication.SPRequestRefresh(
+                req.session.user._id
+            );
+            musicItem = await SPData.getAlbum(
+                usr.SPAuth.accessToken,
+                newPost.musicContentId
+            );
+        } else {
+            return res
+                .status(400)
+                .json({
+                    success: false,
+                    errmsg: "Unexpected music content type."
+                });
         }
 
         let addedPost = await postData.createPost(

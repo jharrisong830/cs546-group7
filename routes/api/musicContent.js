@@ -23,6 +23,34 @@ router.route("/spotify/playlists").get(async (req, res) => {
     }
 });
 
+router.route("/spotify/searchCatalog").get(async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({
+            success: false,
+            errmsg: "You must be logged in to access this data."
+        });
+    }
+
+    const searchText = req.query.q || null;
+    if (searchText === null) {
+        return res.status(400).json({
+            success: false,
+            errmsg: "No query string provided."
+        });
+    }
+
+    try {
+        const usr = await authentication.SPRequestRefresh(req.session.user._id); // get the current user (will be updated if a refresh is needed)
+        const results = await SPData.searchCatalog(
+            usr.SPAuth.accessToken,
+            searchText
+        );
+        return res.json({ success: true, results: results }); // return json data as an array of catalog items (songs and albums)
+    } catch (e) {
+        return res.status(500).json({ success: false, errmsg: e });
+    }
+});
+
 router.route("/appleMusic/devToken").get((req, res) => {
     if (!req.session.user) {
         return res.status(401).json({
