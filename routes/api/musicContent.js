@@ -35,7 +35,7 @@ router.route("/spotify/searchCatalog").get(async (req, res) => {
     if (searchText === null) {
         return res.status(400).json({
             success: false,
-            errmsg: "No query string provided."
+            errmsg: "No/incorrect query string provided."
         });
     }
 
@@ -46,6 +46,31 @@ router.route("/spotify/searchCatalog").get(async (req, res) => {
             searchText
         );
         return res.json({ success: true, results: results }); // return json data as an array of catalog items (songs and albums)
+    } catch (e) {
+        return res.status(500).json({ success: false, errmsg: e });
+    }
+});
+
+router.route("/spotify/artwork").get(async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({
+            success: false,
+            errmsg: "You must be logged in to access this data."
+        });
+    }
+
+    const albumId = req.query.album || null;
+    if (albumId === null) {
+        return res.status(400).json({
+            success: false,
+            errmsg: "No/incorrect query string provided."
+        });
+    }
+
+    try {
+        const usr = await authentication.SPRequestRefresh(req.session.user._id); // get the current user (will be updated if a refresh is needed)
+        const result = await SPData.getArtwork(usr.SPAuth.accessToken, albumId);
+        return res.json({ success: true, url: result }); // return json data as string of url
     } catch (e) {
         return res.status(500).json({ success: false, errmsg: e });
     }

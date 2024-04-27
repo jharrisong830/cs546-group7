@@ -25,19 +25,31 @@ $("#submitSearchCatalog").click((event) => {
         $.ajax(requestConfig).then(
             (response) => {
                 response.results.forEach((item) => {
-                    // begin to generate html for each catalog item (will be radio buttons)
-                    const newOption = $(`
-                <div class="form-check">
-                    <input required type="radio" id="${item._id}" value="${item._id}" content-type="${item.type}" name="musicContentId" class="form-check-input">
-                    <label for="${item._id}" class="form-check-label">
-                        <img class="" alt="" src="">
-                        <br>
-                        <p class="text-body-emphasis">${item.name} (${item.type})</p>
-                        <p class="text-body-secondary">${item.artists}</p>
-                    </label>
-                </div>
-                `);
-                    $("#contentSelector").append(newOption); // add the playlist html to the div
+                    const artworkReq = {
+                        method: "GET",
+                        url: `/api/music/spotify/artwork?album=${item.type === "album" ? item._id : item.albumId}`
+                    };
+                    $.ajax(artworkReq).always((resOrErr) => {
+                        // can be either of the two, so we check for our data first
+                        // begin to generate html for each catalog item (will be radio buttons)
+                        const newOption = $(`
+                        <div class="form-check">
+                            <input required type="radio" id="${item._id}" value="${item._id}" content-type="${item.type}" name="musicContentId" class="form-check-input">
+                            <label for="${item._id}" class="form-check-label">
+                                <img class="" alt="${item.name} album artwork thumbnail" src="${
+                                    Object.keys(resOrErr).includes("success") &&
+                                    resOrErr.url !== null // if request was successful and artwork exists...
+                                        ? resOrErr.url // ...then use it!
+                                        : "" // empty string otherwise
+                                }"> 
+                                <br>
+                                <p class="text-body-emphasis">${item.name} (${item.type})</p>
+                                <p class="text-body-secondary">${item.artists}</p>
+                            </label>
+                        </div>
+                        `);
+                        $("#contentSelector").append(newOption); // add the playlist html to the div
+                    });
                 });
                 $("#contentLoading").attr("hidden", true);
                 $(".spinner-border").attr("hidden", true);
@@ -100,7 +112,7 @@ $("#postModal").on("shown.bs.modal", (event) => {
                             <div class="form-check">
                                 <input required type="radio" id="${pl._id}" value="${pl._id}" content-type="${pl.type}" name="musicContentId" class="form-check-input">
                                 <label for="${pl._id}" class="form-check-label">
-                                    <img class="" alt="${pl.name} playlist thumbnail" src="${pl.thumbnailURL}">
+                                    <img class="" alt="${pl.name} playlist thumbnail" src="${!pl.thumbnailURL ? "" : pl.thumbnailURL}">
                                     <br>
                                     <p class="text-body-emphasis">${pl.name}</p>
                                 </label>
