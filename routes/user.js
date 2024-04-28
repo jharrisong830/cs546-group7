@@ -39,7 +39,25 @@ router.route("/:username").get(async (req, res) => {
         return res.status(404).render("error", { title: "Error", errmsg: e });
     }
 });
-
+router
+    .route("/:username/messages")
+    .get(async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).render("error", {
+            title: "Error",
+            errmsg: "401: You need to be logged in to access this page."
+        });
+    }
+    try {
+        // const messages = await userData.getMessages(req.session.user._id);
+        return res.render("messaging", {
+            title: "Messages",
+            // messaging: messaging
+        });
+    } catch (e) {
+        return res.status(404).render("error", { title: "Error", errmsg: e });
+    }
+});
 router
     .route("/:username/edit")
     .get(async (req, res) => {

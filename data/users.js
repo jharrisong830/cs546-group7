@@ -378,7 +378,6 @@ const createMessage = async (messageContent, senderId, recipientId) => {
     return await messageCol.findOne({ _id: insertInfo.insertedId });
 };
 
-
 const testSendMessage = async () => {
     const messageContent = "Hello, this is a test message!";
     const senderId = "66284015b43c680f14af6e26";
