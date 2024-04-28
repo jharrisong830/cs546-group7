@@ -1,5 +1,12 @@
-<h1> Welcome {{username}}</h1>
-<h2> Messages </h2>
+<h1> Welcome </h1>
+<h2> Messages, where all the magic happens </h2>
+<form action="/messages" method="POST">
+  <div class="form-group">
+    <label for="message">New Message:</label>
+    <input type="text" id="message" name="message" class="form-control">
+  </div>
+  <button type="submit" class="btn btn-primary">Send Message</button>
+</form>
 {{#each messages}}
     <div>
         <h5>From: {{fromUser}}</h5>
