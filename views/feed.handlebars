@@ -1,14 +1,41 @@
-<h1>Welcome, {{username}}.</h1>
+<div class="container text-center py-5 px-3" id="titleContainer">
+    <h1 class="display-6 text-body-emphasis fw-medium">Welcome, {{username}}.</h1>
 
-<h2>Let's see what your friends are listening to:</h2>
+<div class="newPost">
+<form id="newPostForm">
+    <label for="post">
+        What are you listening to?
+    </label>
+    <input type="text" id="post">
+    <input type="submit" value="Post to feed">
+</form>
+</div>
+    <h2 class="lead text-body-secondary">Let's see what your friends are listening to:</h2>
+    <div class="row pt-2">
+        <div class="col">
+            <a href="/user/{{username}}" role="button" class="btn btn-secondary">View Your Profile</a>
+        </div>
+        <div class="col">
+            <a href="/logout" role="button" class="btn btn-danger">Log Out</a>
+        </div>
+    </div>
+</div>
 
-{{#each feedPosts}}
-    <div>
+<div id="feedArea">
+{{!--{{#each feedPosts}}
+     {{> postCardView }}
+
+    {{!-- <div>
         <h5>{{authorUsername}}</h5>
         <h6>{{lastUpdated}}</h6>
 
         <br>
 
         <p>{{textContent}}</p>
-    </div>
-{{/each}}
+    </div> 
+    {{> feed_post }}  
+{{/each}} --}}
+</div>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<script src="/public/js/ajax_jquery_json.js"></script>

@@ -1,0 +1,61 @@
+<section>
+    {{#if hasName}}
+        <h2>{{user.name}}</h2>
+        <h4>@{{user.username}}</h4>
+    {{else}}
+        <h2>@{{user.username}}</h2>
+    {{/if}}
+
+    <a href="/user/{{user.username}}">Back to profile.</a>
+</section>
+
+
+<section>
+
+        <form method="POST" action="/user/{{user.username}}/edit" id="editUser">
+            <label for="username">Username</label>
+            <input id="username" name="username" type="text" placeholder="Username">
+
+            <br>
+
+            <label for="name">Display Name</label>
+            <input id="name" name="name" type="text" placeholder="Display name (optional)">
+
+            <br>
+
+            <label for="password">New Password</label>
+            <input id="password" name="password" type="password" placeholder="Password">
+
+            <br>
+
+            <label for="confirmPassword">Comfirm New Password</label>
+            <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm New Password">
+
+            <br>
+
+            <label>Profile Type</label>
+
+            <br>
+
+            <input required type="radio" id="public" value="public" name="publicProfile" 
+                {{#if user.publicProfile}} checked {{/if}}> <!-- check if profile is public -->
+            <label for="public">Public</label>
+
+            <br>
+
+            <input required type="radio" id="private" value="private" name="publicProfile" 
+                {{#unless user.publicProfile}} checked {{/unless}}> <!-- check if profile is NOT public -->
+            <label for="private">Private</label>
+
+            <br>
+
+            <button type="submit">Submit Changes</button>
+        </form>
+
+
+    <div hidden id="error">{{errmsg}}</div>
+</section>
+
+
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<script type='text/javascript' src='/public/js/edit_validation.js'></script>

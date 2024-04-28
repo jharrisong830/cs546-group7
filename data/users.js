@@ -494,12 +494,6 @@ const updateUser = async (id, updatedFields) => {
                 "'name' must not have length greater than 30 chars!"
             );
         }
-
-        updatedFields.password = vld.validatePassword(updatedFields.password);
-        updatedFields.password = await bcrypt.hash(
-            updatedFields.password,
-            saltRounds
-        ); // hash password with 16 salt rounds
     }
 
     const userCol = await users();
