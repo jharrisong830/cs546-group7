@@ -6,6 +6,9 @@ import authRoutes from "./auth.js";
 import debugRoutes from "./debug.js";
 import signupRoutes from "./signup.js";
 import loginRoutes from "./login.js";
+import rootRoute from "./root.js";
+import userRoutes from "./user.js";
+import api from "./api/index.js";
 import searchRoutes from "./search.js";
 
 const constructorMethod = (app) => {
@@ -13,16 +16,18 @@ const constructorMethod = (app) => {
     app.use("/debug", debugRoutes);
     app.use("/signup", signupRoutes);
     app.use("/login", loginRoutes);
+    app.use("/user", userRoutes);
+
+    app.use("/api", api);
     app.use("/search", searchRoutes);
 
-    app.use("/", (req, res) => {
-        return res.render("index", { title: "Home" });
-    });
+    app.use("/", rootRoute); // root renders the homepage (needed to separate into router to prevent undefined routes from working)
 
     app.use("*", (req, res) => {
-        return res
-            .status(404)
-            .render("error", { title: "Error", error: "404: Route not found" }); // ignore all other endpoints
+        return res.status(404).render("error", {
+            title: "Error",
+            errmsg: `404: Route '${req.originalUrl}' not found`
+        }); // ignore all other endpoints
     });
 };
 

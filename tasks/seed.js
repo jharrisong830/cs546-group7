@@ -27,8 +27,7 @@ let user2 = await userData.registerUser(
     "ehodor",
     "1234emmaH&",
     "2003-02-10",
-    undefined, // defaults to true
-    "Emma Hodor"
+    undefined // defaults to true
 );
 // let user3 = await userData.registerUser(
 //     "anonymous",
