@@ -1,21 +1,30 @@
-import {Router} from 'express';
+import { Router } from "express";
 const router = Router();
 import helpers from "../helpers/validation.js";
-import {userData } from '../data/index.js';
+import { userData } from "../data/index.js";
 
 router
-    .route('/')
+    .route("/")
     .get(async (req, res) => {
-        try {
-            res.render('search', {});
-        } catch {
-            res.status(500).json({error: e});
+        if (!req.session.user) {
+            return res.status(401).render("error", {
+                title: "Error",
+                errmsg: "401: You need to be logged in to access this page."
+            });
         }
-    });
-
-router
-    .route('/search')
+        try {
+            res.render("search", {});
+        } catch (e) {
+            res.status(500).json({ error: e });
+        }
+    })
     .post(async (req, res) => {
+        if (!req.session.user) {
+            return res.status(401).render("error", {
+                title: "Error",
+                errmsg: "401: You need to be logged in to access this page."
+            });
+        }
         const searchTerm = req.body.searchText;
         const searchType = req.body.searchType;
         try {
@@ -31,9 +40,9 @@ router
             } else {
                 //implement playlist search !!!
             }
-        } catch {
-            res.status(500).json({error: e});
+        } catch (e) {
+            res.status(500).json({ error: e });
         }
-    })
+    });
 
 export default router;
