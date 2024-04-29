@@ -49,10 +49,10 @@ router
         });
     }
     try {
-        // const messages = await userData.getMessages(req.session.user._id);
+        // const messages = await userData.getMessages(req.session.user.username);
         return res.render("messaging", {
             title: "Messages",
-            // messaging: messaging
+            // messaging: messages
         });
     } catch (e) {
         return res.status(404).render("error", { title: "Error", errmsg: e });

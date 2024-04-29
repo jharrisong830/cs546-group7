@@ -6,6 +6,7 @@ import { users, posts } from "../config/mongoCollections.js";
 import vld from "../helpers/validation.js";
 import errorMessage from "../helpers/error.js";
 import bcrypt from "bcrypt";
+import { ObjectId } from "mongodb";
 
 const MOD_NAME = "data/users.js";
 const saltRounds = 16;
@@ -342,56 +343,58 @@ const checkBlocked = async (currId, otherId) => {
     ); // returns false only if neither user is blocked by one another
 };
 
-const createMessage = async (messageContent, senderId, recipientId) => {
+const createMessage = async (messageContent, senderUsername, recipientUsername) => {
     if (!messageContent || typeof messageContent !== 'string' || messageContent.trim().length === 0) {
         throw "You must provide something to send!";
     }
 
-    if (messageContent.trim().length > 2000) {
+    if (messageContent.trim().length >= 2000) {
         throw "message content must be less than 2000 characters."
     }
     messageContent = messageContent.trim();
 
-    senderId = vld.checkObjectId(senderId);
-    recipientId = vld.checkObjectId(recipientId);
+    const userCol = await users();
 
-    const sender = await getUser(senderId);
-    const recipient = await getUser(recipientId);
+    const sender = await findByUsername(senderUsername);
+    const recipient = await findByUsername(recipientUsername);
+
     if (!sender || !recipient) {
         throw "Both sender and recipient must be valid users.";
     }
 
     const currTime = Math.floor(Date.now() / 1000);
     const newMessage = {
+        _id: new ObjectId(),
         content: messageContent,
-        senderId,
-        recipientId,
         timestamp: currTime,
     };
 
-    const messageCol = await messages();
-    const insertInfo = await messageCol.insertOne(newMessage);
-    if (!insertInfo.acknowledged || !insertInfo.insertedId) {
-        throw (`Failed to add new message from ${senderId} to ${recipientId}`);
+    const updateInfoRecipient = await userCol.updateOne(
+        { _id: new ObjectId(recipient) },
+        { $push: { messages: newMessage } }
+    );    
+
+    if (!updateInfoRecipient.acknowledged || updateInfoRecipient.modifiedCount !== 1) {
+        throw (`Failed to add new message from ${senderUsername} to ${recipientUsername}`);
     }
 
-    return await messageCol.findOne({ _id: insertInfo.insertedId });
+    return newMessage;
 };
 
-const testSendMessage = async () => {
-    const messageContent = "Hello, this is a test message!";
-    const senderId = "66284015b43c680f14af6e26";
-    const recipientId = "6628401ab43c680f14af6e27";
-
+const testMessage = async () => {
+    const senderUsername = 'jduran';
+    const recipientUsername = 'ehodor';
+    const messageContent = 'Hi Emma! Its me Justin!!'; 
+  
     try {
-        const newMessage = await createMessage(messageContent, senderId, recipientId);
-        console.log("Message sent successfully:", newMessage);
+      const message = await createMessage(messageContent, senderUsername, recipientUsername);
+      console.log(message);
     } catch (e) {
-        console.log(e);
-    }
-};
+      console.log(e);
+    } 
+}
 
-testSendMessage();
+testMessage();
 
 
 /**
@@ -738,7 +741,9 @@ const exportedMethods = {
     checkBlocked,
     toggleProfileVisibility,
     updateUser,
-    deleteUser
+    deleteUser,
+    createMessage,
+    getMessages
 };
 
 export default exportedMethods;
