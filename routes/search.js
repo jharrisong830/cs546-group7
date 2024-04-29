@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 import helpers from "../helpers/validation.js";
-import { userData } from "../data/index.js";
+import { userData, postData } from "../data/index.js";
 
 router
     .route("/")
@@ -13,9 +13,12 @@ router
             });
         }
         try {
-            res.render("search", {});
+            res.render("search", { title: "Search" });
         } catch (e) {
-            res.status(500).json({ error: e });
+            return res.status(500).render("error", {
+                title: "Error",
+                errmsg: e
+            });
         }
     })
     .post(async (req, res) => {
@@ -25,23 +28,69 @@ router
                 errmsg: "401: You need to be logged in to access this page."
             });
         }
-        const searchTerm = req.body.searchText;
-        const searchType = req.body.searchType;
         try {
-            searchTerm = helpers.returnValidString(searchTerm).toLowerCase();
-            searchType = helpers.returnValidString(searchType);
-            if (searchType == "users") {
-                const userSearch = await findByUsername(searchTerm);
-                if (!userSearch) {
-                    throw "No user found with that name";
-                } else {
-                    res.redirect(`user/${searchTerm}`);
+            req.body.searchText = helpers.returnValidString(
+                req.body.searchText
+            ); // the regex is already case insensitive by default, so lets leave it
+            helpers.checkEmptyString(req.body.searchText);
+
+            req.body.searchType = helpers
+                .returnValidString(req.body.searchType)
+                .toLowerCase();
+            helpers.checkEmptyString(req.body.searchType);
+
+            if (req.body.searchType === "users") {
+                const results = await userData.searchUsers(req.body.searchText);
+                if (results.length === 0) {
+                    return res.render("search", {
+                        title: "Search",
+                        errmsg: `We couldn't find any results for '${req.body.searchText}'. Please try again.`,
+                        typeIsUsers: true,
+                        searchText: req.body.searchText
+                    });
                 }
+                return res.render("search", {
+                    title: "Search Results",
+                    results: results,
+                    typeIsUsers: true,
+                    searchText: req.body.searchText
+                });
+            } else if (req.body.searchType === "playlists") {
+                return res.status(500).render("error", {
+                    title: "Error",
+                    errmsg: "Other search types not yet implemented!",
+                    typeIsPlaylists: true
+                });
+            } else if (req.body.searchType === "posts") {
+                const results = await postData.searchPosts(
+                    req.session.user._id,
+                    req.body.searchText
+                );
+                if (results.length === 0) {
+                    return res.render("search", {
+                        title: "Search",
+                        errmsg: `We couldn't find any results for '${req.body.searchText}'. Please try again.`,
+                        typeIsPosts: true,
+                        searchText: req.body.searchText
+                    });
+                }
+                return res.render("search", {
+                    title: "Search Results",
+                    results: results,
+                    typeIsPosts: true,
+                    searchText: req.body.searchText
+                });
             } else {
-                //implement playlist search !!!
+                return res.status(500).render("error", {
+                    title: "Error",
+                    errmsg: `Unexpected value for search type '${req.body.searchType}'`
+                });
             }
         } catch (e) {
-            res.status(500).json({ error: e });
+            return res.status(500).render("error", {
+                title: "Error",
+                errmsg: e
+            });
         }
     });
 

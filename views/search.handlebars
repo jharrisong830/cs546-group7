@@ -2,13 +2,30 @@
 
 
 <form action="/search" method="POST" id="searchForm"> 
-<label for="searchType">
-    What would you like to search for?
-</label>
-<select id="searchType" name="searchType">
-            <option value="users">Users</option>
-            <option value="playlists">Playlists</option>
-        </select>
-<input type="text" id="searchText" name="searchText">
-<input type="submit" value="Search">
+    <label for="searchType">
+        What would you like to search for?
+    </label>
+    <select id="searchType" name="searchType">
+        <option value="users" {{#if typeIsUsers}} selected {{/if}}>Users</option> {{!-- dynamically select based on previous submission--}}
+        <option value="playlists" {{#if typeIsPlaylists}} selected {{/if}}>Playlists</option>
+        <option value="posts" {{#if typeIsPosts}} selected {{/if}}>Posts</option>
+    </select>
+    <input type="text" id="searchText" name="searchText" value="{{searchText}}">
+    <input type="submit" value="Search">
 </form>
+
+<div id="error">{{errmsg}}</div>
+
+<div id="searchResults">
+    {{#if typeIsUsers}}
+        {{#each results}}
+        {{> userCardView}}
+        {{/each}}
+    {{else if typeIsPlaylists}}
+        TODO
+    {{else}} {{!-- typeIsPosts --}}
+        {{#each results}}
+        {{> postCardView}}
+        {{/each}}
+    {{/if}}
+</div>
