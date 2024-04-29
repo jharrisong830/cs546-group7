@@ -1,6 +1,6 @@
 <h1> Welcome </h1>
 <h2> Messages, where all the magic happens </h2>
-<form action="/messages" method="POST">
+<form id="messageForm" method="POST" action="/{{recipientUsername}}/messages">
   <div class="form-group">
     <label for="username">Username:</label>
     <input type="text" id="username" name="username" class="form-control" required>
@@ -13,8 +13,8 @@
 </form>
 {{#each messages}}
     <div>
-        <h5>From: {{fromUser}}</h5>
-        <h6>Time: {{time}}</h6>
-        <p>{{message}}</p>
+        <h5>From: {{this.senderId}}</h5>
+        <h6>Time: {{this.timestamp}}</h6>
+        <p>{{this.content}}</p>
     </div>
 {{/each}}
