@@ -42,7 +42,8 @@ const createPost = async (
         likes: [],
         comments: [],
         createTime: currTime,
-        lastUpdated: currTime
+        lastUpdated: currTime,
+        tags: []
     };
 
     const userCol = await users();
