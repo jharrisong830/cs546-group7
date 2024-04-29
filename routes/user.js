@@ -57,7 +57,27 @@ router
     } catch (e) {
         return res.status(404).render("error", { title: "Error", errmsg: e });
     }
-});
+})
+    .post(async (req, res) => {
+        if (!req.session.user) {
+            return res.status(401).render("error", {
+                title: "Error",
+                errmsg: "401: You need to be logged in to send a message."
+            });
+        }
+        try {
+            const senderUsername = req.session.user.username;
+            const recipientUsername = req.params.username;
+            const messageContent = req.body.message;
+
+            const newMessage = await userData.createMessage(messageContent, senderUsername, recipientUsername);
+
+            // Redirect to the messages page
+            // res.redirect(`/${recipientUsername}/messages`);
+        } catch (e) {
+            return res.status(500).render("error", { title: "Error", errmsg: e });
+        };
+    });
 router
     .route("/:username/edit")
     .get(async (req, res) => {

@@ -743,7 +743,6 @@ const exportedMethods = {
     updateUser,
     deleteUser,
     createMessage,
-    getMessages
 };
 
 export default exportedMethods;
