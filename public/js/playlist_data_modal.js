@@ -5,6 +5,8 @@
 
 const genres = ["acoustic","afrobeat","alt-rock","alternative","ambient","anime","black-metal","bluegrass","blues","bossanova","brazil","breakbeat","british","cantopop","chicago-house","children","chill","classical","club","comedy","country","dance","dancehall","death-metal","deep-house","detroit-techno","disco","disney","drum-and-bass","dub","dubstep","edm","electro","electronic","emo","folk","forro","french","funk","garage","german","gospel","goth","grindcore","groove","grunge","guitar","happy","hard-rock","hardcore","hardstyle","heavy-metal","hip-hop","holidays","honky-tonk","house","idm","indian","indie","indie-pop","industrial","iranian","j-dance","j-idol","j-pop","j-rock","jazz","k-pop","kids","latin","latino","malay","mandopop","metal","metal-misc","metalcore","minimal-techno","movies","mpb","new-age","new-release","opera","pagode","party","philippines-opm","piano","pop","pop-film","post-dubstep","power-pop","progressive-house","psych-rock","punk","punk-rock","r-n-b","rainy-day","reggae","reggaeton","road-trip","rock","rock-n-roll","rockabilly","romance","sad","salsa","samba","sertanejo","show-tunes","singer-songwriter","ska","sleep","songwriter","soul","soundtracks","spanish","study","summer","swedish","synth-pop","tango","techno","trance","trip-hop","turkish","work-out","world-music"];
 
+let tagCount = 1;
+
 $("#submitSearchCatalog").click((event) => {
     // song search bar (mimics a form)
     const searchText = $("#searchCatalog").val().trim();
@@ -102,14 +104,18 @@ $("#postModal").on("shown.bs.modal", (event) => {
             // Allow for tag selection
             $('.tag-label').removeAttr('hidden');
             $('#customTags').removeAttr('hidden');
-            let tagCount = 1;
+
+            if (tagCount < 3){
+                $('#addTagButton').removeAttr('hidden');
+            }
 
             $('#addTagButton').click(function(event) {
                 event.preventDefault();
 
-                tagCount++;
-
-                $(`#customTag${tagCount}`).removeAttr('hidden');
+                if (tagCount < 3) {
+                    tagCount++;
+                    $(`#customTag${tagCount}`).removeAttr('hidden');
+                }
                     
                 // Disable the button if the maximum number of tags is reached
                 if (tagCount === 3) {
@@ -175,6 +181,10 @@ $("#postModal").on("shown.bs.modal", (event) => {
             if (!$('.tag-insert').attr('hidden')) {
                 $('.tag-insert').attr('hidden', true);
             }
+
+            if (!$('#addTagButton').attr('hidden')) {
+                $('#addTagButton').attr('hidden', true);
+            }
         } 
         else {
             // hopefully shouldn't hit this...
@@ -196,6 +206,17 @@ $("#postModal").on("hidden.bs.modal", (event) => {
     $("#textContentOuter").val(innerText); // set the value of the input area to be whatever the user was typing before
 
     // now, reset all of the fields
+
+    for (let i = 1; i <= 3; i++) {
+        $(`#customTag${i}`).val('');
+        if(i !== 1){
+            $(`#customTag${i}`).attr('hidden', true);
+        }
+    }
+
+    tagCount = 1;
+
+    $('#addTagButton').removeAttr("hidden");
 
     $("#contentLoading").removeAttr("hidden");
     $(".spinner-border").removeAttr("hidden");
