@@ -11,8 +11,15 @@
     $.ajax(requestConfig).then(function (responseMessage) {
         if (!responseMessage) {
             // TODO: show error here
+            const postRenderError = $(
+                `<div class='renderError'>
+                <h1>Could not render feed posts </h1>
+                </div>`
+            )
+            feedArea.append(postRenderError);
         } else {
             responseMessage.feedPosts.forEach((feedPost) => {
+                feedPost.lastUpdated = new Date(feedPost.lastUpdated*1000).toISOString().split("T")[0];
                 const postCard = $(`
                 <div class="card mx-5 my-4">
                     <div class="card-body">
@@ -49,6 +56,7 @@
             $.ajax(requestConfig).then(function (responseMessage) {
                 if (!responseMessage.success) {
                     // TODO: display error message
+                    
                 } else {
                     let ele = $(
                         `<div class="card mx-5 my-4">
