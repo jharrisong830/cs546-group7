@@ -6,12 +6,10 @@ const router = Router();
 
 router.route("/").post(async (req, res) => {
     if (!req.session.user) {
-        return res
-            .status(401)
-            .json({
-                success: false,
-                errmsg: "You must be logged in to access this data."
-            });
+        return res.status(401).json({
+            success: false,
+            errmsg: "You must be logged in to access this data."
+        });
     }
 
     try {
@@ -19,13 +17,12 @@ router.route("/").post(async (req, res) => {
         console.log(newComment.idUrl);
         console.log(req.session.user._id);
         console.log(newComment.textContent);
-        
+
         let addedComment = await postData.commentPost(
             newComment.idUrl,
             req.session.user._id,
             newComment.textContent
         );
-
 
         return res.json({ success: true, addedComment: addedComment }); // redirect to the user's profile
     } catch (e) {

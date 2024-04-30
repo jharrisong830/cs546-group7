@@ -44,7 +44,7 @@
         let musicContent = $('input[name="musicContentId"]:checked');
 
         let tags = [];
-        for (let i = 1; i <= 3; i++) { 
+        for (let i = 1; i <= 3; i++) {
             let genre = $(`select[name="tag${i}"]`).val();
             tags.push(genre);
         }
@@ -58,14 +58,13 @@
                     textContent: newPost,
                     musicContentId: musicContent.val(),
                     musicContentType: musicContent.attr("content-type"), // custom attribute for the input tag, to vary between song/album/playlist
-                    tags: tags 
+                    tags: tags
                 })
             };
 
             $.ajax(requestConfig).then(function (responseMessage) {
                 if (!responseMessage.success) {
                     // TODO: display error message
-                    
                 } else {
                     let ele = $(
                         `<div class="card mx-5 my-4">

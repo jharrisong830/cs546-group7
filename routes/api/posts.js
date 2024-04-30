@@ -19,7 +19,7 @@ router.route("/").post(async (req, res) => {
         let musicItem = {};
 
         // Just make the array empty if each element is '' (happens when user selects tags but then chooses catalog)
-        if (newPost.tags.every(item => item === '')) {
+        if (newPost.tags.every((item) => item === "")) {
             newPost.tags = [];
         }
 
@@ -33,7 +33,6 @@ router.route("/").post(async (req, res) => {
                 usr.SPAuth.accessToken,
                 newPost.musicContentId
             );
-
         } else if (newPost.musicContentType === "song") {
             const usr = await authentication.SPRequestRefresh(
                 req.session.user._id
