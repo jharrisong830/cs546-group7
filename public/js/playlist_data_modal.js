@@ -279,7 +279,7 @@ $("#postModal").on("shown.bs.modal", (event) => {
                             // begin to generate html for each playlist (will be radio buttons)
                             const newPlaylistOption = $(`
                             <div class="form-check">
-                                <input required type="radio" id="${pl._id}" value="${pl._id}" content-type="${pl.type}" name="musicContentId" class="form-check-input">
+                                <input required type="radio" id="${pl._id}" value="${pl._id}" content-type="playlist" name="musicContentId" class="form-check-input">
                                 <label for="${pl._id}" class="form-check-label">
                                     <img class="" alt="${pl.name} playlist thumbnail" src="${!pl.thumbnailURL ? "" : pl.thumbnailURL}">
                                     <br>
