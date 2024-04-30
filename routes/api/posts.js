@@ -15,9 +15,15 @@ router.route("/").post(async (req, res) => {
 
     try {
         let newPost = req.body;
-        console.log(req.body);
 
         let musicItem = {};
+
+        // Just make the array empty if each element is '' (happens when user selects tags but then chooses catalog)
+        if (newPost.tags.every(item => item === '')) {
+            newPost.tags = [];
+        }
+
+        console.log(req.body);
 
         if (newPost.musicContentType === "playlist") {
             const usr = await authentication.SPRequestRefresh(
@@ -54,7 +60,8 @@ router.route("/").post(async (req, res) => {
         let addedPost = await postData.createPost(
             req.session.user._id,
             musicItem,
-            newPost.textContent
+            newPost.textContent,
+            newPost.tags
         );
 
         return res.json({ success: true, addedPost: addedPost }); // redirect to the user's profile

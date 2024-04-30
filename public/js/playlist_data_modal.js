@@ -184,7 +184,10 @@ $("#postModal").on("shown.bs.modal", (event) => {
             $("#searchCatalogContainer").removeAttr("hidden");
             $("#contentLoading").attr("hidden", true);
             $(".spinner-border").attr("hidden", true);
-
+            $(`#customTag1`).val('');
+            $(`#customTag2`).val('');
+            $(`#customTag3`).val('');
+        
             // Hide the tag options if it isn't already hidden
             if (!$('.tag-label').attr('hidden')) {
                 $('.tag-label').attr('hidden', true);
