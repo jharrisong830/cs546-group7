@@ -225,7 +225,7 @@ const generateFeed = async (id) => {
 
     const postCol = await posts();
     const feedPosts = await postCol
-        .find({ authorId: { $in: usr.friends } }) // get all posts by this user's friends
+        .find({ authorId: { $in: usr.friends.concat([id]) } }) // get all posts by this user's friends, and this user!
         .sort({ lastUpdated: -1 }) // sort in descending order
         .toArray();
 
@@ -304,8 +304,11 @@ const likePost = async (id, userId) => {
 const commentPost = async (id, userId, commentText) => {
     id = vld.checkObjectId(id);
     userId = vld.checkObjectId(userId);
+
     commentText = vld.returnValidString(commentText);
     vld.checkEmptyString(commentText);
+
+    const usr = await userData.getUser(userId);
 
     const currTime = Math.floor(Date.now() / 1000); // get unix epoch seconds
     let commentId = new ObjectId();
@@ -313,6 +316,7 @@ const commentPost = async (id, userId, commentText) => {
     let comment = {
         _id: commentId,
         authorId: userId,
+        authorUsername: usr.username,
         parentId: id,
         textContent: commentText,
         likes: [],

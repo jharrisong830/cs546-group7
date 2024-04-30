@@ -185,6 +185,12 @@ let emmaPost2 = await postData.createPost(
 
 // await userData.deleteUser(user1._id); // user1 should disappear from database, along with all posts
 
+let newComment = await postData.commentPost(
+    emmaPost2._id,
+    user1._id,
+    "This is a test of the comments!"
+);
+
 console.log("All done, database ready!");
 
 // console.log(await postData.generateFeed(user1._id));

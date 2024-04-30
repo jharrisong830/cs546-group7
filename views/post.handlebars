@@ -11,16 +11,22 @@
         {{!--<input type="button" value="Like" onclick="like({{id}}, {{userId}})"> --}}
         {{#if likes.length}}
         <p>{{likes.length}}</p>
+        {{else}}
+        <p>0</p>
         {{/if}}
         {{!- add musicContent view here}}
     </div>
     <form id="newComment">
-        <input type="text" id="textComment" class="form-control" placeholder="What are your thoughts on this post?">
-        <input type="submit" class="btn btn-secondary" value="Add comment"></input>
+        <div class="input-group">
+            <input type="text" id="textComment" class="form-control" placeholder="Comment your thoughts">
+            <button type="submit" class="btn btn-secondary" id="commentButton" disabled>Add Comment</button>
+        </div>
     </form>
 </div>
-<div id="commentArea">
-   {{!-- }} {{#each commentItem}} {{>commentItem}} {{/each}} --}}
+<div class="container" id="commentArea">
+    {{#each comments}}
+    {{> commentItem}}
+    {{/each}}
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
