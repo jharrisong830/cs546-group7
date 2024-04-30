@@ -16,6 +16,7 @@ const MOD_NAME = "data/posts.js";
  * @param {string | ObjectId} authorId  the user creating this post
  * @param {Object} musicContent         music content of the post (a music item object returned from our api functions in ./api)
  * @param {string} textContent          text content of the post
+ * @param {string[]} tagArr             array of genre tags, each a string describing a genre; maximum of three tags allowed
  *
  * @returns {Object} the registered post object, as it was inserted into the database collection
  * @throws on invalid input or if there is an error adding/updating the object to the database collection
@@ -23,7 +24,8 @@ const MOD_NAME = "data/posts.js";
 const createPost = async (
     authorId,
     musicContent, // assume validated since this is coming from our own functions that interface with the apis
-    textContent
+    textContent,
+    tagArr // assume validated since its options are chosen from a dropdown menu
 ) => {
     authorId = vld.checkObjectId(authorId);
 
@@ -42,7 +44,8 @@ const createPost = async (
         likes: [],
         comments: [],
         createTime: currTime,
-        lastUpdated: currTime
+        lastUpdated: currTime,
+        tags: tagArr
     };
 
     const userCol = await users();

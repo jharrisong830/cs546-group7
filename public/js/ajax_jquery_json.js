@@ -42,6 +42,13 @@
         event.preventDefault();
         let newPost = newPostText.val();
         let musicContent = $('input[name="musicContentId"]:checked');
+
+        let tags = [];
+        for (let i = 1; i <= 3; i++) { 
+            let genre = $(`select[name="tag${i}"]`).val();
+            tags.push(genre);
+        }
+
         if (newPost) {
             let requestConfig = {
                 method: "POST",
@@ -50,7 +57,8 @@
                 data: JSON.stringify({
                     textContent: newPost,
                     musicContentId: musicContent.val(),
-                    musicContentType: musicContent.attr("content-type") // custom attribute for the input tag, to vary between song/album/playlist
+                    musicContentType: musicContent.attr("content-type"), // custom attribute for the input tag, to vary between song/album/playlist
+                    tags: tags 
                 })
             };
 
