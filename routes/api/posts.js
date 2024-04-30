@@ -15,6 +15,7 @@ router.route("/").post(async (req, res) => {
 
     try {
         let newPost = req.body;
+        console.log(req.body);
 
         let musicItem = {};
 
@@ -26,10 +27,6 @@ router.route("/").post(async (req, res) => {
                 usr.SPAuth.accessToken,
                 newPost.musicContentId
             );
-
-            if (newPost.tags && Array.isArray(newPost.tags)) { // Added tags to musicItem
-                musicItem.tags = newPost.tags;
-            } 
 
         } else if (newPost.musicContentType === "song") {
             const usr = await authentication.SPRequestRefresh(
