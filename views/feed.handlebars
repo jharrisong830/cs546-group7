@@ -50,15 +50,21 @@
                         <br>
                         <br>
 
-                        <!-- Added tag features -->
+                        <!-- Tag features -->
                         <label for="playlistTags" class="tag-label" hidden>Tag your playlist:</label>
                         <div id="customTags" class="tag-insert" hidden>
-                            <input type="text" id="customTag1" class="form-control mt-2" placeholder="What's the vibe?"/>
-                            <input type="text" id="customTag2" class="form-control mt-2" placeholder="What's the vibe?" hidden/>
-                            <input type="text" id="customTag3" class="form-control mt-2" placeholder="What's the vibe?" hidden/>
+                            <select id="customTag1" class="form-control mt-2 genre-dropdown">
+                                <option value="">Select a genre...</option>
+                            </select>
+                            <select id="customTag2" class="form-control mt-2 genre-dropdown" hidden>
+                                <option value="">Select a genre...</option>
+                            </select>
+                            <select id="customTag3" class="form-control mt-2 genre-dropdown" hidden>
+                                <option value="">Select a genre...</option>
+                            </select>
                         </div>
                         <button id="addTagButton" class="btn btn-primary mt-2">Add Tag</button>
-                         <!-- Added tag features -->
+                        <!-- Tag features -->
 
                         <div class="container" id="searchCatalogContainer" hidden>
                             <label for="searchCatalog" class="form-label">Search the Spotify Catalog</label>
