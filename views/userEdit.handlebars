@@ -1,16 +1,17 @@
-<div class="container">
+<div class="container pt-5 pb-3 px-3" id="titleContainer">
     {{#if hasName}}
-        <h2>{{user.name}}</h2>
-        <h4>@{{user.username}}</h4>
+        <h2 class="text-body-emphasis">{{user.name}}</h2>
+        <h5 class="text-body-secondary">@{{user.username}}</h5>
     {{else}}
         <h2>@{{user.username}}</h2>
     {{/if}}
-
-    <a href="/user/{{user.username}}">Back to profile.</a>
 </div>
+
+<hr>
 
 
 <div class="container">
+    <h4>Profile Info</h4>
     <form method="POST" action="/user/{{user.username}}/edit" id="editUser">
         <div class="row">
             <div class="col">
@@ -44,15 +45,13 @@
 
         <label>Profile Type</label>
 
-        <div class="form-check"> {{! TODO: fix formatting for bootstrap --}}
+        <div class="form-check"> 
             <input required type="radio" id="public" value="public" name="publicProfile" class="form-check-input" 
                 {{#if user.publicProfile}} checked {{/if}}>
             <label for="public" class="form-check-label">Public</label>
         </div>
 
         <div class="form-check">
-            <br>
-
             <input required type="radio" id="private" value="private" name="publicProfile" class="form-check-input"
                 {{#unless user.publicProfile}} checked {{/unless}}>
             <label for="private" class="form-check-label">Private</label>
@@ -60,29 +59,47 @@
 
         <br>
 
-        <button type="submit" class="btn btn-primary">Submit Changes</button>
+        <div class="row">
+            <div class="col">
+                <button type="submit" class="btn btn-primary">Submit Changes</button>
+                <a href="/user/{{user.username}}" role="button" class="btn btn-secondary">Cancel</a>
+            </div>
+        </div>
     </form>
 
 
     <div hidden id="error">{{errmsg}}</div>
 </div>
 
+<hr>
+
 <div class="container">
-    <div class="row pt-2 text-center">
+    <h4>Connections and Accounts</h4>
+    <div class="row py-2">
         <div class="col">
             {{#if user.SPAuth}} <!-- display connect/remove depending on auth data in the database -->
                 <a href="/auth/spotify/remove" role="button" class="btn btn-outline-success">Remove Spotify Account</a>
             {{else}}
                 <a href="/auth/spotify" role="button" class="btn btn-success">Connect Spotify Account</a>
             {{/if}}
+        </div>
+    </div>
+    <div class="row py-2">
+        <div class="col">
             {{#if user.AMAuth}}
                 <a href="/auth/appleMusic/remove" role="button" class="btn btn-outline-danger" id="musickit-js-unauth">Remove Apple Music Account</a>
             {{else}}
                 <a href="javascript:void(0)" role="button" class="btn btn-danger" id="musickit-js-auth">Connect Apple Music Account</a>
             {{/if}}
+        </div>
+    </div>
+    {{#if user.AMAuth}}
+    <div class="row py-2">
+        <div class="col">
             <a href="javascript:void(0)" role="button" class="btn btn-dark" id="testButton">Test to console log playlist!</a>
         </div>
     </div>
+    {{/if}}
 </div>
 
 

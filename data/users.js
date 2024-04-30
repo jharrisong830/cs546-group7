@@ -113,7 +113,7 @@ const findByUsername = async (username) => {
 
     const unames = await matchingUsernames.toArray();
 
-    if ((await unames.length) === 0) return null;
+    if (unames.length === 0) return null;
 
     return unames[0]._id; // return the _id!
 };
@@ -662,6 +662,28 @@ const deleteUser = async (id) => {
     }
 };
 
+/**
+ * searches the database for users whose name or username contains text from searchTerm
+ *
+ * @param {string} searchTerm   string to be used in keyword search of user display names and usernames
+ *
+ * @returns {[Object]} user objects found from the keyword search
+ * @throws on invalid input or if there are errors in getting/setting database entries
+ */
+const searchUsers = async (searchTerm) => {
+    searchTerm = vld.returnValidString(searchTerm);
+    vld.checkEmptyString(searchTerm);
+
+    const userCol = await users();
+    const reSearch = new RegExp(`.*${searchTerm}.*`, "gi"); // matches when searchTerm appears anywhere in the string (case insensitive)
+
+    const results = await userCol
+        .find({ $or: [{ username: reSearch }, { name: reSearch }] })
+        .toArray(); // match on both usernames and display names
+
+    return results;
+};
+
 const exportedMethods = {
     registerUser,
     getUser,
@@ -679,7 +701,8 @@ const exportedMethods = {
     checkBlocked,
     toggleProfileVisibility,
     updateUser,
-    deleteUser
+    deleteUser,
+    searchUsers
 };
 
 export default exportedMethods;
