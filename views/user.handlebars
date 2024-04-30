@@ -1,24 +1,27 @@
-<div class="container">
+<div class="container pt-5 pb-3 px-3" id="titleContainer">
     {{#if hasName}}
-        <h2>{{user.name}}</h2>
-        <h4>@{{user.username}}</h4>
+        <h2 class="text-body-emphasis">{{user.name}}</h2>
+        <h5 class="text-body-secondary">@{{user.username}}</h5>
     {{else}}
         <h2>@{{user.username}}</h2>
     {{/if}}
 
-
-{{#if isCurrent}}
-<a href="/user/{{user.username}}/edit">Edit your profile here.</a>
-<br>
-{{/if}}
-<a href="/">Go to home.</a>
+    <div class="row pt-2">
+        <div class="col">
+            <a href="/" role="button" class="btn btn-secondary">Home</a>
+            <a href="/logout" role="button" class="btn btn-danger">Log Out</a>
+            {{#if isCurrent}}
+                <a href="/user/{{user.username}}/edit" role="button" class="btn btn-primary">Edit Profile</a>
+            {{/if}}
+        </div>
+    </div>
 </div>
 
 <hr>
 
-{{#if showProfile}}
-<div class="container">
 
+<div class="container">
+    {{#if showProfile}}
     {{#with user}}
         <div class="container">
             <h4>Posts</h4>
@@ -48,7 +51,6 @@
     {{/with}}
 
 {{else}}
-<h1>{{user.username}} has made their profile private. Send them a <a href="/TODO">friend request to see their profile.</a></h1>
+<h5 class="lead text-body-secondary">{{user.username}} has made their profile private. Send them a <a href="/TODO">friend request to see their profile.</a></h5>
 {{/if}}
-
 </div>
