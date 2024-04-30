@@ -65,6 +65,7 @@
             $.ajax(requestConfig).then(function (responseMessage) {
                 if (!responseMessage.success) {
                     // TODO: display error message
+                    
                 } else {
                     let ele = $(
                         `<div class="card mx-5 my-4">

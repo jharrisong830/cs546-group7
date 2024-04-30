@@ -1,0 +1,27 @@
+<div class="card mx-5 my-4" id="{{_id}}">
+    <div class="card-body">
+        <h5 class="card-title text-body-emphasis">{{author}}</h5>
+        {{#if edited}}
+        <p>Edited:</p>
+        {{/if}}
+        <h6 class="card-subtitle mb-2">{{updated}}</h6>
+
+        <p class="card-text">{{text}}</p>
+        {{!- add function call to onclick for button}}
+        {{!--<input type="button" value="Like" onclick="like({{id}}, {{userId}})"> --}}
+        {{#if likes.length}}
+        <p>{{likes.length}}</p>
+        {{/if}}
+        {{!- add musicContent view here}}
+    </div>
+    <form id="newComment">
+        <input type="text" id="textComment" class="form-control" placeholder="What are your thoughts on this post?">
+        <input type="submit" class="btn btn-secondary" value="Add comment"></input>
+    </form>
+</div>
+<div id="commentArea">
+   {{!-- }} {{#each commentItem}} {{>commentItem}} {{/each}} --}}
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<script src="/public/js/ajax_comment_json.js"></script> 
