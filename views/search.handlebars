@@ -1,0 +1,48 @@
+<div class="container text-center py-5 px-3" id="titleContainer">
+    <h1 class="display-6 text-body-emphasis fw-medium">Search</h1>
+    <h2 class="lead text-body-secondary">Find your new favorite music.</h2>
+
+    <div class="row pt-2 text-center">
+        <div class="col">
+            <a href="/" role="button" class="btn btn-secondary">Home</a>
+        </div>
+    </div>
+</div>
+
+
+<div class="container" id="formContainer">
+    <form action="/search" method="POST" id="searchForm"> 
+        <label for="searchType">
+            What would you like to search for?
+        </label>
+        <div class="row">
+            <div class="col-3">
+                <select class="form-select" id="searchType" name="searchType">
+                    <option value="users" {{#if typeIsUsers}} selected {{/if}}>Users</option> {{!-- dynamically select based on previous submission--}}
+                    <option value="playlists" {{#if typeIsPlaylists}} selected {{/if}}>Playlists</option>
+                    <option value="posts" {{#if typeIsPosts}} selected {{/if}}>Posts</option>
+                </select>
+            </div>
+            <div class="col input-group">
+                <input type="text" id="searchText" name="searchText" class="form-control" placeholder="Search" value="{{searchText}}">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+    </form>
+
+    <div id="error">{{errmsg}}</div>
+</div>
+
+<div id="searchResults">
+    {{#if typeIsUsers}}
+        {{#each results}}
+        {{> userCardView}}
+        {{/each}}
+    {{else if typeIsPlaylists}}
+        TODO
+    {{else}} {{!-- typeIsPosts --}}
+        {{#each results}}
+        {{> postCardView}}
+        {{/each}}
+    {{/if}}
+</div>

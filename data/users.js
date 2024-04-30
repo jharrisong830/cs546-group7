@@ -113,7 +113,7 @@ const findByUsername = async (username) => {
 
     const unames = await matchingUsernames.toArray();
 
-    if ((await unames.length) === 0) return null;
+    if (unames.length === 0) return null;
 
     return unames[0]._id; // return the _id!
 };
@@ -519,17 +519,13 @@ const addSPAccessData = async (id, accessToken, expiryTime, refreshToken) => {
  * given a user id, add the supplied api access data as a AMAuth subdocument
  *
  * @param {string | ObjectId} id    id of user to be updated
- * @param {string} AMDevToken       JWT developer token
  * @param {string} musicUserToken   access token used to get data from AM API
  *
  * @returns {Object} updated user
  * @throws if the update was unsuccessful (i.e. id was not found), or if input is invalid
  */
-const addAMAccessData = async (id, AMDevToken, musicUserToken) => {
+const addAMAccessData = async (id, musicUserToken) => {
     id = vld.checkObjectId(id); // validates and converts to object id
-
-    AMDevToken = vld.returnValidString(AMDevToken);
-    vld.checkEmptyString(AMDevToken);
 
     musicUserToken = vld.returnValidString(musicUserToken);
     vld.checkEmptyString(musicUserToken);
@@ -542,7 +538,6 @@ const addAMAccessData = async (id, AMDevToken, musicUserToken) => {
                 // id is converted to ObjectId, so just set the thing
                 AMAuth: {
                     // add the AMAuth subdocument
-                    AMDevToken: AMDevToken,
                     musicUserToken: musicUserToken
                 }
             }
@@ -667,6 +662,28 @@ const deleteUser = async (id) => {
     }
 };
 
+/**
+ * searches the database for users whose name or username contains text from searchTerm
+ *
+ * @param {string} searchTerm   string to be used in keyword search of user display names and usernames
+ *
+ * @returns {[Object]} user objects found from the keyword search
+ * @throws on invalid input or if there are errors in getting/setting database entries
+ */
+const searchUsers = async (searchTerm) => {
+    searchTerm = vld.returnValidString(searchTerm);
+    vld.checkEmptyString(searchTerm);
+
+    const userCol = await users();
+    const reSearch = new RegExp(`.*${searchTerm}.*`, "gi"); // matches when searchTerm appears anywhere in the string (case insensitive)
+
+    const results = await userCol
+        .find({ $or: [{ username: reSearch }, { name: reSearch }] })
+        .toArray(); // match on both usernames and display names
+
+    return results;
+};
+
 const exportedMethods = {
     registerUser,
     getUser,
@@ -684,7 +701,8 @@ const exportedMethods = {
     checkBlocked,
     toggleProfileVisibility,
     updateUser,
-    deleteUser
+    deleteUser,
+    searchUsers
 };
 
 export default exportedMethods;

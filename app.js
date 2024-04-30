@@ -3,7 +3,7 @@ import session from "express-session";
 import configRoutes from "./routes/index.js";
 import exphbs from "express-handlebars";
 import mid from "./helpers/middleware.js";
-import { postData } from "./data/index.js";
+
 const app = express();
 
 app.use("/public", express.static("public"));

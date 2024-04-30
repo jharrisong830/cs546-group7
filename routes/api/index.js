@@ -5,7 +5,7 @@ import commentAPI from "./comments.js";
 
 const router = Router();
 
-router.use("/posts", postAPI); // TODO: better routing?
+router.use("/posts", postAPI);
 router.use("/music", musicAPI);
 router.use("/comments", commentAPI);
 

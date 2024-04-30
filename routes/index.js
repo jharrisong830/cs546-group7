@@ -9,6 +9,7 @@ import loginRoutes from "./login.js";
 import rootRoute from "./root.js";
 import userRoutes from "./user.js";
 import api from "./api/index.js";
+import searchRoutes from "./search.js";
 import postRoutes from "./post.js";
 
 const constructorMethod = (app) => {
@@ -20,6 +21,7 @@ const constructorMethod = (app) => {
     app.use('/post', postRoutes);
 
     app.use("/api", api);
+    app.use("/search", searchRoutes);
 
     app.use("/", rootRoute); // root renders the homepage (needed to separate into router to prevent undefined routes from working)
 

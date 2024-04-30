@@ -1,61 +1,110 @@
-<section>
+<div class="container pt-5 pb-3 px-3" id="titleContainer">
     {{#if hasName}}
-        <h2>{{user.name}}</h2>
-        <h4>@{{user.username}}</h4>
+        <h2 class="text-body-emphasis">{{user.name}}</h2>
+        <h5 class="text-body-secondary">@{{user.username}}</h5>
     {{else}}
         <h2>@{{user.username}}</h2>
     {{/if}}
+</div>
 
-    <a href="/user/{{user.username}}">Back to profile.</a>
-</section>
+<hr>
 
 
-<section>
+<div class="container">
+    <h4>Profile Info</h4>
+    <form method="POST" action="/user/{{user.username}}/edit" id="editUser">
+        <div class="row">
+            <div class="col">
+                <label for="username" class="form-label">Username</label>
+                <div class="input-group">
+                    <span class="input-group-text">@</span>
+                    <input id="username" name="username" type="text" placeholder="Username" class="form-control">
+                </div>
+            </div>
 
-        <form method="POST" action="/user/{{user.username}}/edit" id="editUser">
-            <label for="username">Username</label>
-            <input id="username" name="username" type="text" placeholder="Username">
+            <div class="col">
+                <label for="name" class="form-label">Display Name</label>
+                <input id="name" name="name" type="text" placeholder="Display name (optional)" class="form-control">
+            </div>
+        </div>
 
-            <br>
 
-            <label for="name">Display Name</label>
-            <input id="name" name="name" type="text" placeholder="Display name (optional)">
+        <br>
 
-            <br>
+        <label for="password" class="form-label">Password</label>
+        <input id="password" name="password" type="password" placeholder="Password" class="form-control">
 
-            <label for="password">New Password</label>
-            <input id="password" name="password" type="password" placeholder="Password">
+        <br>
 
-            <br>
+        <label for="confirmPassword" class="form-label">Comfirm Password</label>
+        <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm Password"
+            class="form-control">
 
-            <label for="confirmPassword">Comfirm New Password</label>
-            <input id="confirmPassword" name="confirmPassword" type="password" placeholder="Confirm New Password">
+        <br>
 
-            <br>
 
-            <label>Profile Type</label>
+        <label>Profile Type</label>
 
-            <br>
+        <div class="form-check"> 
+            <input required type="radio" id="public" value="public" name="publicProfile" class="form-check-input" 
+                {{#if user.publicProfile}} checked {{/if}}>
+            <label for="public" class="form-check-label">Public</label>
+        </div>
 
-            <input required type="radio" id="public" value="public" name="publicProfile" 
-                {{#if user.publicProfile}} checked {{/if}}> <!-- check if profile is public -->
-            <label for="public">Public</label>
+        <div class="form-check">
+            <input required type="radio" id="private" value="private" name="publicProfile" class="form-check-input"
+                {{#unless user.publicProfile}} checked {{/unless}}>
+            <label for="private" class="form-check-label">Private</label>
+        </div>
 
-            <br>
+        <br>
 
-            <input required type="radio" id="private" value="private" name="publicProfile" 
-                {{#unless user.publicProfile}} checked {{/unless}}> <!-- check if profile is NOT public -->
-            <label for="private">Private</label>
-
-            <br>
-
-            <button type="submit">Submit Changes</button>
-        </form>
+        <div class="row">
+            <div class="col">
+                <button type="submit" class="btn btn-primary">Submit Changes</button>
+                <a href="/user/{{user.username}}" role="button" class="btn btn-secondary">Cancel</a>
+            </div>
+        </div>
+    </form>
 
 
     <div hidden id="error">{{errmsg}}</div>
-</section>
+</div>
+
+<hr>
+
+<div class="container">
+    <h4>Connections and Accounts</h4>
+    <div class="row py-2">
+        <div class="col">
+            {{#if user.SPAuth}} <!-- display connect/remove depending on auth data in the database -->
+                <a href="/auth/spotify/remove" role="button" class="btn btn-outline-success">Remove Spotify Account</a>
+            {{else}}
+                <a href="/auth/spotify" role="button" class="btn btn-success">Connect Spotify Account</a>
+            {{/if}}
+        </div>
+    </div>
+    <div class="row py-2">
+        <div class="col">
+            {{#if user.AMAuth}}
+                <a href="/auth/appleMusic/remove" role="button" class="btn btn-outline-danger" id="musickit-js-unauth">Remove Apple Music Account</a>
+            {{else}}
+                <a href="javascript:void(0)" role="button" class="btn btn-danger" id="musickit-js-auth">Connect Apple Music Account</a>
+            {{/if}}
+        </div>
+    </div>
+    {{#if user.AMAuth}}
+    <div class="row py-2">
+        <div class="col">
+            <a href="javascript:void(0)" role="button" class="btn btn-dark" id="testButton">Test to console log playlist!</a>
+        </div>
+    </div>
+    {{/if}}
+</div>
 
 
 <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<script src="https://js-cdn.music.apple.com/musickit/v3/musickit.js" async></script>
+
+<script src="/public/js/musickit/musickit_init.js"></script>
 <script type='text/javascript' src='/public/js/edit_validation.js'></script>

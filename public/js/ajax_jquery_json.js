@@ -15,11 +15,13 @@
                 `<div class='renderError'>
                 <h1>Could not render feed posts </h1>
                 </div>`
-            )
+            );
             feedArea.append(postRenderError);
         } else {
             responseMessage.feedPosts.forEach((feedPost) => {
-                feedPost.lastUpdated = new Date(feedPost.lastUpdated*1000).toISOString().split("T")[0];
+                feedPost.lastUpdated = new Date(feedPost.lastUpdated * 1000)
+                    .toISOString()
+                    .split("T")[0];
                 const postCard = $(`
                 <div class="card mx-5 my-4">
                     <div class="card-body">
@@ -39,6 +41,14 @@
     newPostForm.submit(function (event) {
         event.preventDefault();
         let newPost = newPostText.val();
+        let musicContent = $('input[name="musicContentId"]:checked');
+
+        let tags = [];
+        for (let i = 1; i <= 3; i++) { 
+            let genre = $(`select[name="tag${i}"]`).val();
+            tags.push(genre);
+        }
+
         if (newPost) {
             let requestConfig = {
                 method: "POST",
@@ -46,10 +56,9 @@
                 contentType: "application/json",
                 data: JSON.stringify({
                     textContent: newPost,
-                    musicContentId: $(
-                        'input[name="musicContentId"]:checked'
-                    ).val(),
-                    musicContentType: "playlist" // TODO: vary this
+                    musicContentId: musicContent.val(),
+                    musicContentType: musicContent.attr("content-type"), // custom attribute for the input tag, to vary between song/album/playlist
+                    tags: tags 
                 })
             };
 

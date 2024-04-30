@@ -17,15 +17,15 @@ const router = Router();
 
 const codes = await authentication.getPKCECodes(64);
 
-router.route("/").get((req, res) => {
-    if (!req.session.user) {
-        return res.status(401).render("error", {
-            title: "Error",
-            errmsg: "401: You need to be logged in to access this page."
-        });
-    }
-    return res.render("auth", { title: "Authorize" });
-});
+// router.route("/").get((req, res) => {
+//     if (!req.session.user) {
+//         return res.status(401).render("error", {
+//             title: "Error",
+//             errmsg: "401: You need to be logged in to access this page."
+//         });
+//     }
+//     return res.render("auth", { title: "Authorize" });
+// });
 
 router.route("/spotify").get((req, res) => {
     if (!req.session.user) {
@@ -84,27 +84,42 @@ router.route("/spotify/success").get(async (req, res) => {
             data.refresh_token
         ); // store in database!
 
-        return res.json({ updatedUser: usr, status: "success" }); // TODO: don't actually display this to user, handle and associate access token with user profile to use for api requests
+        return res.redirect(`/user/${req.session.user.username}/edit`); // redirect to user's profile edit page
     } catch (e) {
-        return res.status(500).json({ error: e });
-    }
-});
-
-router.route("/apple-music").get((req, res) => {
-    if (!req.session.user) {
-        return res.status(401).render("error", {
+        return res.status(500).render("error", {
             title: "Error",
-            errmsg: "401: You need to be logged in to access this page."
+            errmsg: e
         });
     }
-    const devToken = authentication.AMGenerateDevToken();
-    return res.render("auth/apple-music", {
-        title: "am test",
-        AMDevToken: devToken
-    });
 });
 
-router.route("/apple-music/success").get(async (req, res) => {
+router.route("/spotify/remove").get(async (req, res) => {
+    try {
+        const usr = await userData.removeSPAccessData(req.session.user._id); // ezpz, just remove the spotify info and redirect on success
+        return res.redirect(`/user/${req.session.user.username}/edit`);
+    } catch (e) {
+        return res.status(500).render("error", {
+            title: "Error",
+            errmsg: e
+        });
+    }
+});
+
+// router.route("/apple-music").get((req, res) => {
+//     if (!req.session.user) {
+//         return res.status(401).render("error", {
+//             title: "Error",
+//             errmsg: "401: You need to be logged in to access this page."
+//         });
+//     }
+//     const devToken = authentication.AMGenerateDevToken();
+//     return res.render("auth/apple-music", {
+//         title: "am test",
+//         AMDevToken: devToken
+//     });
+// });
+
+router.route("/appleMusic/success").get(async (req, res) => {
     if (!req.session.user) {
         return res.status(401).render("error", {
             title: "Error",
@@ -112,16 +127,33 @@ router.route("/apple-music/success").get(async (req, res) => {
         });
     }
     let mut = req.query.mut || null; // try to get music user token from query params
-    let devToken = req.query.devToken || null; // try to get music user token from query params
-    if (mut === null || devToken === null) {
+    if (mut === null) {
         return res.status(500).render("error", {
             title: "Error",
             errmsg: "500: issue getting apple music user token"
         });
     }
-    await userData.addAMAccessData(req.session.user._id, devToken, mut);
+    try {
+        await userData.addAMAccessData(req.session.user._id, mut);
+        return res.redirect(`/user/${req.session.user.username}/edit`);
+    } catch (e) {
+        return res.status(500).render("error", {
+            title: "Error",
+            errmsg: e
+        });
+    }
+});
 
-    return res.json({ authData: req.query.mut, status: "success" }); // TODO: don't actually display this to user, handle and associate access token with user profile to use for api requests
+router.route("/appleMusic/remove").get(async (req, res) => {
+    try {
+        const usr = await userData.removeAMAccessData(req.session.user._id); // same as spotify! just remove entry from database
+        return res.redirect(`/user/${req.session.user.username}/edit`);
+    } catch (e) {
+        return res.status(500).render("error", {
+            title: "Error",
+            errmsg: e
+        });
+    }
 });
 
 export default router;

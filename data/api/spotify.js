@@ -281,7 +281,7 @@ const getPlaylist = async (accessToken, playlistId) => {
  * returns an album subdocument, representing the requested album
  *
  * @param {string} accessToken  user-specific access token for accessing the spotify api
- * @param {string} albumId   spotify id for the requested album
+ * @param {string} albumId      spotify id for the requested album
  *
  * @returns {Object} album subdocument with the data for albumId
  * @throws if input is invalid or if an error occurs in fetching the data
@@ -396,6 +396,48 @@ const searchCatalog = async (accessToken, str) => {
     return results;
 };
 
+/**
+ * returns thumbnail artwork of the requested album
+ *
+ * @param {string} accessToken  user-specific access token for accessing the spotify api
+ * @param {string} albumId      spotify id for the requested album
+ *
+ * @returns {string | null} url link to artwork, null if artwork does not exist
+ * @throws if input is invalid or if an error occurs in fetching the data
+ */
+const getArtwork = async (accessToken, albumId) => {
+    accessToken = vld.returnValidString(accessToken);
+    vld.checkEmptyString(accessToken);
+
+    albumId = vld.returnValidString(albumId);
+    vld.checkEmptyString(albumId);
+
+    const accessHeader = {
+        Authorization: `Bearer ${accessToken}`
+    };
+
+    const { data } = await axios.get(
+        `https://api.spotify.com/v1/albums/${albumId}`,
+        {
+            headers: accessHeader
+        }
+    );
+
+    if (!data)
+        errorMessage(MOD_NAME, "getArtwork", "Could not complete API request.");
+    if (Object.keys(data).includes("error")) {
+        errorMessage(
+            MOD_NAME,
+            "getArtwork",
+            `Response does not contain valid data: ${data}`
+        );
+    }
+
+    return Object.keys(data).includes("images") && data.images.length > 0
+        ? data.images[0].url
+        : null;
+};
+
 const exportedMethods = {
     getUserId,
     getPrivatePlaylistsForPreview,
@@ -403,7 +445,8 @@ const exportedMethods = {
     getPlaylist,
     searchCatalog,
     getSong,
-    getAlbum
+    getAlbum,
+    getArtwork
 };
 
 export default exportedMethods;
