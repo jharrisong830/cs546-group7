@@ -1,18 +1,144 @@
-
 // Array from: https://developer.spotify.com/documentation/web-api/reference/get-recommendation-genres
 // Now changed so tags are chosen from a dropdown of genres
 
-const genresArray = ["acoustic","afrobeat","alt-rock","alternative","ambient","anime","black-metal","bluegrass","blues","bossanova","brazil","breakbeat","british","cantopop","chicago-house","children","chill","classical","club","comedy","country","dance","dancehall","death-metal","deep-house","detroit-techno","disco","disney","drum-and-bass","dub","dubstep","edm","electro","electronic","emo","folk","forro","french","funk","garage","german","gospel","goth","grindcore","groove","grunge","guitar","happy","hard-rock","hardcore","hardstyle","heavy-metal","hip-hop","holidays","honky-tonk","house","idm","indian","indie","indie-pop","industrial","iranian","j-dance","j-idol","j-pop","j-rock","jazz","k-pop","kids","latin","latino","malay","mandopop","metal","metal-misc","metalcore","minimal-techno","movies","mpb","new-age","new-release","opera","pagode","party","philippines-opm","piano","pop","pop-film","post-dubstep","power-pop","progressive-house","psych-rock","punk","punk-rock","r-n-b","rainy-day","reggae","reggaeton","road-trip","rock","rock-n-roll","rockabilly","romance","sad","salsa","samba","sertanejo","show-tunes","singer-songwriter","ska","sleep","songwriter","soul","soundtracks","spanish","study","summer","swedish","synth-pop","tango","techno","trance","trip-hop","turkish","work-out","world-music"];
+const genresArray = [
+    "acoustic",
+    "afrobeat",
+    "alt-rock",
+    "alternative",
+    "ambient",
+    "anime",
+    "black-metal",
+    "bluegrass",
+    "blues",
+    "bossanova",
+    "brazil",
+    "breakbeat",
+    "british",
+    "cantopop",
+    "chicago-house",
+    "children",
+    "chill",
+    "classical",
+    "club",
+    "comedy",
+    "country",
+    "dance",
+    "dancehall",
+    "death-metal",
+    "deep-house",
+    "detroit-techno",
+    "disco",
+    "disney",
+    "drum-and-bass",
+    "dub",
+    "dubstep",
+    "edm",
+    "electro",
+    "electronic",
+    "emo",
+    "folk",
+    "forro",
+    "french",
+    "funk",
+    "garage",
+    "german",
+    "gospel",
+    "goth",
+    "grindcore",
+    "groove",
+    "grunge",
+    "guitar",
+    "happy",
+    "hard-rock",
+    "hardcore",
+    "hardstyle",
+    "heavy-metal",
+    "hip-hop",
+    "holidays",
+    "honky-tonk",
+    "house",
+    "idm",
+    "indian",
+    "indie",
+    "indie-pop",
+    "industrial",
+    "iranian",
+    "j-dance",
+    "j-idol",
+    "j-pop",
+    "j-rock",
+    "jazz",
+    "k-pop",
+    "kids",
+    "latin",
+    "latino",
+    "malay",
+    "mandopop",
+    "metal",
+    "metal-misc",
+    "metalcore",
+    "minimal-techno",
+    "movies",
+    "mpb",
+    "new-age",
+    "new-release",
+    "opera",
+    "pagode",
+    "party",
+    "philippines-opm",
+    "piano",
+    "pop",
+    "pop-film",
+    "post-dubstep",
+    "power-pop",
+    "progressive-house",
+    "psych-rock",
+    "punk",
+    "punk-rock",
+    "r-n-b",
+    "rainy-day",
+    "reggae",
+    "reggaeton",
+    "road-trip",
+    "rock",
+    "rock-n-roll",
+    "rockabilly",
+    "romance",
+    "sad",
+    "salsa",
+    "samba",
+    "sertanejo",
+    "show-tunes",
+    "singer-songwriter",
+    "ska",
+    "sleep",
+    "songwriter",
+    "soul",
+    "soundtracks",
+    "spanish",
+    "study",
+    "summer",
+    "swedish",
+    "synth-pop",
+    "tango",
+    "techno",
+    "trance",
+    "trip-hop",
+    "turkish",
+    "work-out",
+    "world-music"
+];
 
 let tagCount = 1;
 
 function populateDropdown(genres) {
-    $(".form-control.mt-2.genre-dropdown").each(function() {
+    $(".form-control.mt-2.genre-dropdown").each(function () {
         const select = $(this);
         select.empty(); // Clear current options
-        select.append($('<option>', { value: "", text: "Select a genre..." }));
-        genres.forEach(genre => {
-            select.append($('<option>', { value: genre, text: genre }));
+        select.append($("<option>", { value: "", text: "Select a genre..." }));
+        genres.forEach((genre) => {
+            select.append($("<option>", { value: genre, text: genre }));
         });
     });
 }
@@ -112,26 +238,25 @@ $("#postModal").on("shown.bs.modal", (event) => {
             .trim()
             .toLowerCase(); // get the checked option (determines the view)
         if (currChecked === "playlists") {
-
             // Allow for tag selection
-            $('.tag-label').removeAttr('hidden');
-            $('#customTags').removeAttr('hidden');
+            $(".tag-label").removeAttr("hidden");
+            $("#customTags").removeAttr("hidden");
 
             if (tagCount < 3) {
-                $('#addTagButton').removeAttr('hidden');
+                $("#addTagButton").removeAttr("hidden");
             }
 
-            $('#addTagButton').click(function(event) {
+            $("#addTagButton").click(function (event) {
                 event.preventDefault();
 
                 if (tagCount < 3) {
                     tagCount++;
-                    $(`#customTag${tagCount}`).removeAttr('hidden');
+                    $(`#customTag${tagCount}`).removeAttr("hidden");
                 }
-                    
+
                 // Disable the button if the maximum number of tags is reached
                 if (tagCount === 3) {
-                    $('#addTagButton').attr('hidden', true);
+                    $("#addTagButton").attr("hidden", true);
                 }
             });
 
@@ -179,29 +304,27 @@ $("#postModal").on("shown.bs.modal", (event) => {
                     $(".spinner-border").attr("hidden", true);
                 }
             );
-        } 
-        else if (currChecked === "catalog") {
+        } else if (currChecked === "catalog") {
             $("#searchCatalogContainer").removeAttr("hidden");
             $("#contentLoading").attr("hidden", true);
             $(".spinner-border").attr("hidden", true);
-            $(`#customTag1`).val('');
-            $(`#customTag2`).val('');
-            $(`#customTag3`).val('');
-        
+            $(`#customTag1`).val("");
+            $(`#customTag2`).val("");
+            $(`#customTag3`).val("");
+
             // Hide the tag options if it isn't already hidden
-            if (!$('.tag-label').attr('hidden')) {
-                $('.tag-label').attr('hidden', true);
-            }
-            
-            if (!$('.tag-insert').attr('hidden')) {
-                $('.tag-insert').attr('hidden', true);
+            if (!$(".tag-label").attr("hidden")) {
+                $(".tag-label").attr("hidden", true);
             }
 
-            if (!$('#addTagButton').attr('hidden')) {
-                $('#addTagButton').attr('hidden', true);
+            if (!$(".tag-insert").attr("hidden")) {
+                $(".tag-insert").attr("hidden", true);
             }
-        } 
-        else {
+
+            if (!$("#addTagButton").attr("hidden")) {
+                $("#addTagButton").attr("hidden", true);
+            }
+        } else {
             // hopefully shouldn't hit this...
             $("#error").html(
                 `Current checked item is ${currChecked}... I don't think you're supposed to be here`
@@ -223,14 +346,14 @@ $("#postModal").on("hidden.bs.modal", (event) => {
     // now, reset all of the fields
 
     for (let i = 1; i <= 3; i++) {
-        if(i !== 1){
-            $(`#customTag${i}`).attr('hidden', true);
+        if (i !== 1) {
+            $(`#customTag${i}`).attr("hidden", true);
         }
     }
 
     tagCount = 1;
 
-    $('#addTagButton').removeAttr("hidden");
+    $("#addTagButton").removeAttr("hidden");
 
     $("#contentLoading").removeAttr("hidden");
     $(".spinner-border").removeAttr("hidden");
@@ -241,4 +364,3 @@ $("#postModal").on("hidden.bs.modal", (event) => {
     $("#contentSelector").html("");
     $("#contentSelector").attr("hidden", true);
 });
-

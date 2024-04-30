@@ -1,10 +1,7 @@
-
-let newCommentForm = $('#newComment'),
-commentArea = $('#commentArea'),
-textComment = $('#textComment'),
-idUrl = $('div').first().attr('id');
-
-
+let newCommentForm = $("#newComment"),
+    commentArea = $("#commentArea"),
+    textComment = $("#textComment"),
+    idUrl = $("div").first().attr("id");
 
 newCommentForm.submit((event) => {
     event.preventDefault();
@@ -17,7 +14,8 @@ newCommentForm.submit((event) => {
             data: JSON.stringify({
                 textContent: newComment,
                 idUrl: idUrl
-        })}
+            })
+        };
         $.ajax(requestConfig).then(function (responseMessage) {
             //console.log(responseMessage.addedComment);
             if (!responseMessage.success) {
@@ -25,7 +23,7 @@ newCommentForm.submit((event) => {
                     `<div class='renderError'>
                     <h1>Could not render comments </h1>
                     </div>`
-                )
+                );
                 commentArea.append(postRenderError);
             } else {
                 let ele = $(
@@ -40,8 +38,7 @@ newCommentForm.submit((event) => {
                 );
                 commentArea.prepend(ele);
                 textComment.val(""); // clear the input value...
-
             }
-        })
-    } 
-})
+        });
+    }
+});

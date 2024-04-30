@@ -152,11 +152,21 @@ firstPost = await postData.updatePost(
     "I updated this post. The update time should be after that of my second post"
 );
 
-let emmaPost1 = await postData.createPost(user2._id, {}, "Hello from Emma!", []);
+let emmaPost1 = await postData.createPost(
+    user2._id,
+    {},
+    "Hello from Emma!",
+    []
+);
 
 await new Promise((resolve) => setTimeout(resolve, 5000));
 
-let justinPost = await postData.createPost(user4._id, {}, "Hello from Justin!", []);
+let justinPost = await postData.createPost(
+    user4._id,
+    {},
+    "Hello from Justin!",
+    []
+);
 
 await new Promise((resolve) => setTimeout(resolve, 5000));
 
