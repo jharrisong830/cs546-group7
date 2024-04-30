@@ -55,6 +55,7 @@ router.route("/").post(async (req, res) => {
                 errmsg: "Unexpected music content type."
             });
         }
+        console.log(musicItem);
 
         let addedPost = await postData.createPost(
             req.session.user._id,

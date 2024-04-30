@@ -17,7 +17,6 @@ newCommentForm.submit((event) => {
             })
         };
         $.ajax(requestConfig).then(function (responseMessage) {
-            //console.log(responseMessage.addedComment);
             if (!responseMessage.success) {
                 const postRenderError = $(
                     `<div class='renderError'>

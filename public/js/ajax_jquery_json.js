@@ -63,6 +63,7 @@
             };
 
             $.ajax(requestConfig).then(function (responseMessage) {
+                console.log(responseMessage);
                 if (!responseMessage.success) {
                     // TODO: display error message
                 } else {
@@ -73,6 +74,8 @@
                             <h6 class="card-subtitle mb-2">${responseMessage.addedPost.lastUpdated}</h6>
         
                             <p class="card-text">${responseMessage.addedPost.textContent}</p>
+
+                            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/${responseMessage.addedPost.musicContent.type === "song" ? "track" : responseMessage.addedPost.musicContent.type}/${responseMessage.addedPost.musicContent._id}?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
                             <a href="/post/${responseMessage.addedPost._id}" role="button" class="btn btn-outline-dark btn-sm stretched-link">View Post</a>
                         </div>
                     </div>`
@@ -86,3 +89,5 @@
         }
     });
 })(window.jQuery);
+
+/*<iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/3gBrgOKZRKfOSgKrTNWE2y?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe> */
