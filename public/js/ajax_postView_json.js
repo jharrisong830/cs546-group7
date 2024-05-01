@@ -3,7 +3,7 @@ let newCommentForm = $("#newComment"),
     textComment = $("#textComment"),
     idUrl = $("div").first().attr("id"),
     likeButton = $("#likeButton"),
-    likes = $("#likes");
+    likes = $(".likes");
 
 newCommentForm.submit((event) => {
     event.preventDefault();
@@ -65,7 +65,22 @@ likeButton.on("click", function (event) {
         })
     };
     $.ajax(requestConfig).then(function (responseMessage) {
-        const curLikes = (parseInt(likes.text()) + 1).toString();
-        likes.text(`${curLikes} Likes`);
+        let curLikes = 0;
+        if (responseMessage.liked) {
+            curLikes = (parseInt(likes.text().split(" ")[0]) + 1).toString();
+            if (curLikes == 1) {
+                likes.text(`${curLikes} Like`);
+            } else {
+                likes.text(`${curLikes} Likes`);
+            }
+        } else {
+            const curLikes = (parseInt(likes.text().split(" ")[0]) + 1).toString();
+            if (curLikes == 1) {
+                likes.text(`${curLikes} Like`);
+            } else {
+                likes.text(`${curLikes} Likes`);
+            }
+        }
+
     });
 });
