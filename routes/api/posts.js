@@ -24,7 +24,7 @@ router.route("/").post(async (req, res) => {
             newPost.tags = [];
         }
 
-        console.log(req.body);
+        //console.log(req.body);
 
         if (newPost.musicContentType === "playlist") {
             const usr = await authentication.SPRequestRefresh(
@@ -94,14 +94,19 @@ router.route("/user/:username").get(async (req, res) => {
         });
     }
     try {
-        const user = await userData.findByUsername(
-            req.originalUrl.split("/user/")[1]
-        );
+        const user = await userData.findByUsername(req.params.username);
         const userPosts = await postData.getUserPosts(user);
         return res.json({ success: true, userPosts: userPosts });
     } catch (e) {
         return res.status(500).json({ success: false, errmsg: e });
     }
+});
+
+router.route("/like").post(async (req, res) => {
+    console.log(req.body);
+    const userID = req.session.user._id;
+    const liked = await postData.likePost(req.body.idUrl, userID);
+    return res.json({ success: true });
 });
 
 export default router;

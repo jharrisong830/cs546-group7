@@ -1,7 +1,9 @@
 let newCommentForm = $("#newComment"),
     commentArea = $("#commentArea"),
     textComment = $("#textComment"),
-    idUrl = $("div").first().attr("id");
+    idUrl = $("div").first().attr("id"),
+    likeButton = $("#likeButton"),
+    likes = $("#likes");
 
 newCommentForm.submit((event) => {
     event.preventDefault();
@@ -50,4 +52,20 @@ textComment.keyup((event) => {
     } else {
         commentButton.removeAttr("disabled");
     }
+});
+
+likeButton.on("click", function (event) {
+    event.preventDefault();
+    let requestConfig = {
+        method: "POST",
+        url: "/api/posts/like",
+        contentType: "application/json",
+        data: JSON.stringify({
+            idUrl: idUrl
+        })
+    };
+    $.ajax(requestConfig).then(function (responseMessage) {
+        const curLikes = (parseInt(likes.text()) + 1).toString();
+        likes.text(`${curLikes} Likes`);
+    });
 });
