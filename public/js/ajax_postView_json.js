@@ -19,6 +19,7 @@ newCommentForm.submit((event) => {
             })
         };
         $.ajax(requestConfig).then(function (responseMessage) {
+            console.log(responseMessage);
             if (!responseMessage.success) {
                 const postRenderError = $(
                     `<div class='renderError'>
@@ -27,13 +28,16 @@ newCommentForm.submit((event) => {
                 );
                 commentArea.append(postRenderError);
             } else {
+                responseMessage.addedComment.createTime = new Date(responseMessage.addedComment.createTime * 1000)
+                    .toISOString()
+                    .split("T")[0];
                 let ele = $(`
                 <div class="card mx-5 my-4">
                     <div class="card-body">
                         <h5 class="card-title text-body-emphasis">${responseMessage.addedComment.authorUsername}</h5>
-                        <h6 class="card-subtitle mb-2">${responseMessage.addedComment.lastUpdated}</h6>
+                        <h6 class="card-subtitle mb-2">${responseMessage.addedComment.createTime}</h6>
                 
-                        <p class="card-text">{{textContent}}</p>
+                        <p class="card-text">${responseMessage.addedComment.textContent}</p>
                     </div>
                 </div>
                 `);

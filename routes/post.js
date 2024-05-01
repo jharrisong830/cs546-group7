@@ -22,6 +22,9 @@ router.route("/:postId").get(async (req, res) => {
             updated = post.lastUpdated;
         updated = new Date(updated * 1000).toISOString().split("T")[0];
         const edited = post.lastUpdated !== post.createTime;
+        for (let i=0;i<comments.length;i++) {
+            comments[i].createTime = new Date(comments[i].createTime * 1000).toISOString().split("T")[0];
+        }
         res.render("post", {
             title: `Post by @${author}`,
             author: author,
