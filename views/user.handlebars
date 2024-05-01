@@ -26,15 +26,11 @@
         <div class="container">
             <h4>Posts</h4>
             {{#if posts.length}}
-                <ul>
-                    {{#each posts}}
-                        <li>{{this}}</li>
-                    {{/each}}
-                </ul>
             {{else}}
                 <p>{{username}} hasn't made any posts yet.</p>
             {{/if}}
         </div>
+        <div id="postArea"></div>
 
         <div class="container">
             <h4>Comments</h4>
@@ -54,3 +50,6 @@
 <h5 class="lead text-body-secondary">{{user.username}} has made their profile private. Send them a <a href="/TODO">friend request to see their profile.</a></h5>
 {{/if}}
 </div>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<script src="/public/js/ajax_user_json.js"></script>

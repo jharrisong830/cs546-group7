@@ -1,6 +1,7 @@
 import { Router } from "express";
-import { userData } from "../data/index.js";
+import { userData, postData } from "../data/index.js";
 import vld from "../helpers/validation.js";
+import { post } from "ajax";
 
 const router = Router();
 
@@ -25,11 +26,9 @@ router.route("/:username").get(async (req, res) => {
                 errmsg: `404: user '${req.params.username}' was not found`
             });
         }
-
         const usr = await userData.getUser(userId);
         const currUser = await userData.getUser(req.session.user._id); // get friend ids as strings
         const currUserFriends = currUser.friends.map((fr) => fr.toString());
-
         return res.render("user", {
             title: usr.username,
             hasName: usr.name !== null,

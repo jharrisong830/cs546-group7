@@ -2,6 +2,7 @@ import { Router } from "express";
 import xss from "xss";
 import { postData, SPData, userData } from "../../data/index.js";
 import authentication from "../../helpers/authentication.js";
+import { post } from "ajax";
 
 const router = Router();
 
@@ -80,6 +81,22 @@ router.route("/feed").get(async (req, res) => {
     try {
         const feedPosts = await postData.generateFeed(req.session.user._id);
         return res.json({ success: true, feedPosts: feedPosts });
+    } catch (e) {
+        return res.status(500).json({ success: false, errmsg: e });
+    }
+});
+
+router.route("/user").get(async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({
+            success: false,
+            errmsg: "You must be logged in to access this data."
+        });
+    }
+    try {
+        const userPosts = await postData.getUserPosts(req.session.user._id);
+        console.log(userPosts);
+        return res.json({ success: true, userPosts: userPosts });
     } catch (e) {
         return res.status(500).json({ success: false, errmsg: e });
     }
