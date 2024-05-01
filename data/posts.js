@@ -242,10 +242,11 @@ const generateFeed = async (id) => {
 /**
  * Likes a post given a specific post id.
  * Takes in the user id and adds the id of the user who is liking the post to the Likes array.
+ * If the post is already liked by the user, it removes their like.
  *
  * @param {string | ObjectId} id       the post id to like
  * @param {string | ObjectId} userId   the user id of the user liking the post
- *
+ * @returns {Promise<boolean>}         returns true if post was liked, false if unliked
  * @throws if the operation is unsuccessful
  */
 const likePost = async (id, userId) => {
@@ -253,6 +254,48 @@ const likePost = async (id, userId) => {
     userId = vld.checkObjectId(userId);
 
     const postCol = await posts();
+
+    const likedPost = await postCol.findOne({ _id: id, likes: userId });
+    if (likedPost) { // The user has already like the post
+        const updateInfo = await postCol.updateOne(
+            { _id: id },
+            { $pull: { likes: userId } } 
+        );
+
+        if (
+            !updateInfo ||
+            updateInfo.matchedCount === 0 ||
+            updateInfo.modifiedCount === 0
+        ) {
+            errorMessage(
+                MOD_NAME,
+                "likePost",
+                `Unable to like this post. It might not exist.`
+            );
+        }
+        
+        const userCol = await users();
+        const userUpdateInfo = await userCol.updateOne(
+            { _id: userId },
+            { $pull: { postLikes: id } }
+        );
+
+        if (
+            !userUpdateInfo ||
+            userUpdateInfo.matchedCount === 0 ||
+            userUpdateInfo.modifiedCount === 0
+        ) {
+            errorMessage(
+                MOD_NAME,
+                "likePost",
+                `Unable to like this post. It might not exist.`
+            );
+        }
+
+        return false; // Return false to resemble the post being unliked
+    }
+
+    // Only will reach this if user hasn't liked the post already
     const updateInfo = await postCol.updateOne(
         { _id: id },
         { $push: { likes: userId } }
@@ -289,6 +332,8 @@ const likePost = async (id, userId) => {
             `Unable to like this post. It might not exist.`
         );
     }
+
+    return true; // Return true to resemble the post being liked
 };
 
 /**
@@ -368,10 +413,11 @@ const commentPost = async (id, userId, commentText) => {
 /**
  * Likes a comment belonging to a specific post id.
  * Takes in the user id and adds the id of the user who is liking the comment to the Likes array.
+ * If the comment is already liked by the user, it removes their like.
  *
  * @param {string | ObjectId} commentId   the comment id of the comment being liked
  * @param {string | ObjectId} userId      the user id of the user liking the comment
- *
+ * @returns {Promise<boolean>}            returns true if comment was liked, false if unliked
  * @throws if the operation is unsuccessful
  */
 const likeComment = async (commentId, userId) => {
@@ -379,6 +425,51 @@ const likeComment = async (commentId, userId) => {
     userId = vld.checkObjectId(userId);
 
     const postCol = await posts();
+
+    const likedComment = await postCol.findOne({ "comments._id": commentId, "comments.likes": userId });
+
+    if (likedComment) { // User has already liked the comment, so remove their like
+        const updateInfo = await postCol.updateOne(
+            { "comments._id": commentId },
+            { $pull: { "comments.$.likes": userId } } 
+        );
+
+        if (
+            !updateInfo ||
+            updateInfo.matchedCount === 0 ||
+            updateInfo.modifiedCount === 0
+        ) {
+            errorMessage(
+                MOD_NAME,
+                "likePost",
+                `Unable to like this post. It might not exist.`
+            );
+        }
+
+        const userCol = await users();
+        const userUpdateInfo = await userCol.updateOne(
+            { _id: userId },
+            {
+                $pull: { commentLikes: commentId }
+            }
+        );
+
+        if (
+            !userUpdateInfo ||
+            userUpdateInfo.matchedCount === 0 ||
+            userUpdateInfo.modifiedCount === 0
+        ) {
+            errorMessage(
+                MOD_NAME,
+                "likeComment",
+                `Unable to like this comment. It might not exist.`
+            );
+        }
+
+        return false; // Return false to resemble the post being unliked
+    }
+
+    // Only will reach this if user hasn't liked the post already
     const updateInfo = await postCol.updateOne(
         { "comments._id": commentId },
         {
@@ -417,6 +508,8 @@ const likeComment = async (commentId, userId) => {
             `Unable to like this comment. It might not exist.`
         );
     }
+
+    return true; // Return true to resemble the post being liked
 };
 
 // implement the adding of ratings to playlists, will work similar to comments, with extra fields to add ratings (x/5)
