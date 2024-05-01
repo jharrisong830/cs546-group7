@@ -29,6 +29,7 @@ router.route("/:username").get(async (req, res) => {
         const usr = await userData.getUser(userId);
         const currUser = await userData.getUser(req.session.user._id); // get friend ids as strings
         const currUserFriends = currUser.friends.map((fr) => fr.toString());
+        console.log(usr);
         return res.render("user", {
             title: usr.username,
             hasName: usr.name !== null,

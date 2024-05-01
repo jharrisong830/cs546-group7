@@ -13,7 +13,7 @@ router.route("/:postId").get(async (req, res) => {
 
     try {
         const post = await postData.getPost(req.params.postId);
-        console.log(post);
+        //console.log(post);
         let author = post.authorUsername,
             text = post.textContent,
             music = post.musicContent,
