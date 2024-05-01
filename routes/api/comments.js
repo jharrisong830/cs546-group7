@@ -14,9 +14,6 @@ router.route("/").post(async (req, res) => {
 
     try {
         let newComment = req.body;
-        console.log(newComment.idUrl);
-        console.log(req.session.user._id);
-        console.log(newComment.textContent);
 
         let addedComment = await postData.commentPost(
             newComment.idUrl,

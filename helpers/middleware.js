@@ -2,8 +2,6 @@
  * middleware functions
  */
 
-import { postData } from "../data/index.js";
-
 const MOD_NAME = "helpers/middleware.js";
 
 /**

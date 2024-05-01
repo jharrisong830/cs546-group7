@@ -2,6 +2,7 @@ import { Router } from "express";
 import xss from "xss";
 import { postData, SPData, userData } from "../../data/index.js";
 import authentication from "../../helpers/authentication.js";
+import { post } from "ajax";
 
 const router = Router();
 
@@ -23,7 +24,7 @@ router.route("/").post(async (req, res) => {
             newPost.tags = [];
         }
 
-        console.log(req.body);
+        //console.log(req.body);
 
         if (newPost.musicContentType === "playlist") {
             const usr = await authentication.SPRequestRefresh(
@@ -33,7 +34,7 @@ router.route("/").post(async (req, res) => {
                 usr.SPAuth.accessToken,
                 newPost.musicContentId
             );
-        } else if (newPost.musicContentType === "song") {
+        } else if (newPost.musicContentType === "track") {
             const usr = await authentication.SPRequestRefresh(
                 req.session.user._id
             );
@@ -55,6 +56,7 @@ router.route("/").post(async (req, res) => {
                 errmsg: "Unexpected music content type."
             });
         }
+        console.log(musicItem);
 
         let addedPost = await postData.createPost(
             req.session.user._id,
@@ -82,6 +84,29 @@ router.route("/feed").get(async (req, res) => {
     } catch (e) {
         return res.status(500).json({ success: false, errmsg: e });
     }
+});
+
+router.route("/user/:username").get(async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({
+            success: false,
+            errmsg: "You must be logged in to access this data."
+        });
+    }
+    try {
+        const user = await userData.findByUsername(req.params.username);
+        const userPosts = await postData.getUserPosts(user);
+        return res.json({ success: true, userPosts: userPosts });
+    } catch (e) {
+        return res.status(500).json({ success: false, errmsg: e });
+    }
+});
+
+router.route("/like").post(async (req, res) => {
+    console.log(req.body);
+    const userID = req.session.user._id;
+    const liked = await postData.likePost(req.body.idUrl, userID);
+    return res.json({ success: true, liked:liked });
 });
 
 export default router;

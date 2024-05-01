@@ -24,14 +24,16 @@
                     .split("T")[0];
                 const postCard = $(`
                 <div class="card mx-5 my-4">
-                    <div class="card-body">
-                        <h5 class="card-title text-body-emphasis">${feedPost.authorUsername}</h5>
-                        <h6 class="card-subtitle mb-2">${feedPost.lastUpdated}</h6>
+                        <div class="card-body">
+                            <h5 class="card-title text-body-emphasis">${feedPost.authorUsername}</h5>
+                            <h6 class="card-subtitle mb-2">${feedPost.lastUpdated}</h6>
+        
+                            <p class="card-text">${feedPost.textContent}</p>
 
-                        <p class="card-text">${feedPost.textContent}</p>
-                        <a href="/post/${feedPost._id}" role="button" class="btn btn-outline-dark btn-sm stretched-link">View Post</a>
+                            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/${feedPost.musicContent.type}/${feedPost.musicContent._id}?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                            <a href="/post/${feedPost._id}" role="button" class="btn btn-outline-dark btn-sm stretched-link">View Post</a>
+                        </div>
                     </div>
-                </div>
                 `);
                 feedArea.append(postCard);
             });
@@ -63,9 +65,15 @@
             };
 
             $.ajax(requestConfig).then(function (responseMessage) {
+                //console.log(responseMessage);
                 if (!responseMessage.success) {
                     // TODO: display error message
                 } else {
+                    responseMessage.addedPost.lastUpdated = new Date(
+                        responseMessage.addedPost.lastUpdated * 1000
+                    )
+                        .toISOString()
+                        .split("T")[0];
                     let ele = $(
                         `<div class="card mx-5 my-4">
                         <div class="card-body">
@@ -73,6 +81,8 @@
                             <h6 class="card-subtitle mb-2">${responseMessage.addedPost.lastUpdated}</h6>
         
                             <p class="card-text">${responseMessage.addedPost.textContent}</p>
+
+                            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/${responseMessage.addedPost.musicContent.type}/${responseMessage.addedPost.musicContent._id}?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
                             <a href="/post/${responseMessage.addedPost._id}" role="button" class="btn btn-outline-dark btn-sm stretched-link">View Post</a>
                         </div>
                     </div>`
@@ -86,3 +96,5 @@
         }
     });
 })(window.jQuery);
+
+/*<iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/3gBrgOKZRKfOSgKrTNWE2y?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe> */

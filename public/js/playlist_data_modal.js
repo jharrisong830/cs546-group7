@@ -183,7 +183,7 @@ $("#submitSearchCatalog").click((event) => {
                         <div class="form-check">
                             <input required type="radio" id="${item._id}" value="${item._id}" content-type="${item.type}" name="musicContentId" class="form-check-input">
                             <label for="${item._id}" class="form-check-label">
-                                <img class="" alt="${item.name} album artwork thumbnail" src="${
+                                <img class="apiThumbnail" alt="${item.name} album artwork thumbnail" src="${
                                     Object.keys(resOrErr).includes("success") &&
                                     resOrErr.url !== null // if request was successful and artwork exists...
                                         ? resOrErr.url // ...then use it!
@@ -279,9 +279,9 @@ $("#postModal").on("shown.bs.modal", (event) => {
                             // begin to generate html for each playlist (will be radio buttons)
                             const newPlaylistOption = $(`
                             <div class="form-check">
-                                <input required type="radio" id="${pl._id}" value="${pl._id}" content-type="${pl.type}" name="musicContentId" class="form-check-input">
+                                <input required type="radio" id="${pl._id}" value="${pl._id}" content-type="playlist" name="musicContentId" class="form-check-input">
                                 <label for="${pl._id}" class="form-check-label">
-                                    <img class="" alt="${pl.name} playlist thumbnail" src="${!pl.thumbnailURL ? "" : pl.thumbnailURL}">
+                                    <img class="apiThumbnail" alt="${pl.name} playlist thumbnail" src="${!pl.thumbnailURL ? "" : pl.thumbnailURL}">
                                     <br>
                                     <p class="text-body-emphasis">${pl.name}</p>
                                 </label>
