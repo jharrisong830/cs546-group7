@@ -1,8 +1,13 @@
-let postArea = $("#postArea");
-
+let postArea = $("#postArea"),
+    username = $("h5").first().html();
+if (username == undefined) {
+    username = $("h2").first().html().split("@")[1];
+} else {
+    username = username.split("@")[1];
+}
 let requestConfig = {
     method: "GET",
-    url: "/api/posts/user"
+    url: `/api/posts/user/${username}`
 };
 
 $.ajax(requestConfig).then(function (responseMessage) {

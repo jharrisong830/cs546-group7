@@ -86,7 +86,7 @@ router.route("/feed").get(async (req, res) => {
     }
 });
 
-router.route("/user").get(async (req, res) => {
+router.route("/user/:username").get(async (req, res) => {
     if (!req.session.user) {
         return res.status(401).json({
             success: false,
@@ -94,8 +94,10 @@ router.route("/user").get(async (req, res) => {
         });
     }
     try {
-        const userPosts = await postData.getUserPosts(req.session.user._id);
-        console.log(userPosts);
+        const user = await userData.findByUsername(
+            req.originalUrl.split("/user/")[1]
+        );
+        const userPosts = await postData.getUserPosts(user);
         return res.json({ success: true, userPosts: userPosts });
     } catch (e) {
         return res.status(500).json({ success: false, errmsg: e });
