@@ -66,6 +66,7 @@ likeButton.on("click", function (event) {
     };
     $.ajax(requestConfig).then(function (responseMessage) {
         let curLikes = 0;
+        console.log(responseMessage);
         if (responseMessage.liked) {
             curLikes = (parseInt(likes.text().split(" ")[0]) + 1).toString();
             if (curLikes == 1) {
@@ -74,7 +75,7 @@ likeButton.on("click", function (event) {
                 likes.text(`${curLikes} Likes`);
             }
         } else {
-            const curLikes = (parseInt(likes.text().split(" ")[0]) + 1).toString();
+            const curLikes = (parseInt(likes.text().split(" ")[0]) - 1).toString();
             if (curLikes == 1) {
                 likes.text(`${curLikes} Like`);
             } else {

@@ -106,7 +106,7 @@ router.route("/like").post(async (req, res) => {
     console.log(req.body);
     const userID = req.session.user._id;
     const liked = await postData.likePost(req.body.idUrl, userID);
-    return res.json({ success: true });
+    return res.json({ success: true, liked:liked });
 });
 
 export default router;
