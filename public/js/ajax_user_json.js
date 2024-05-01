@@ -31,7 +31,7 @@ $.ajax(requestConfig).then(function (responseMessage) {
     
                         <p class="card-text">${userPost.textContent}</p>
 
-                        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/${userPost.musicContent.type === "song" ? "track" : userPost.musicContent.type}/${userPost.musicContent._id}?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/${userPost.musicContent.type}/${userPost.musicContent._id}?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
                         <a href="/post/${userPost._id}" role="button" class="btn btn-outline-dark btn-sm stretched-link">View Post</a>
                     </div>
                 </div>

@@ -30,7 +30,7 @@
         
                             <p class="card-text">${feedPost.textContent}</p>
 
-                            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/${feedPost.musicContent.type === "song" ? "track" : feedPost.musicContent.type}/${feedPost.musicContent._id}?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/${feedPost.musicContent.type}/${feedPost.musicContent._id}?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
                             <a href="/post/${feedPost._id}" role="button" class="btn btn-outline-dark btn-sm stretched-link">View Post</a>
                         </div>
                     </div>
@@ -82,7 +82,7 @@
         
                             <p class="card-text">${responseMessage.addedPost.textContent}</p>
 
-                            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/${responseMessage.addedPost.musicContent.type === "song" ? "track" : responseMessage.addedPost.musicContent.type}/${responseMessage.addedPost.musicContent._id}?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/${responseMessage.addedPost.musicContent.type}/${responseMessage.addedPost.musicContent._id}?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
                             <a href="/post/${responseMessage.addedPost._id}" role="button" class="btn btn-outline-dark btn-sm stretched-link">View Post</a>
                         </div>
                     </div>`

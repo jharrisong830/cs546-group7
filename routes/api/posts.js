@@ -34,7 +34,7 @@ router.route("/").post(async (req, res) => {
                 usr.SPAuth.accessToken,
                 newPost.musicContentId
             );
-        } else if (newPost.musicContentType === "song") {
+        } else if (newPost.musicContentType === "track") {
             const usr = await authentication.SPRequestRefresh(
                 req.session.user._id
             );

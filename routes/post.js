@@ -20,9 +20,6 @@ router.route("/:postId").get(async (req, res) => {
             likes = post.likes,
             comments = post.comments,
             updated = post.lastUpdated;
-        if (music.type == "song") {
-            music.type = "track";
-        }
         updated = new Date(updated * 1000).toISOString().split("T")[0];
         const edited = post.lastUpdated !== post.createTime;
         res.render("post", {

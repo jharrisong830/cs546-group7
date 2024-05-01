@@ -126,7 +126,7 @@ const user = {
 | ---  | ---  | ---         |
 | `_id`| `string` | platform id for the song (either from Spotify or AM api) |
 | `platform` | `string: 'SP' \| 'AM'` | the platform from which the song originates (depends on the api used to retrieve the song) | 
-| `type` | `string: 'song'` | type of music resource |
+| `type` | `string: 'track'` | type of music resource |
 | `isrc` | `string` | International Standard Recording Code, used to match songs across platforms |
 | `name` | `string` | name of the song |
 | `artists` | `[string]` | name(s) of the artist(s) of the song |
@@ -191,7 +191,7 @@ const post = {
             { // example song oject
                 _id: "4PTG3Z6ehGkBFwjybzWkR8",
                 platform: "SP",
-                type: "song",
+                type: "track",
                 isrc: "GBARL9300135",
                 name: "Never Gonna Give You Up",
                 artists: ["Rick Astley"],

@@ -256,10 +256,11 @@ const likePost = async (id, userId) => {
     const postCol = await posts();
 
     const likedPost = await postCol.findOne({ _id: id, likes: userId });
-    if (likedPost) { // The user has already like the post
+    if (likedPost) {
+        // The user has already like the post
         const updateInfo = await postCol.updateOne(
             { _id: id },
-            { $pull: { likes: userId } } 
+            { $pull: { likes: userId } }
         );
 
         if (
@@ -273,7 +274,7 @@ const likePost = async (id, userId) => {
                 `Unable to like this post. It might not exist.`
             );
         }
-        
+
         const userCol = await users();
         const userUpdateInfo = await userCol.updateOne(
             { _id: userId },
@@ -426,12 +427,16 @@ const likeComment = async (commentId, userId) => {
 
     const postCol = await posts();
 
-    const likedComment = await postCol.findOne({ "comments._id": commentId, "comments.likes": userId });
+    const likedComment = await postCol.findOne({
+        "comments._id": commentId,
+        "comments.likes": userId
+    });
 
-    if (likedComment) { // User has already liked the comment, so remove their like
+    if (likedComment) {
+        // User has already liked the comment, so remove their like
         const updateInfo = await postCol.updateOne(
             { "comments._id": commentId },
-            { $pull: { "comments.$.likes": userId } } 
+            { $pull: { "comments.$.likes": userId } }
         );
 
         if (
