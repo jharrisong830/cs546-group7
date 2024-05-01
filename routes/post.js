@@ -13,13 +13,16 @@ router.route("/:postId").get(async (req, res) => {
 
     try {
         const post = await postData.getPost(req.params.postId);
-        // console.log(post);
+        console.log(post);
         let author = post.authorUsername,
             text = post.textContent,
             music = post.musicContent,
             likes = post.likes,
             comments = post.comments,
             updated = post.lastUpdated;
+        if (music.type == "song") {
+            music.type = "track";
+        }
         updated = new Date(updated * 1000).toISOString().split("T")[0];
         const edited = post.lastUpdated !== post.createTime;
         res.render("post", {
@@ -29,7 +32,9 @@ router.route("/:postId").get(async (req, res) => {
             likes: likes,
             edited: edited,
             _id: req.params.postId,
-            comments: comments
+            comments: comments,
+            musicType: music.type,
+            musicURL: music._id
         });
         //id:req.params.postId, userId: req.session.user._id});
         //res.render('post', {author: author, text:text, music:music, likes:likes,
