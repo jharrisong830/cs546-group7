@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { userData } from "../data/index.js";
 import vld from "../helpers/validation.js";
+import xss from "xss";
 
 const router = Router();
 
@@ -49,35 +50,43 @@ router
         });
     }
     try {
-        // const messages = await userData.getMessages(req.session.user.username);
+        const user = req.params.username;
+        let messages = await userData.getMessages(user);
+
+        console.log(messages)
         return res.render("messaging", {
             title: "Messages",
-            // messaging: messages
+            messages: messages,
+            recipientUsername: user
         });
     } catch (e) {
         return res.status(404).render("error", { title: "Error", errmsg: e });
     }
 })
-    .post(async (req, res) => {
-        if (!req.session.user) {
-            return res.status(401).render("error", {
-                title: "Error",
-                errmsg: "401: You need to be logged in to send a message."
-            });
-        }
-        try {
-            const senderUsername = req.session.user.username;
-            const recipientUsername = req.params.username;
-            const messageContent = req.body.message;
+.post(async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).render("error", {
+            title: "Error",
+            errmsg: "401: You need to be logged in to send a message."
+        });
+    }
+    try {
+        const senderUsername = req.session.user.username;
+        const recipientUsername = xss(req.body.username);
+        const messageContent = xss(req.body.message);
 
-            const newMessage = await userData.createMessage(messageContent, senderUsername, recipientUsername);
+        const newMessage = await userData.createMessage(messageContent, senderUsername, recipientUsername);
 
-            // Redirect to the messages page
-            // res.redirect(`/${recipientUsername}/messages`);
-        } catch (e) {
-            return res.status(500).render("error", { title: "Error", errmsg: e });
-        };
-    });
+        res.redirect(`/user/${senderUsername}/messages`);
+        console.log(newMessage);
+    } catch (e) {
+        console.error(e); 
+        return res.status(500).render("error", {
+            title: "Error",
+            errmsg: "Failed to send message: " + e.toString()
+        });
+    }
+})
 router
     .route("/:username/edit")
     .get(async (req, res) => {

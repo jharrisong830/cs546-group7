@@ -365,6 +365,7 @@ const createMessage = async (messageContent, senderUsername, recipientUsername) 
     const currTime = Math.floor(Date.now() / 1000);
     const newMessage = {
         _id: new ObjectId(),
+        from: senderUsername,
         content: messageContent,
         timestamp: currTime,
     };
@@ -381,17 +382,25 @@ const createMessage = async (messageContent, senderUsername, recipientUsername) 
     return newMessage;
 };
 
+const getMessages = async (username) => {
+    const userCol = await users(username);
+    const user = await userCol.findOne({ username: username });
+
+    if (!user) {
+        throw "User not found";
+    }
+
+    return user.messages;
+}
+
 const testMessage = async () => {
-    const senderUsername = 'jduran';
-    const recipientUsername = 'ehodor';
-    const messageContent = 'Hi Emma! Its me Justin!!'; 
-  
-    try {
-      const message = await createMessage(messageContent, senderUsername, recipientUsername);
-      console.log(message);
-    } catch (e) {
-      console.log(e);
-    } 
+    const userCol = await users();
+    const user = await userCol
+
+    const lettest = createMessage("Hello, this is a test message", "jduran", "ehodor");
+
+    return lettest;
+
 }
 
 testMessage();
@@ -743,6 +752,7 @@ const exportedMethods = {
     updateUser,
     deleteUser,
     createMessage,
+    getMessages,
 };
 
 export default exportedMethods;
