@@ -78,12 +78,10 @@ router
         const newMessage = await userData.createMessage(messageContent, senderUsername, recipientUsername);
 
         res.redirect(`/user/${senderUsername}/messages`);
-        console.log(newMessage);
     } catch (e) {
-        console.error(e); 
         return res.status(500).render("error", {
             title: "Error",
-            errmsg: "Failed to send message: " + e.toString()
+            errmsg: "Failed to send message: "
         });
     }
 })

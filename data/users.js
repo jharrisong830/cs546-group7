@@ -393,18 +393,6 @@ const getMessages = async (username) => {
     return user.messages;
 }
 
-const testMessage = async () => {
-    const userCol = await users();
-    const user = await userCol
-
-    const lettest = createMessage("Hello, this is a test message", "jduran", "ehodor");
-
-    return lettest;
-
-}
-
-testMessage();
-
 
 /**
  * toggles the visibility status of a user's profile
