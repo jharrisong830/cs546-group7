@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { userData, postData } from "../data/index.js";
 import vld from "../helpers/validation.js";
+import xss from "xss";
 import { post } from "ajax";
 
 const router = Router();
@@ -44,7 +45,51 @@ router.route("/:username").get(async (req, res) => {
         return res.status(404).render("error", { title: "Error", errmsg: e });
     }
 });
+router
+    .route("/:username/messages")
+    .get(async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).render("error", {
+            title: "Error",
+            errmsg: "401: You need to be logged in to access this page."
+        });
+    }
+    try {
+        const user = req.params.username;
+        let messages = await userData.getMessages(user);
 
+        console.log(messages)
+        return res.render("messaging", {
+            title: "Messages",
+            messages: messages,
+            recipientUsername: user
+        });
+    } catch (e) {
+        return res.status(404).render("error", { title: "Error", errmsg: e });
+    }
+})
+.post(async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).render("error", {
+            title: "Error",
+            errmsg: "401: You need to be logged in to send a message."
+        });
+    }
+    try {
+        const senderUsername = req.session.user.username;
+        const recipientUsername = xss(req.body.username);
+        const messageContent = xss(req.body.message);
+
+        const newMessage = await userData.createMessage(messageContent, senderUsername, recipientUsername);
+
+        res.redirect(`/user/${senderUsername}/messages`);
+    } catch (e) {
+        return res.status(500).render("error", {
+            title: "Error",
+            errmsg: "Failed to send message: "
+        });
+    }
+})
 router
     .route("/:username/edit")
     .get(async (req, res) => {
