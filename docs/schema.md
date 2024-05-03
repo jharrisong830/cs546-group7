@@ -111,7 +111,6 @@ const user = {
 | ---  | ---  | ---         |
 | `_id`| `ObjectId` | unique identifier for the comment |
 | `authorId` | `ObjectId` | `_id` of the user who authored the comment |
-| `authorUsername` | `string` | username of the user who authored this comment |
 | `parentId` | `ObjectId` | `_id` of the post that this comment is on |
 | `textContent` | `string` | the text content of the comment | 
 | `likes` | `[ObjectId]` | an array of `_id`s of the users who liked this comment |
@@ -126,7 +125,7 @@ const user = {
 | ---  | ---  | ---         |
 | `_id`| `string` | platform id for the song (either from Spotify or AM api) |
 | `platform` | `string: 'SP' \| 'AM'` | the platform from which the song originates (depends on the api used to retrieve the song) | 
-| `type` | `string: 'track'` | type of music resource |
+| `type` | `string: 'song'` | type of music resource |
 | `isrc` | `string` | International Standard Recording Code, used to match songs across platforms |
 | `name` | `string` | name of the song |
 | `artists` | `[string]` | name(s) of the artist(s) of the song |
@@ -164,7 +163,6 @@ const user = {
 | ---  | ---  | ---         |
 | `_id`| `ObjectId` | unique identifier for this rating |
 | `authorId` | `ObjectId` | `_id` of the user who authored this rating |
-| `authorUsername` | `string` | username of the user who authored this rating |
 | `parentId` | `string` | `_id` of the playlist that this review is on |
 | `starRating` | `number` in [1, 5] inclusive, whole numbers only | the star rating, on a scale of 1 - 5 (whole numbers only) |
 | `textContent` | `string` | the text content of the rating |
@@ -191,7 +189,7 @@ const post = {
             { // example song oject
                 _id: "4PTG3Z6ehGkBFwjybzWkR8",
                 platform: "SP",
-                type: "track",
+                type: "song",
                 isrc: "GBARL9300135",
                 name: "Never Gonna Give You Up",
                 artists: ["Rick Astley"],
