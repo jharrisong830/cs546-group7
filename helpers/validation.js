@@ -127,7 +127,7 @@ const checkObjectId = (id) => {
 };
 
 /**
- * checks that the given number is an unsigned integer
+ * checks that the given number is a unsigned integer
  *
  * @param {number} num  number to be validated
  *

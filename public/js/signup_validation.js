@@ -81,20 +81,12 @@ $("#signup").submit((event) => {
         );
     }
 
-    const confirmPassword = $("#confirmPassword").val().trim();
-    if (password !== confirmPassword) {
-        errors.push("Password and its confirmation do not match!");
-    }
-
     const name = $("#name").val().trim();
     if (name !== undefined && name !== null && name.length > 30) {
         errors.push("Invalid display name. Length be less than 30 characters");
     }
 
-    const publicProfile = $('input[name="publicProfile"]:checked')
-        .val()
-        .trim()
-        .toLowerCase(); // get the checked button value
+    const publicProfile = $("#publicProfile").val().trim().toLowerCase();
     if (publicProfile !== "public" && publicProfile !== "private") {
         errors.push('Profile setting must be in either ["public", "private"]');
     }
