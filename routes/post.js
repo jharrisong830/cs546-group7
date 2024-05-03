@@ -19,7 +19,8 @@ router.route("/:postId").get(async (req, res) => {
             music = post.musicContent,
             likes = post.likes,
             comments = post.comments,
-            updated = post.lastUpdated;
+            updated = post.lastUpdated,
+            tags = post.tags;
         updated = new Date(updated * 1000).toISOString().split("T")[0];
         const edited = post.lastUpdated !== post.createTime;
         for (let i=0;i<comments.length;i++) {
@@ -35,7 +36,8 @@ router.route("/:postId").get(async (req, res) => {
             _id: req.params.postId,
             comments: comments,
             musicType: music.type,
-            musicURL: music._id
+            musicURL: music._id,
+            tags: tags
         });
         //id:req.params.postId, userId: req.session.user._id});
         //res.render('post', {author: author, text:text, music:music, likes:likes,

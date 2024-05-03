@@ -3,6 +3,7 @@ let newCommentForm = $("#newComment"),
     textComment = $("#textComment"),
     idUrl = $("div").first().attr("id"),
     likeButton = $("#likeButton"),
+    commentLikeButton = $("#commentLikeButton"),
     likes = $(".likes");
 
 newCommentForm.submit((event) => {
@@ -84,6 +85,46 @@ likeButton.on("click", function (event) {
                 likes.text(`${curLikes} Like`);
             } else {
                 likes.text(`${curLikes} Likes`);
+            }
+        }
+
+    });
+});
+
+commentLikeButton.on("click", function (event) {
+    event.preventDefault();
+
+    var commentIdUrl = $(this).data('comment-id'); // idUrl for a specific comment
+    var likesElement = $(`#likes-comment-` + commentIdUrl);
+
+    console.log("Likes element is" + likesElement);
+
+    let requestConfig = {
+        method: "POST",
+        url: "/api/posts/like",
+        contentType: "application/json",
+        data: JSON.stringify({
+            idUrl: commentIdUrl,
+            type: "comment"
+        })
+    };
+    $.ajax(requestConfig).then(function (responseMessage) {
+        let curLikes = 0;
+        console.log(responseMessage);
+        if (responseMessage.liked) {
+            curLikes = (parseInt(likesElement.text().split(" ")[0]) + 1).toString();
+            if (curLikes == 1) {
+                likesElement.text(`${curLikes} Like`);
+            } else {
+                likesElement.text(`${curLikes} Likes`);
+            }
+        } 
+        else {
+            const curLikes = (parseInt(likesElement.text().split(" ")[0]) - 1).toString();
+            if (curLikes == 1) {
+                likesElement.text(`${curLikes} Like`);
+            } else {
+                likesElement.text(`${curLikes} Likes`);
             }
         }
 

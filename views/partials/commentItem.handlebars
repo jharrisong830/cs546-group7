@@ -1,7 +1,14 @@
 <div class="card mx-5 my-4">
-    <div class="card-body">
+    <div class="card-body" data-comment-id="{{_id}}">
         <h5 class="card-title text-body-emphasis">{{authorUsername}}</h5>
         <h6 class="card-subtitle mb-2">{{createTime}}</h6>
+
+        <input type="button" value="Like" id="commentLikeButton" data-comment-id="{{_id}}">
+        {{#if likes.length}}
+        <p class="commentLikes" id="likes-comment-{{_id}}">{{likes.length}} Likes</p>
+        {{else}}
+        <p class="commentLikes" id="likes-comment-{{_id}}">0 Likes</p>
+        {{/if}}
 
         <p class="card-text">{{textContent}}</p>
     </div>

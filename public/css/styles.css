@@ -6,3 +6,15 @@
     width: 125px;
     height: 125px;
 }
+
+.tag {
+    display: inline-block;
+    background-color: #f0f0f0;
+    margin: 5px; 
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.tagDisplay {
+    transform: translateY(-10px);
+}

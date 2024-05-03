@@ -104,9 +104,25 @@ router.route("/user/:username").get(async (req, res) => {
 
 router.route("/like").post(async (req, res) => {
     console.log(req.body);
-    const userID = req.session.user._id;
-    const liked = await postData.likePost(req.body.idUrl, userID);
-    return res.json({ success: true, liked:liked });
+
+    const { idUrl, type } = req.body;
+    console.log("Like type is: " + type);
+
+    if (type === "comment") {
+        const userID = req.session.user._id;
+
+        const liked = await postData.likeComment(idUrl, userID);
+        
+        // const liked = await postData.likeComment(req.body.idUrl, userID);
+        return res.json({ success: true, liked:liked });
+    }
+
+    else {
+        const userID = req.session.user._id;
+        const liked = await postData.likePost(idUrl, userID);
+        // const liked = await postData.likePost(req.body.idUrl, userID);
+        return res.json({ success: true, liked:liked });
+    }
 });
 
 export default router;

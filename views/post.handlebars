@@ -7,6 +7,15 @@
         <h6 class="card-subtitle mb-2">{{updated}}</h6>
 
         <p class="card-text">{{text}}</p>
+        {{#if tags}}
+            <div class="tagDisplay">
+                Tags: 
+                {{#each tags}}
+                    <span class="tag">{{this}}</span>
+                {{/each}}
+            </div>
+        {{/if}}
+        
         {{!- add function call to onclick for button}}
         {{!--<input type="button" value="Like" onclick="like({{id}}, {{userId}})"> --}}
         <input type="button" value="Like" id="likeButton">
