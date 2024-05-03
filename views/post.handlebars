@@ -1,0 +1,35 @@
+<div class="card mx-5 my-4" id="{{_id}}">
+    <div class="card-body">
+        <a href="/user/{{author}}"><h5 class="card-title text-body-emphasis">{{author}}</h5></a>
+        {{#if edited}}
+        <p>Edited:</p>
+        {{/if}}
+        <h6 class="card-subtitle mb-2">{{updated}}</h6>
+
+        <p class="card-text">{{text}}</p>
+        {{!- add function call to onclick for button}}
+        {{!--<input type="button" value="Like" onclick="like({{id}}, {{userId}})"> --}}
+        <input type="button" value="Like" id="likeButton">
+        {{#if likes.length}}
+        <p class="likes">{{likes.length}} Likes</p>
+        {{else}}
+        <p class="likes">0 Likes</p>
+        {{/if}}
+        <iframe style="border-radius:12px" src="https://open.spotify.com/embed/{{musicType}}/{{musicURL}}?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        {{!- add musicContent view here}}
+    </div>
+    <form id="newComment">
+        <div class="input-group">
+            <input type="text" id="textComment" class="form-control" placeholder="Comment your thoughts">
+            <button type="submit" class="btn btn-secondary" id="commentButton" disabled>Add Comment</button>
+        </div>
+    </form>
+</div>
+<div class="container" id="commentArea">
+    {{#each comments}}
+    {{> commentItem}}
+    {{/each}}
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<script src="/public/js/ajax_postView_json.js"></script> 

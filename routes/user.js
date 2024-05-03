@@ -1,7 +1,8 @@
 import { Router } from "express";
-import { userData } from "../data/index.js";
+import { userData, postData } from "../data/index.js";
 import vld from "../helpers/validation.js";
 import xss from "xss";
+import { post } from "ajax";
 
 const router = Router();
 
@@ -26,14 +27,18 @@ router.route("/:username").get(async (req, res) => {
                 errmsg: `404: user '${req.params.username}' was not found`
             });
         }
-
         const usr = await userData.getUser(userId);
-
+        const currUser = await userData.getUser(req.session.user._id); // get friend ids as strings
+        const currUserFriends = currUser.friends.map((fr) => fr.toString());
+        console.log(usr);
         return res.render("user", {
             title: usr.username,
             hasName: usr.name !== null,
             isCurrent: isCurrent,
-            showProfile: usr.publicProfile || isCurrent, // we will show content if profile is public or if this is the current user (false when private and not current user)
+            showProfile:
+                usr.publicProfile ||
+                isCurrent ||
+                currUserFriends.includes(userId.toString()), // we will show content if profile is public or if this is the current user (false when private and not current user), or if the requested user is in the friends list of the current user
             user: usr
         });
     } catch (e) {

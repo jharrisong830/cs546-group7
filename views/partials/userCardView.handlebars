@@ -1,0 +1,14 @@
+<div class="card mx-5 my-4">
+    <div class="card-body">
+        <h5 class="card-title text-body-emphasis">{{username}}</h5>
+        <h6 class="card-subtitle mb-2">
+            {{#if publicProfile}}
+            Public
+            {{else}}
+            Private
+            {{/if}}
+        </h6>
+
+        <a href="/user/{{username}}" role="button" class="btn btn-outline-dark btn-sm stretched-link">View User</a>
+    </div>
+</div>
