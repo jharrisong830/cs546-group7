@@ -6,6 +6,7 @@ import { users, posts } from "../config/mongoCollections.js";
 import vld from "../helpers/validation.js";
 import errorMessage from "../helpers/error.js";
 import bcrypt from "bcrypt";
+import { ObjectId } from "mongodb";
 
 const MOD_NAME = "data/users.js";
 const saltRounds = 16;
@@ -54,12 +55,14 @@ const registerUser = async (
     newUser.AMAuth = null;
 
     newUser.friends = [];
+    newUser.messages = [];
     newUser.blocked = [];
     newUser.posts = [];
     newUser.comments = [];
     newUser.postLikes = [];
     newUser.commentLikes = [];
     newUser.ratings = [];
+
 
     const userCol = await users();
     const insertInfo = await userCol.insertOne(newUser);
@@ -339,6 +342,57 @@ const checkBlocked = async (currId, otherId) => {
         otherBlocked.includes(currId.toString())
     ); // returns false only if neither user is blocked by one another
 };
+
+const createMessage = async (messageContent, senderUsername, recipientUsername) => {
+    if (!messageContent || typeof messageContent !== 'string' || messageContent.trim().length === 0) {
+        throw "You must provide something to send!";
+    }
+
+    if (messageContent.trim().length >= 2000) {
+        throw "message content must be less than 2000 characters."
+    }
+    messageContent = messageContent.trim();
+
+    const userCol = await users();
+
+    const sender = await findByUsername(senderUsername);
+    const recipient = await findByUsername(recipientUsername);
+
+    if (!sender || !recipient) {
+        throw "Both sender and recipient must be valid users.";
+    }
+
+    const currTime = Math.floor(Date.now() / 1000);
+    const newMessage = {
+        _id: new ObjectId(),
+        from: senderUsername,
+        content: messageContent,
+        timestamp: currTime,
+    };
+
+    const updateInfoRecipient = await userCol.updateOne(
+        { _id: new ObjectId(recipient) },
+        { $push: { messages: newMessage } }
+    );    
+
+    if (!updateInfoRecipient.acknowledged || updateInfoRecipient.modifiedCount !== 1) {
+        throw (`Failed to add new message from ${senderUsername} to ${recipientUsername}`);
+    }
+
+    return newMessage;
+};
+
+const getMessages = async (username) => {
+    const userCol = await users(username);
+    const user = await userCol.findOne({ username: username });
+
+    if (!user) {
+        throw "User not found";
+    }
+
+    return user.messages;
+}
+
 
 /**
  * toggles the visibility status of a user's profile
@@ -702,7 +756,9 @@ const exportedMethods = {
     toggleProfileVisibility,
     updateUser,
     deleteUser,
-    searchUsers
+    searchUsers,
+    createMessage,
+    getMessages,
 };
 
 export default exportedMethods;
