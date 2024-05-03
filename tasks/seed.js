@@ -27,8 +27,7 @@ let user2 = await userData.registerUser(
     "ehodor",
     "1234emmaH&",
     "2003-02-10",
-    undefined, // defaults to true
-    "Emma Hodor"
+    undefined // defaults to true
 );
 // let user3 = await userData.registerUser(
 //     "anonymous",
@@ -129,7 +128,8 @@ console.log("...and writing some posts...");
 let firstPost = await postData.createPost(
     user1._id,
     {},
-    "Hello, world! This is my first post!"
+    "Hello, world! This is my first post!",
+    []
 );
 user1 = await userData.getUser(user1._id);
 
@@ -141,7 +141,8 @@ await new Promise((resolve) => setTimeout(resolve, 5000)); // getting sleepy, 5 
 let nextPost = await postData.createPost(
     user1._id,
     {},
-    "Hello again! This is my second post. Better than the first"
+    "Hello again! This is my second post. Better than the first",
+    []
 );
 
 await new Promise((resolve) => setTimeout(resolve, 5000));
@@ -151,18 +152,30 @@ firstPost = await postData.updatePost(
     "I updated this post. The update time should be after that of my second post"
 );
 
-let emmaPost1 = await postData.createPost(user2._id, {}, "Hello from Emma!");
+let emmaPost1 = await postData.createPost(
+    user2._id,
+    {},
+    "Hello from Emma!",
+    []
+);
 
 await new Promise((resolve) => setTimeout(resolve, 5000));
 
-let justinPost = await postData.createPost(user4._id, {}, "Hello from Justin!");
+let justinPost = await postData.createPost(
+    user4._id,
+    {},
+    "Hello from Justin!",
+    []
+);
+
 
 await new Promise((resolve) => setTimeout(resolve, 5000));
 
 let emmaPost2 = await postData.createPost(
     user2._id,
     {},
-    "This is another post from Emma. What's up??"
+    "This is another post from Emma. What's up??",
+    []
 );
 
 // console.log(nextPost);
@@ -172,6 +185,12 @@ let emmaPost2 = await postData.createPost(
 // user1 = await userData.getUser(user1._id);
 
 // await userData.deleteUser(user1._id); // user1 should disappear from database, along with all posts
+
+let newComment = await postData.commentPost(
+    emmaPost2._id,
+    user1._id,
+    "This is a test of the comments!"
+);
 
 console.log("All done, database ready!");
 

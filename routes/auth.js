@@ -17,11 +17,23 @@ const router = Router();
 
 const codes = await authentication.getPKCECodes(64);
 
-router.route("/").get((req, res) => {
-    return res.render("auth", { title: "Authorize" });
-});
+// router.route("/").get((req, res) => {
+//     if (!req.session.user) {
+//         return res.status(401).render("error", {
+//             title: "Error",
+//             errmsg: "401: You need to be logged in to access this page."
+//         });
+//     }
+//     return res.render("auth", { title: "Authorize" });
+// });
 
 router.route("/spotify").get((req, res) => {
+    if (!req.session.user) {
+        return res.status(401).render("error", {
+            title: "Error",
+            errmsg: "401: You need to be logged in to access this page."
+        });
+    }
     const authURL = authentication.SPGetAuthorizationURL(
         codes["codeChallenge"]
     );
@@ -30,6 +42,12 @@ router.route("/spotify").get((req, res) => {
 });
 
 router.route("/spotify/success").get(async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).render("error", {
+            title: "Error",
+            errmsg: "401: You need to be logged in to access this page."
+        });
+    }
     let authCode = req.query.code || null;
     if (authCode === null) {
         return res.status(500).render("error", {
@@ -58,34 +76,84 @@ router.route("/spotify/success").get(async (req, res) => {
             }
         ); // post request, with given body/header data
 
-        const { access_token, expires_in, refresh_token } = data; // extract important info, so we can insert in the db later
+        const now = Math.floor(Date.now() / 1000); // add to expires_in, the time that the access token expires at
+        const usr = await userData.addSPAccessData(
+            req.session.user._id,
+            data.access_token,
+            data.expires_in + now,
+            data.refresh_token
+        ); // store in database!
 
-        return res.json({ authData: data, status: "success" }); // TODO: don't actually display this to user, handle and associate access token with user profile to use for api requests
+        return res.redirect(`/user/${req.session.user.username}/edit`); // redirect to user's profile edit page
     } catch (e) {
-        return res.status(500).json({ error: e });
+        return res.status(500).render("error", {
+            title: "Error",
+            errmsg: e
+        });
     }
 });
 
-router.route("/apple-music").get((req, res) => {
-    const devToken = authentication.AMGenerateDevToken();
-    return res.render("auth/apple-music", {
-        title: "am test",
-        AMDevToken: devToken
-    });
+router.route("/spotify/remove").get(async (req, res) => {
+    try {
+        const usr = await userData.removeSPAccessData(req.session.user._id); // ezpz, just remove the spotify info and redirect on success
+        return res.redirect(`/user/${req.session.user.username}/edit`);
+    } catch (e) {
+        return res.status(500).render("error", {
+            title: "Error",
+            errmsg: e
+        });
+    }
 });
 
-router.route("/apple-music/success").get(async (req, res) => {
+// router.route("/apple-music").get((req, res) => {
+//     if (!req.session.user) {
+//         return res.status(401).render("error", {
+//             title: "Error",
+//             errmsg: "401: You need to be logged in to access this page."
+//         });
+//     }
+//     const devToken = authentication.AMGenerateDevToken();
+//     return res.render("auth/apple-music", {
+//         title: "am test",
+//         AMDevToken: devToken
+//     });
+// });
+
+router.route("/appleMusic/success").get(async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).render("error", {
+            title: "Error",
+            errmsg: "401: You need to be logged in to access this page."
+        });
+    }
     let mut = req.query.mut || null; // try to get music user token from query params
-    let devToken = req.query.devToken || null; // try to get music user token from query params
-    if (mut === null || devToken === null) {
+    if (mut === null) {
         return res.status(500).render("error", {
             title: "Error",
             errmsg: "500: issue getting apple music user token"
         });
     }
-    await userData.addAMAccessData(req.session.user._id, devToken, mut);
+    try {
+        await userData.addAMAccessData(req.session.user._id, mut);
+        return res.redirect(`/user/${req.session.user.username}/edit`);
+    } catch (e) {
+        return res.status(500).render("error", {
+            title: "Error",
+            errmsg: e
+        });
+    }
+});
 
-    return res.json({ authData: req.query.mut, status: "success" }); // TODO: don't actually display this to user, handle and associate access token with user profile to use for api requests
+router.route("/appleMusic/remove").get(async (req, res) => {
+    try {
+        const usr = await userData.removeAMAccessData(req.session.user._id); // same as spotify! just remove entry from database
+        return res.redirect(`/user/${req.session.user.username}/edit`);
+    } catch (e) {
+        return res.status(500).render("error", {
+            title: "Error",
+            errmsg: e
+        });
+    }
 });
 
 export default router;

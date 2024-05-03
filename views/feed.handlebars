@@ -1,14 +1,119 @@
-<h1>Welcome, {{username}}.</h1>
+<div class="container text-center py-5 px-3" id="titleContainer">
+    <h1 class="display-6 text-body-emphasis fw-medium">Welcome, {{username}}.</h1>
+    <h2 class="lead text-body-secondary">Let's see what your friends are listening to:</h2>
 
-<h2>Let's see what your friends are listening to:</h2>
-
-{{#each feedPosts}}
-    <div>
-        <h5>{{authorUsername}}</h5>
-        <h6>{{lastUpdated}}</h6>
-
-        <br>
-
-        <p>{{textContent}}</p>
+    <div class="row pt-2 text-center">
+        <div class="col">
+            <a href="/user/{{username}}" role="button" class="btn btn-secondary">View Your Profile</a>
+            <a href="/search" role="button" class="btn btn-secondary">Search</a>
+            <a href="/logout" role="button" class="btn btn-danger">Log Out</a>
+        </div>
+        <div class="col">
+        <a href="/user/{{username}}/messages" role="button" class="btn btn-primary">View Messages</a>
+        </div>
     </div>
-{{/each}}
+</div>
+
+<div class="container py-5 px-3" id="newPost">
+    <div class="input-group">
+        <input type="text" id="textContentOuter" class="form-control" placeholder="What are you listening to?">
+        <button type="button" data-bs-toggle="modal" data-bs-target="#postModal" class="btn btn-primary">Create post</button>
+    </div>
+    <div class="modal fade" id="postModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Create post</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="newPostForm" method="POST" action="/api/posts">
+                        <label for="textContentInner" class="form-label">Write some thoughts:</label>
+                        <textarea required id="textContentInner" name="textContent" type="text" placeholder="What are you listening to?" class="form-control"></textarea>
+
+                        <br>
+
+                        <label for="musicContent" class="form-label">Choose some music:</label>
+                        <br>
+
+                        {{!-- <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-success" id="SPShowPlaylists">Spotify Playlists</button>
+                            <button type="button" class="btn btn-outline-danger" id="AMShowPlaylists">Apple Music Playlists</button>
+                        </div> --}}
+
+                        <div class="btn-group" role="group" id="musicContentTypeButtons">
+                            <input type="radio" id="playlists" value="playlists" name="musicContentType" class="btn-check" checked>
+                            <label for="playlists" class="btn btn-outline-success">Playlists</label>
+
+                            <input type="radio" id="catalog" value="catalog" name="musicContentType" class="btn-check">
+                            <label for="catalog" class="btn btn-outline-success">Catalog</label>
+                        </div>
+
+                        <!-- views below will change based on what is checked above -->
+
+                        <br>
+                        <br>
+
+                        <!-- Tag features -->
+                        <label for="playlistTags" class="tag-label" hidden>Tag your playlist:</label>
+                        <div id="customTags" class="tag-insert" hidden>
+                            <select name="tag1" id="customTag1" class="form-control mt-2 genre-dropdown">
+                                <option value="">Select a genre...</option>
+                            </select>
+                            <select name="tag2" id="customTag2" class="form-control mt-2 genre-dropdown" hidden>
+                                <option value="">Select a genre...</option>
+                            </select>
+                            <select name="tag3" id="customTag3" class="form-control mt-2 genre-dropdown" hidden>
+                                <option value="">Select a genre...</option>
+                            </select>
+                        </div>
+                        <button id="addTagButton" class="btn btn-primary mt-2">Add Tag</button>
+                        <!-- Tag features -->
+
+                        <div class="container" id="searchCatalogContainer" hidden>
+                            <label for="searchCatalog" class="form-label">Search the Spotify Catalog</label>
+                            <br>
+                            <div class="input-group">
+                                <input id="searchCatalog" name="searchCatalog" type="text" placeholder="Search goes here..." class="form-control">
+                                <button type="button" id="submitSearchCatalog" class="btn btn-primary">Search</button>
+                            </div>
+                        </div>
+
+                        <br>
+
+                        <div class="d-flex justify-content-center" id="contentLoading" hidden>
+                            <div class="spinner-border" role="status" hidden>
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+
+                        
+
+
+                        <div class="container" id="contentSelector" hidden></div> {{!-- playlists and other stuffwill be populated here! will be multiple form-check divs for radio buttons --}}
+                        <div class="error form-text" id="error" hidden>{{errmsg}}</div>
+                        {{!-- <button type="button" class="btn btn-success">Choose music</button> --}}
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Go back</button>
+                    <button type="submit" form="newPostForm" class="btn btn-primary">Post</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    
+
+<div id="feedArea"></div>
+
+
+
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"
+        integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+{{!-- <script src="https://js-cdn.music.apple.com/musickit/v3/musickit.js" async></script> --}}
+
+<script src="/public/js/ajax_jquery_json.js"></script>
+<script src="/public/js/playlist_data_modal.js"></script>
+{{!-- <script src="/public/js/musickit/musickit_library_playlists.js"></script>
+ --}}

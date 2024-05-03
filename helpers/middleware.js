@@ -2,8 +2,6 @@
  * middleware functions
  */
 
-import { postData } from "../data/index.js";
-
 const MOD_NAME = "helpers/middleware.js";
 
 /**
@@ -28,13 +26,13 @@ const feedRender = async (req, res, next) => {
         // make sure we onlt render if we're on the `/` route
         if (req.session.user) {
             try {
-                const feedPosts = await postData.generateFeed(
-                    req.session.user._id
-                ); // get the feed posts for the current user
+                // const feedPosts = await postData.generateFeed(
+                //     req.session.user._id
+                // ); // get the feed posts for the current user
                 return res.render("feed", {
                     title: "Feed",
-                    username: req.session.user.username,
-                    feedPosts: feedPosts
+                    username: req.session.user.username
+                    // feedPosts: feedPosts
                 });
             } catch (e) {
                 return res
@@ -73,11 +71,28 @@ const logoutReroute = (req, res, next) => {
     return res.redirect("/login"); // go to login route, regardless of if user was logged in or not
 };
 
+/**
+ * middleware that reroutes the current user to their profile page when requesting the root of `/user`
+ *
+ * @route `/user`
+ */
+const userReroute = (req, res, next) => {
+    if (
+        req.session.user &&
+        (req.originalUrl === "/user" || req.originalUrl === "/user/")
+    ) {
+        // only redirect on request of root
+        return res.redirect(`/user/${req.session.user.username}`); // redirect current user to their profile
+    }
+    next(); // otherwise, fall through to error
+};
+
 const exportedMethods = {
     logMessages,
     feedRender,
     loginSignupReroute,
-    logoutReroute
+    logoutReroute,
+    userReroute
 };
 
 export default exportedMethods;

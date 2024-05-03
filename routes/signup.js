@@ -46,6 +46,7 @@ router
             );
 
             req.session.user = {
+                _id: added._id,
                 username: added.username,
                 publicProfile: added.publicProfile,
                 name: added.name
