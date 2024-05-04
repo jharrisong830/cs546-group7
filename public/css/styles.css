@@ -6,3 +6,38 @@
     width: 125px;
     height: 125px;
 }
+
+.tag {
+    display: inline-block;
+    background-color: #f0f0f0;
+    margin: 5px; 
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.tagDisplay {
+    transform: translateY(-10px);
+}
+
+.explain-CR {
+    color: black;
+    transform: translateX(10px);
+    margin-bottom: 15px;
+}
+
+.star-rating {
+    direction: rtl;
+}
+
+.star-rating label {
+    font-size: 35px;
+    color: #ccc;
+}
+
+.star-rating input[type="radio"] {
+    display: none;
+}
+
+.star-rating input[type="radio"]:checked ~ label {
+    color: #ffe234; 
+}

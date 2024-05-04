@@ -1,0 +1,22 @@
+<div class="card mx-5 my-4">
+    <div class="card-body" data-rating-id="{{_id}}">
+        <div class="ratingTitle">Rating</div>
+        <h5 class="card-title text-body-emphasis">{{authorUsername}}</h5>
+        <h6 class="card-subtitle mb-2">{{createTime}}</h6>
+
+        <input type="button" value="Like" id="ratingLikeButton" data-rating-id="{{_id}}">
+        {{#if likes.length}}
+        <p class="ratingLikes" id="likes-rating-{{_id}}">{{likes.length}} Likes</p>
+        {{else}}
+        <p class="ratingLikes" id="likes-rating-{{_id}}">0 Likes</p>
+        {{/if}}
+
+        <p class="card-text">{{textContent}}</p>
+
+        <div class="star-rating-card" id="stars-{{starRating}}">
+            Score: {{starRating}} out of 5
+            {{!-- need to add stars to each rating --}}
+        </div>
+        
+    </div>
+</div>

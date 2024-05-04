@@ -531,11 +531,12 @@ const likeComment = async (commentId, userId) => {
 /**
  * Rates a playlist within a post by adding a rating object to the musicContent.ratings array.
  *
- * @param {string | ObjectId} id      The ID of the post containing the playlist to rate.
+ * @param {string | ObjectId} id          The ID of the post containing the playlist to rate.
  * @param {string | ObjectId} userId      The ID of the user who is rating the playlist.
  * @param {number} starRating             The star rating given to the playlist (scale of 1 to 5).
- * @param {string} reviewText            Optional text content explaining the rating.
+ * @param {string} reviewText             Optional text content explaining the rating.
  *
+ * @returns {Object}                      the newly created rating subdocument
  * @throws {Error}                        Throws an error if the operation fails.
  */
 const ratePlaylist = async (id, userId, starRating, reviewText) => {
@@ -555,23 +556,32 @@ const ratePlaylist = async (id, userId, starRating, reviewText) => {
     }
 
     const postCol = await posts();
+    const post = await postCol.findOne({_id: id}, {"musicContent._id": 1}); // Post with a playlist type should ALWAYS have music content
+
+    let musicContentId = post.musicContent._id;
+
     const currTime = Math.floor(Date.now() / 1000); // get unix epoch seconds
     let ratingId = new ObjectId();
+
+    const usr = await userData.getUser(userId);
 
     const rating = {
         _id: ratingId,
         authorId: userId,
-        parentId: postId,
+        authorUsername: usr.username,
+        parentId: musicContentId, // Changed parentId to musicContentId from id because rating object's parent is musicContent NOT the actual post
         starRating: starRating,
         textContent: reviewText,
         likes: [],
         createTime: currTime
     };
 
+    let mc = post.musicContent;    
+
     const updateResult = await postCol.updateOne(
-        { "musicContent._id": ratingId },
+        { _id: id },
         {
-            $push: { "musicContent.$.ratings": rating }
+            $push: { "musicContent.ratings": rating }
         }
     );
 
@@ -602,6 +612,8 @@ const ratePlaylist = async (id, userId, starRating, reviewText) => {
             `Unable to like this rating. It might not exist.`
         );
     }
+
+    return rating;
 };
 
 /**

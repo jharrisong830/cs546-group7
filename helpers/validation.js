@@ -156,6 +156,7 @@ const checkUnsignedInt = (num) => {
             "checkUnsignedInt",
             `'num' must be an integer! got ${num}`
         );
+    return num;
 };
 
 /**

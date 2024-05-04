@@ -19,7 +19,8 @@ router.route("/:postId").get(async (req, res) => {
             music = post.musicContent,
             likes = post.likes,
             comments = post.comments,
-            updated = post.lastUpdated;
+            updated = post.lastUpdated,
+            tags = post.tags;
         updated = new Date(updated * 1000).toISOString().split("T")[0];
         const edited = post.lastUpdated !== post.createTime;
         for (let i = 0; i < comments.length; i++) {
@@ -27,6 +28,16 @@ router.route("/:postId").get(async (req, res) => {
                 .toISOString()
                 .split("T")[0];
         }
+
+        if (post.musicContent && post.musicContent.ratings) {
+            for (let i = 0; i < post.musicContent.ratings.length; i++) {
+                post.musicContent.ratings[i].createTime = new Date(post.musicContent.ratings[i].createTime * 1000).toISOString().split("T")[0];
+            }
+        }
+        console.log("this post's type is " + music.type);
+
+        let isPlaylist = (music.type === "playlist") ? true : false;
+
         res.render("post", {
             title: `Post by @${author}`,
             author: author,
@@ -37,7 +48,10 @@ router.route("/:postId").get(async (req, res) => {
             _id: req.params.postId,
             comments: comments,
             musicType: music.type,
-            musicURL: music._id
+            musicURL: music._id,
+            tags: tags,
+            isPlaylist: isPlaylist,
+            ratings: post.musicContent.ratings
         });
         //id:req.params.postId, userId: req.session.user._id});
         //res.render('post', {author: author, text:text, music:music, likes:likes,
