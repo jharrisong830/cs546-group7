@@ -1,0 +1,27 @@
+<div class="container">
+    {{#if hasName}}
+        <h2>{{user.name}}</h2>
+        <h4>@{{user.username}}</h4>
+    {{else}}
+        <h2>@{{user.username}}</h2>
+    {{/if}}
+
+    <a href="/user/{{user.username}}">Back to profile.</a>
+    <a href="/">Go to home.</a>
+</div>
+
+{{#each requests}}
+    <a href="/user/{{username}}">{{username}}</a>
+    <form method="POST" action="/user/{{../user.username}}/requests" id="requestStatus">
+        <select name="acceptStatus" id="acceptStatus">
+            <option value=""></option>
+            <option value="accept">Accept</option>
+            <option value="decline">Decline</option>
+        </select>
+        <input type="hidden" name="requestx" value="{{username}}">
+        <input type="submit" class = "submit">
+    </form>
+{{/each}}
+
+<script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<script type='text/javascript' src='/public/js/requests_validation.js'></script>

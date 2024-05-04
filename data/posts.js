@@ -643,6 +643,53 @@ const searchPosts = async (userId, searchTerm) => {
     return actualResults;
 };
 
+/**
+ * searches the database for posts whose playlist music content matches the given search term
+ *
+ * @param {string | ObjectId}   the user who is currently searching (so we can show/hide posts depending on profile status and friendships)
+ * @param {string} searchTerm   string to be used in keyword search of playlist data
+ *
+ * @returns {[Object]} post objects found from the keyword search
+ * @throws on invalid input or if there are errors in getting/setting database entries
+ */
+const searchPlaylists = async (userId, searchTerm) => {
+    userId = vld.checkObjectId(userId);
+
+    searchTerm = vld.returnValidString(searchTerm);
+    vld.checkEmptyString(searchTerm);
+
+    const postCol = await posts();
+    const reSearch = new RegExp(`.*${searchTerm}.*`, "gi"); // matches when searchTerm appears anywhere in the string (case insensitive)
+
+    const results = await postCol
+        .find({
+            $or: [
+                { "musicContent.name": reSearch },
+                { "musicContent.tracks.name": reSearch }
+            ],
+            "musicContent.type": "playlist"
+        })
+        .toArray(); // get only posts with playlists, and search for playlists with titles/tracks matching the search
+
+    const currUser = await userData.getUser(userId);
+    const userCol = await users();
+    const searchablePosters = await userCol
+        .find({
+            $or: [
+                { publicProfile: true },
+                { _id: { $in: currUser.friends.concat([userId]) } }
+            ]
+        })
+        .toArray(); // we'll only show posts from public users, or from users who are friended (or from the current user)
+    const searchableIds = searchablePosters.map((usr) => usr._id.toString());
+
+    const actualResults = results.filter((pst) =>
+        searchableIds.includes(pst.authorId.toString())
+    ); // only use results where the authors posts would be viewable to the current user
+
+    return actualResults;
+};
+
 const exportedMethods = {
     createPost,
     getPost,
@@ -654,7 +701,8 @@ const exportedMethods = {
     commentPost,
     likeComment,
     ratePlaylist,
-    searchPosts
+    searchPosts,
+    searchPlaylists
 };
 
 export default exportedMethods;

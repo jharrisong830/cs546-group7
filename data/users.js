@@ -747,6 +747,88 @@ const searchUsers = async (searchTerm) => {
     return results;
 };
 
+//adds friend requests to array of friend requests
+const addFriendRequest = async (currId, requesterId) => {
+    currId = vld.checkObjectId(currId);
+    requesterId = vld.checkObjectId(requesterId);
+
+    if (await checkBlocked(currId, requesterId)) {
+        errorMessage(
+            MOD_NAME,
+            "addFriendRequest",
+            `${currId} and ${requesterId} might be blocked, cannot add friends`
+        );
+    }
+
+    const friendRequest = await getUser(requesterId); // make sure the user exists
+
+    const userCol = await users();
+    const updateInfo = await userCol.updateOne(
+        { _id: currId },
+        {
+            $push: { friendRequests: requesterId }
+        }
+    );
+
+    if (
+        !updateInfo ||
+        updateInfo.matchedCount === 0 ||
+        updateInfo.modifiedCount === 0
+    ) {
+        errorMessage(
+            MOD_NAME,
+            "addFriendRequest",
+            `Unable to modify database entry for ${currId}. This object might not exist`
+        );
+    }
+
+    return await getUser(currId); // return the updated user
+};
+
+//takes in a user id, returns a list of objects. each object contains the requester's id and username
+const getRequests = async (currId) => {
+    currId = vld.checkObjectId(currId);
+
+    const currentPerson = await getUser(currId); // make sure the user exists
+
+    const currentRequests = currentPerson.friendRequests;
+    let requestList = [];
+
+    for (let x in currentRequests) {
+        let requester = await getUser(currentRequests[x]);
+        requestList.push({ id: requester._id, username: requester.username });
+    }
+    return requestList; // return the updated user
+};
+
+//takes in the user and requester's id, and removes the request from the user's friendRequests array
+const removeFriendRequest = async (currId, requesterId) => {
+    currId = vld.checkObjectId(currId);
+    requesterId = vld.checkObjectId(requesterId);
+
+    const userCol = await users();
+    const updateInfo = await userCol.updateOne(
+        { _id: currId },
+        {
+            $pull: { friendRequests: requesterId }
+        }
+    );
+
+    if (
+        !updateInfo ||
+        updateInfo.matchedCount === 0 ||
+        updateInfo.modifiedCount === 0
+    ) {
+        errorMessage(
+            MOD_NAME,
+            "removeFriendRequest",
+            `Unable to modify database entry for ${currId}. This object might not exist, or ${requesterId} might not be in the array`
+        );
+    }
+
+    return await getUser(currId); // return the updated user
+};
+
 const exportedMethods = {
     registerUser,
     getUser,
@@ -767,7 +849,10 @@ const exportedMethods = {
     deleteUser,
     searchUsers,
     createMessage,
-    getMessages
+    getMessages,
+    addFriendRequest,
+    getRequests,
+    removeFriendRequest
 };
 
 export default exportedMethods;
