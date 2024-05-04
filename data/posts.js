@@ -92,11 +92,14 @@ const getPost = async (id) => {
     id = vld.checkObjectId(id);
 
     const postCol = await posts();
-    const post = await postCol.findOne({ _id: id });
+    const post = await postCol
+        .find({ _id: id })
+        .sort({ "comments.createTime": -1 }) // sort comments in reverse chronological order (TODO, doesn't work)
+        .toArray();
 
     if (!post)
         errorMessage(MOD_NAME, "getPost", `No post with '${id}' was found`);
-    return post;
+    return post[0];
 };
 
 /**
