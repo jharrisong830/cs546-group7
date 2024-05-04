@@ -4,7 +4,11 @@ let newCommentForm = $("#newComment"),
     idUrl = $("div").first().attr("id"),
     likeButton = $("#likeButton"),
     commentLikeButton = $("#commentLikeButton"),
-    likes = $(".likes");
+    likes = $(".likes"), 
+    newRatingForm = $("#newRating"),
+    ratingArea = $("#ratingArea"), 
+    ratingText = $("#ratingText"),
+    ratingValue = $("#rating");
 
 newCommentForm.submit((event) => {
     event.preventDefault();
@@ -129,4 +133,61 @@ commentLikeButton.on("click", function (event) {
         }
 
     });
+});
+
+$('.star-rating input[type="radio"]').change(function() {
+    // Gets the star value and sets the dropdown value to it
+    const starValue = $(this).val();
+    $("#rating").val(starValue);
+});
+
+newRatingForm.submit((event) => {
+    event.preventDefault();
+    let newRating = ratingText.val();
+    let selectedRating = $('input[name="rating"]:checked').val();
+    console.log(selectedRating);
+
+    if (newRating) {
+        let requestConfig = {
+            method: "POST",
+            url: "/api/ratings",
+            contentType: "application/json",
+            data: JSON.stringify({
+                textContent: newRating,
+                ratingNumber: selectedRating, // This sends the star rating (1-5)
+                idUrl: idUrl
+            })
+        };
+        $.ajax(requestConfig).then(function (responseMessage) {
+            console.log(responseMessage);
+            if (!responseMessage.success) {
+                const postRenderError = $(
+                    `<div class='renderError'>
+                    <h1>Could not render ratings </h1>
+                    </div>`
+                );
+                ratingArea.append(postRenderError);
+            } 
+            else {
+                responseMessage.addedRating.createTime = new Date(responseMessage.addedRating.createTime * 1000)
+                    .toISOString()
+                    .split("T")[0];
+                let ele = $(`
+                <div class="card mx-5 my-4">
+                    <div class="card-body">
+                        <h5 class="card-title text-body-emphasis">${responseMessage.addedRating.authorUsername}</h5>
+                        <h6 class="card-subtitle mb-2">${responseMessage.addedRating.createTime}</h6>
+                
+                        <p class="card-text">${responseMessage.addedRating.ratingText}</p>
+                        <p>Rating: ${responseMessage.addedRating.rating}/5 Stars</p>
+                    </div>
+                </div>
+                `);
+                ratingArea.prepend(ele);
+                ratingText.val(""); // clear the input value
+                $('input#star5').prop('checked', true); // Reset to 5 stars
+                $('#rating').val('5'); // Set the select to "Perfect!"
+            }
+        });
+    }
 });
