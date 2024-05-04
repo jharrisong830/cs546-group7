@@ -56,10 +56,23 @@ router
                     searchText: req.body.searchText
                 });
             } else if (req.body.searchType === "playlists") {
-                return res.status(500).render("error", {
-                    title: "Error",
-                    errmsg: "Other search types not yet implemented!",
-                    typeIsPlaylists: true
+                const results = await postData.searchPlaylists(
+                    req.session.user._id,
+                    req.body.searchText
+                );
+                if (results.length === 0) {
+                    return res.render("search", {
+                        title: "Search",
+                        errmsg: `We couldn't find any results for '${req.body.searchText}'. Please try again.`,
+                        typeIsPlaylists: true,
+                        searchText: req.body.searchText
+                    });
+                }
+                return res.render("search", {
+                    title: "Search Results",
+                    results: results,
+                    typeIsPlaylists: true,
+                    searchText: req.body.searchText
                 });
             } else if (req.body.searchType === "posts") {
                 const results = await postData.searchPosts(

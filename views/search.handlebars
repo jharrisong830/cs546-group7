@@ -39,7 +39,9 @@
         {{> userCardView}}
         {{/each}}
     {{else if typeIsPlaylists}}
-        TODO
+        {{#each results}}
+        {{> postCardView}}
+        {{/each}}
     {{else}} {{!-- typeIsPosts --}}
         {{#each results}}
         {{> postCardView}}
