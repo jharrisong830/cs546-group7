@@ -21,7 +21,6 @@ const likeCommentEvent = (commentId) => {
         };
         $.ajax(requestConfig).then(function (responseMessage) {
             const commentLikeCount = $(`.likes_${commentId}`);
-            console.log(responseMessage);
             if (responseMessage.liked) {
                 const curLikes = (
                     parseInt(commentLikeCount.text().split(" ")[0]) + 1
