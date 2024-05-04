@@ -1,7 +1,10 @@
-<div class="card mx-5 my-4">
+<div class="card mx-5 my-4" id="{{_id}}">
     <div class="card-body">
         <h5 class="card-title text-body-emphasis">{{authorUsername}}</h5>
         <h6 class="card-subtitle mb-2">{{createTime}}</h6>
+
+        <input type="button" value="Like" id="likeButton_{{_id}}">
+        <p class="likes_{{_id}}">{{likes.length}} Likes</p>
 
         <p class="card-text">{{textContent}}</p>
     </div>

@@ -63,7 +63,6 @@ const registerUser = async (
     newUser.commentLikes = [];
     newUser.ratings = [];
 
-
     const userCol = await users();
     const insertInfo = await userCol.insertOne(newUser);
     if (!insertInfo.acknowledged || !insertInfo.insertedId) {
@@ -343,13 +342,21 @@ const checkBlocked = async (currId, otherId) => {
     ); // returns false only if neither user is blocked by one another
 };
 
-const createMessage = async (messageContent, senderUsername, recipientUsername) => {
-    if (!messageContent || typeof messageContent !== 'string' || messageContent.trim().length === 0) {
+const createMessage = async (
+    messageContent,
+    senderUsername,
+    recipientUsername
+) => {
+    if (
+        !messageContent ||
+        typeof messageContent !== "string" ||
+        messageContent.trim().length === 0
+    ) {
         throw "You must provide something to send!";
     }
 
     if (messageContent.trim().length >= 2000) {
-        throw "message content must be less than 2000 characters."
+        throw "message content must be less than 2000 characters.";
     }
     messageContent = messageContent.trim();
 
@@ -367,16 +374,19 @@ const createMessage = async (messageContent, senderUsername, recipientUsername) 
         _id: new ObjectId(),
         from: senderUsername,
         content: messageContent,
-        timestamp: currTime,
+        timestamp: currTime
     };
 
     const updateInfoRecipient = await userCol.updateOne(
         { _id: new ObjectId(recipient) },
         { $push: { messages: newMessage } }
-    );    
+    );
 
-    if (!updateInfoRecipient.acknowledged || updateInfoRecipient.modifiedCount !== 1) {
-        throw (`Failed to add new message from ${senderUsername} to ${recipientUsername}`);
+    if (
+        !updateInfoRecipient.acknowledged ||
+        updateInfoRecipient.modifiedCount !== 1
+    ) {
+        throw `Failed to add new message from ${senderUsername} to ${recipientUsername}`;
     }
 
     return newMessage;
@@ -391,8 +401,7 @@ const getMessages = async (username) => {
     }
 
     return user.messages;
-}
-
+};
 
 /**
  * toggles the visibility status of a user's profile
@@ -758,7 +767,7 @@ const exportedMethods = {
     deleteUser,
     searchUsers,
     createMessage,
-    getMessages,
+    getMessages
 };
 
 export default exportedMethods;

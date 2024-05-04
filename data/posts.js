@@ -446,8 +446,8 @@ const likeComment = async (commentId, userId) => {
         ) {
             errorMessage(
                 MOD_NAME,
-                "likePost",
-                `Unable to like this post. It might not exist.`
+                "likeComment",
+                `Unable to like this comment. It might not exist.`
             );
         }
 
