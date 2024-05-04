@@ -27,4 +27,21 @@ router.route("/").post(async (req, res) => {
     }
 });
 
+router.route("/like").post(async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({
+            success: false,
+            errmsg: "You must be logged in to access this data."
+        });
+    }
+    // console.log(req.body);
+    try {
+        const userID = req.session.user._id;
+        const liked = await postData.likeComment(req.body.idUrl, userID);
+        return res.json({ success: true, liked: liked });
+    } catch (e) {
+        return res.status(500).json({ success: false, errmsg: e });
+    }
+});
+
 export default router;

@@ -23,8 +23,10 @@ router.route("/:postId").get(async (req, res) => {
             tags = post.tags;
         updated = new Date(updated * 1000).toISOString().split("T")[0];
         const edited = post.lastUpdated !== post.createTime;
-        for (let i=0;i<comments.length;i++) {
-            comments[i].createTime = new Date(comments[i].createTime * 1000).toISOString().split("T")[0];
+        for (let i = 0; i < comments.length; i++) {
+            comments[i].createTime = new Date(comments[i].createTime * 1000)
+                .toISOString()
+                .split("T")[0];
         }
 
         if (post.musicContent && post.musicContent.ratings) {

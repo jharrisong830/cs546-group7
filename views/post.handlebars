@@ -19,11 +19,7 @@
         {{!- add function call to onclick for button}}
         {{!--<input type="button" value="Like" onclick="like({{id}}, {{userId}})"> --}}
         <input type="button" value="Like" id="likeButton">
-        {{#if likes.length}}
         <p class="likes">{{likes.length}} Likes</p>
-        {{else}}
-        <p class="likes">0 Likes</p>
-        {{/if}}
         <iframe style="border-radius:12px" src="https://open.spotify.com/embed/{{musicType}}/{{musicURL}}?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
         {{!- add musicContent view here}}
     </div>

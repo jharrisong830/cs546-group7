@@ -92,11 +92,14 @@ const getPost = async (id) => {
     id = vld.checkObjectId(id);
 
     const postCol = await posts();
-    const post = await postCol.findOne({ _id: id });
+    const post = await postCol
+        .find({ _id: id })
+        .sort({ "comments.createTime": -1 }) // sort comments in reverse chronological order (TODO, doesn't work)
+        .toArray();
 
     if (!post)
         errorMessage(MOD_NAME, "getPost", `No post with '${id}' was found`);
-    return post;
+    return post[0];
 };
 
 /**
@@ -418,7 +421,8 @@ const commentPost = async (id, userId, commentText) => {
  *
  * @param {string | ObjectId} commentId   the comment id of the comment being liked
  * @param {string | ObjectId} userId      the user id of the user liking the comment
- * @returns {Promise<boolean>}            returns true if comment was liked, false if unliked
+ *
+ * @returns {boolean}            returns true if comment was liked, false if unliked
  * @throws if the operation is unsuccessful
  */
 const likeComment = async (commentId, userId) => {
@@ -426,14 +430,27 @@ const likeComment = async (commentId, userId) => {
     userId = vld.checkObjectId(userId);
 
     const postCol = await posts();
+    const userCol = await users();
 
-    const likedComment = await postCol.findOne({
-        "comments._id": commentId,
-        "comments.likes": userId
-    });
+    const likedComment = await postCol.findOne(
+        { "comments._id": commentId },
+        { projection: { "comments.$": 1 } }
+    ); // only fetches the given comment
 
-    if (likedComment) {
-        // User has already liked the comment, so remove their like
+    if (!likedComment) {
+        errorMessage(
+            MOD_NAME,
+            "likeComment",
+            `Unable to like this comment. It might not exist.`
+        );
+    }
+
+    const commentLikes = likedComment.comments[0].likes.map((objId) =>
+        objId.toString()
+    ); // get like user ids as strings
+
+    if (commentLikes.includes(userId.toString())) {
+        // if already liked, we must unlike this comment
         const updateInfo = await postCol.updateOne(
             { "comments._id": commentId },
             { $pull: { "comments.$.likes": userId } }
@@ -446,17 +463,14 @@ const likeComment = async (commentId, userId) => {
         ) {
             errorMessage(
                 MOD_NAME,
-                "likePost",
-                `Unable to like this post. It might not exist.`
+                "likeComment",
+                `Unable to unlike this comment. It might not exist.`
             );
         }
 
-        const userCol = await users();
         const userUpdateInfo = await userCol.updateOne(
             { _id: userId },
-            {
-                $pull: { commentLikes: commentId }
-            }
+            { $pull: { commentLikes: commentId } }
         );
 
         if (
@@ -467,54 +481,49 @@ const likeComment = async (commentId, userId) => {
             errorMessage(
                 MOD_NAME,
                 "likeComment",
+                `Unable to update this user.`
+            );
+        }
+
+        return false; // return false, indicates unlike
+    } else {
+        // otherwise, add this user to the likers
+        const updateInfo = await postCol.updateOne(
+            { "comments._id": commentId },
+            { $push: { "comments.$.likes": userId } }
+        );
+
+        if (
+            !updateInfo ||
+            updateInfo.matchedCount === 0 ||
+            updateInfo.modifiedCount === 0
+        ) {
+            errorMessage(
+                MOD_NAME,
+                "likeComment",
                 `Unable to like this comment. It might not exist.`
             );
         }
 
-        return false; // Return false to resemble the post being unliked
-    }
-
-    // Only will reach this if user hasn't liked the post already
-    const updateInfo = await postCol.updateOne(
-        { "comments._id": commentId },
-        {
-            $push: { "comments.$.likes": userId }
-        }
-    );
-
-    if (
-        !updateInfo ||
-        updateInfo.matchedCount === 0 ||
-        updateInfo.modifiedCount === 0
-    ) {
-        errorMessage(
-            MOD_NAME,
-            "likeComment",
-            `Unable to like this comment. It might not exist.`
+        const userUpdateInfo = await userCol.updateOne(
+            { _id: userId },
+            { $push: { commentLikes: commentId } }
         );
-    }
 
-    const userCol = await users();
-    const userUpdateInfo = await userCol.updateOne(
-        { _id: userId },
-        {
-            $push: { commentLikes: commentId }
+        if (
+            !userUpdateInfo ||
+            userUpdateInfo.matchedCount === 0 ||
+            userUpdateInfo.modifiedCount === 0
+        ) {
+            errorMessage(
+                MOD_NAME,
+                "likeComment",
+                `Unable to update this user.`
+            );
         }
-    );
 
-    if (
-        !userUpdateInfo ||
-        userUpdateInfo.matchedCount === 0 ||
-        userUpdateInfo.modifiedCount === 0
-    ) {
-        errorMessage(
-            MOD_NAME,
-            "likeComment",
-            `Unable to like this comment. It might not exist.`
-        );
+        return true; // return true, indicates a like!
     }
-
-    return true; // Return true to resemble the post being liked
 };
 
 // implement the adding of ratings to playlists, will work similar to comments, with extra fields to add ratings (x/5)
@@ -646,6 +655,53 @@ const searchPosts = async (userId, searchTerm) => {
     return actualResults;
 };
 
+/**
+ * searches the database for posts whose playlist music content matches the given search term
+ *
+ * @param {string | ObjectId}   the user who is currently searching (so we can show/hide posts depending on profile status and friendships)
+ * @param {string} searchTerm   string to be used in keyword search of playlist data
+ *
+ * @returns {[Object]} post objects found from the keyword search
+ * @throws on invalid input or if there are errors in getting/setting database entries
+ */
+const searchPlaylists = async (userId, searchTerm) => {
+    userId = vld.checkObjectId(userId);
+
+    searchTerm = vld.returnValidString(searchTerm);
+    vld.checkEmptyString(searchTerm);
+
+    const postCol = await posts();
+    const reSearch = new RegExp(`.*${searchTerm}.*`, "gi"); // matches when searchTerm appears anywhere in the string (case insensitive)
+
+    const results = await postCol
+        .find({
+            $or: [
+                { "musicContent.name": reSearch },
+                { "musicContent.tracks.name": reSearch }
+            ],
+            "musicContent.type": "playlist"
+        })
+        .toArray(); // get only posts with playlists, and search for playlists with titles/tracks matching the search
+
+    const currUser = await userData.getUser(userId);
+    const userCol = await users();
+    const searchablePosters = await userCol
+        .find({
+            $or: [
+                { publicProfile: true },
+                { _id: { $in: currUser.friends.concat([userId]) } }
+            ]
+        })
+        .toArray(); // we'll only show posts from public users, or from users who are friended (or from the current user)
+    const searchableIds = searchablePosters.map((usr) => usr._id.toString());
+
+    const actualResults = results.filter((pst) =>
+        searchableIds.includes(pst.authorId.toString())
+    ); // only use results where the authors posts would be viewable to the current user
+
+    return actualResults;
+};
+
 const exportedMethods = {
     createPost,
     getPost,
@@ -657,7 +713,8 @@ const exportedMethods = {
     commentPost,
     likeComment,
     ratePlaylist,
-    searchPosts
+    searchPosts,
+    searchPlaylists
 };
 
 export default exportedMethods;

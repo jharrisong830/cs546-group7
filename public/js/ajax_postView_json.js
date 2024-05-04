@@ -10,6 +10,45 @@ let newCommentForm = $("#newComment"),
     ratingText = $("#ratingText"),
     ratingValue = $("#rating");
 
+/**
+ * given a comment's id, returns an event callback for that comment to handle liking/unliking
+ */
+const likeCommentEvent = (commentId) => {
+    return (event) => {
+        event.preventDefault();
+        let requestConfig = {
+            method: "POST",
+            url: "/api/comments/like",
+            contentType: "application/json",
+            data: JSON.stringify({
+                idUrl: commentId
+            })
+        };
+        $.ajax(requestConfig).then(function (responseMessage) {
+            const commentLikeCount = $(`.likes_${commentId}`);
+            if (responseMessage.liked) {
+                const curLikes = (
+                    parseInt(commentLikeCount.text().split(" ")[0]) + 1
+                ).toString();
+                if (curLikes == 1) {
+                    commentLikeCount.text(`${curLikes} Like`);
+                } else {
+                    commentLikeCount.text(`${curLikes} Likes`);
+                }
+            } else {
+                const curLikes = (
+                    parseInt(commentLikeCount.text().split(" ")[0]) - 1
+                ).toString();
+                if (curLikes == 1) {
+                    commentLikeCount.text(`${curLikes} Like`);
+                } else {
+                    commentLikeCount.text(`${curLikes} Likes`);
+                }
+            }
+        });
+    };
+};
+
 newCommentForm.submit((event) => {
     event.preventDefault();
     let newComment = textComment.val();
@@ -33,21 +72,30 @@ newCommentForm.submit((event) => {
                 );
                 commentArea.append(postRenderError);
             } else {
-                responseMessage.addedComment.createTime = new Date(responseMessage.addedComment.createTime * 1000)
+                responseMessage.addedComment.createTime = new Date(
+                    responseMessage.addedComment.createTime * 1000
+                )
                     .toISOString()
                     .split("T")[0];
                 let ele = $(`
-                <div class="card mx-5 my-4">
+                <div class="card mx-5 my-4" id="${responseMessage.addedComment._id}">
                     <div class="card-body">
                         <h5 class="card-title text-body-emphasis">${responseMessage.addedComment.authorUsername}</h5>
                         <h6 class="card-subtitle mb-2">${responseMessage.addedComment.createTime}</h6>
+
+                        <input type="button" value="Like" id="likeButton_${responseMessage.addedComment._id}">
+                        <p class="likes_${responseMessage.addedComment._id}">0 Likes</p>
                 
                         <p class="card-text">${responseMessage.addedComment.textContent}</p>
                     </div>
                 </div>
                 `);
-                commentArea.prepend(ele);
+                commentArea.append(ele);
                 textComment.val(""); // clear the input value...
+
+                $(`#likeButton_${responseMessage.addedComment._id}`).click(
+                    likeCommentEvent(responseMessage.addedComment._id)
+                ); // add an event handler to the like button
             }
         });
     }
@@ -84,14 +132,28 @@ likeButton.on("click", function (event) {
                 likes.text(`${curLikes} Likes`);
             }
         } else {
-            const curLikes = (parseInt(likes.text().split(" ")[0]) - 1).toString();
+            const curLikes = (
+                parseInt(likes.text().split(" ")[0]) - 1
+            ).toString();
             if (curLikes == 1) {
                 likes.text(`${curLikes} Like`);
             } else {
                 likes.text(`${curLikes} Likes`);
             }
         }
+    });
+});
 
+$(document).ready((event) => {
+    // when document is finished loading, add event handlers to all of the rendered comments
+    const commentIds = $("#commentArea")
+        .children()
+        .map(function () {
+            return this.id;
+        })
+        .get(); // get all comment ids on the page...
+    commentIds.forEach((id) => {
+        $(`#likeButton_${id}`).click(likeCommentEvent(id)); // add an event handler to the like button
     });
 });
 

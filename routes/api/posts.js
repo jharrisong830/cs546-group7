@@ -103,25 +103,19 @@ router.route("/user/:username").get(async (req, res) => {
 });
 
 router.route("/like").post(async (req, res) => {
-    console.log(req.body);
-
-    const { idUrl, type } = req.body;
-    console.log("Like type is: " + type);
-
-    if (type === "comment") {
-        const userID = req.session.user._id;
-
-        const liked = await postData.likeComment(idUrl, userID);
-        
-        // const liked = await postData.likeComment(req.body.idUrl, userID);
-        return res.json({ success: true, liked:liked });
+    if (!req.session.user) {
+        return res.status(401).json({
+            success: false,
+            errmsg: "You must be logged in to access this data."
+        });
     }
-
-    else {
+    // console.log(req.body);
+    try {
         const userID = req.session.user._id;
-        const liked = await postData.likePost(idUrl, userID);
-        // const liked = await postData.likePost(req.body.idUrl, userID);
-        return res.json({ success: true, liked:liked });
+        const liked = await postData.likePost(req.body.idUrl, userID);
+        return res.json({ success: true, liked: liked });
+    } catch (e) {
+        return res.status(500).json({ success: false, errmsg: e });
     }
 });
 
