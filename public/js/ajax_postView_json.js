@@ -28,7 +28,9 @@ newCommentForm.submit((event) => {
                 );
                 commentArea.append(postRenderError);
             } else {
-                responseMessage.addedComment.createTime = new Date(responseMessage.addedComment.createTime * 1000)
+                responseMessage.addedComment.createTime = new Date(
+                    responseMessage.addedComment.createTime * 1000
+                )
                     .toISOString()
                     .split("T")[0];
                 let ele = $(`
@@ -79,13 +81,14 @@ likeButton.on("click", function (event) {
                 likes.text(`${curLikes} Likes`);
             }
         } else {
-            const curLikes = (parseInt(likes.text().split(" ")[0]) - 1).toString();
+            const curLikes = (
+                parseInt(likes.text().split(" ")[0]) - 1
+            ).toString();
             if (curLikes == 1) {
                 likes.text(`${curLikes} Like`);
             } else {
                 likes.text(`${curLikes} Likes`);
             }
         }
-
     });
 });
