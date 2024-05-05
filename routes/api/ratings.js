@@ -5,7 +5,6 @@ import { postData, userData } from "../../data/index.js";
 const router = Router();
 
 router.route("/").post(async (req, res) => {
-
     console.log("post ratings reached!"); // working
     console.log(req.body);
 

@@ -31,12 +31,16 @@ router.route("/:postId").get(async (req, res) => {
 
         if (post.musicContent && post.musicContent.ratings) {
             for (let i = 0; i < post.musicContent.ratings.length; i++) {
-                post.musicContent.ratings[i].createTime = new Date(post.musicContent.ratings[i].createTime * 1000).toISOString().split("T")[0];
+                post.musicContent.ratings[i].createTime = new Date(
+                    post.musicContent.ratings[i].createTime * 1000
+                )
+                    .toISOString()
+                    .split("T")[0];
             }
         }
         console.log("this post's type is " + music.type);
 
-        let isPlaylist = (music.type === "playlist") ? true : false;
+        let isPlaylist = music.type === "playlist" ? true : false;
 
         res.render("post", {
             title: `Post by @${author}`,

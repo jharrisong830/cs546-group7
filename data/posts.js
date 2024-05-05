@@ -556,7 +556,7 @@ const ratePlaylist = async (id, userId, starRating, reviewText) => {
     }
 
     const postCol = await posts();
-    const post = await postCol.findOne({_id: id}, {"musicContent._id": 1}); // Post with a playlist type should ALWAYS have music content
+    const post = await postCol.findOne({ _id: id }, { "musicContent._id": 1 }); // Post with a playlist type should ALWAYS have music content
 
     let musicContentId = post.musicContent._id;
 
@@ -576,7 +576,7 @@ const ratePlaylist = async (id, userId, starRating, reviewText) => {
         createTime: currTime
     };
 
-    let mc = post.musicContent;    
+    let mc = post.musicContent;
 
     const updateResult = await postCol.updateOne(
         { _id: id },
@@ -731,9 +731,11 @@ const likeRating = async (ratingId, userId) => {
         );
     }
 
-    const rating = postWithRating.musicContent.ratings.find(r => r._id.equals(ratingId));
+    const rating = postWithRating.musicContent.ratings.find((r) =>
+        r._id.equals(ratingId)
+    );
 
-    const ratingLikes = rating.likes.map(id => id.toString());  
+    const ratingLikes = rating.likes.map((id) => id.toString());
 
     if (ratingLikes.includes(userId.toString())) {
         // User already liked the rating, so unlike it
@@ -773,8 +775,7 @@ const likeRating = async (ratingId, userId) => {
         }
 
         return false; // Indicates rating was unliked
-    } 
-    else {
+    } else {
         // User has not liked the rating, so add the like
         const updateInfo = await postCol.updateOne(
             { "musicContent.ratings._id": ratingId },
@@ -814,7 +815,6 @@ const likeRating = async (ratingId, userId) => {
         return true; // Indicates rating was liked
     }
 };
-
 
 const exportedMethods = {
     createPost,
