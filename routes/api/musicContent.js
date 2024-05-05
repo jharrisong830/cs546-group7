@@ -19,6 +19,16 @@ router.route("/spotify/playlists").get(async (req, res) => {
         );
         return res.json({ success: true, playlists: playlists }); // return json data as an array of playlist previews
     } catch (e) {
+        if (
+            e.startsWith(
+                "ERROR in helpers/authentication.js / SPRequestRefresh"
+            )
+        ) {
+            // send different data if error is due to account not being connected
+            return res
+                .status(500)
+                .json({ success: false, errmsg: e, notConnected: true });
+        }
         return res.status(500).json({ success: false, errmsg: e });
     }
 });
@@ -47,6 +57,21 @@ router.route("/spotify/searchCatalog").get(async (req, res) => {
         );
         return res.json({ success: true, results: results }); // return json data as an array of catalog items (songs and albums)
     } catch (e) {
+        if (
+            e.startsWith(
+                "ERROR in helpers/authentication.js / SPRequestRefresh"
+            )
+        ) {
+            // send different data if error is due to account not being connected
+            return res
+                .status(500)
+                .json({
+                    success: false,
+                    errmsg: e,
+                    notConnected: true,
+                    username: req.session.user.username
+                });
+        }
         return res.status(500).json({ success: false, errmsg: e });
     }
 });

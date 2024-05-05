@@ -1,6 +1,6 @@
-/* body {
-    font-family: system-ui, "Open Sans", sans-serif;
-} */
+.basePage {
+    background-color: #c0daed;
+}
 
 .apiThumbnail {
     width: 125px;
@@ -10,7 +10,7 @@
 .tag {
     display: inline-block;
     background-color: #f0f0f0;
-    margin: 5px; 
+    margin: 5px;
     padding: 5px 10px;
     border-radius: 4px;
 }
@@ -39,5 +39,9 @@
 }
 
 .star-rating input[type="radio"]:checked ~ label {
-    color: #ffe234; 
+    color: #ffe234;
+}
+
+#error {
+    color: #da1b41;
 }

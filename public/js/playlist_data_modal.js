@@ -203,9 +203,10 @@ $("#submitSearchCatalog").click((event) => {
                 $("#contentSelector").removeAttr("hidden");
             },
             (responseError) => {
-                $("#error").html(
-                    `There was an error fetching your results. Please try again. (Error message: ${responseError.responseJSON.errmsg})`
-                );
+                $("#error").html(`
+                    <p class="font-monospace">You don't seem to have any accounts connected. Add one in your profile settings.</p>
+                    <a href="/auth/spotify" role="button" class="btn btn-success">Connect to Spotify</a>
+                `);
                 $("#error").removeAttr("hidden");
                 $("#contentLoading").attr("hidden", true);
                 $(".spinner-border").attr("hidden", true);
@@ -296,9 +297,17 @@ $("#postModal").on("shown.bs.modal", (event) => {
                 },
                 (responseError) => {
                     // triggered if an http error code is received (from jquery docs, responseError is a different object than our api's response)
-                    $("#error").html(
-                        `There was an error fetching your playlists. Please try again. (Error message: ${responseError.responseJSON.errmsg})`
-                    );
+                    if (responseError.responseJSON.notConnected) {
+                        $("#error").html(`
+                            <p class="font-monospace">You don't seem to have any accounts connected. Add one in your profile settings.</p>
+                            <a href="/auth/spotify" role="button" class="btn btn-success">Connect to Spotify</a>
+                        `);
+                    } else {
+                        $("#error").html(`
+                            <p>There was an error fetching your playlists. Please try again.</p>
+                            <p>(Error message: ${responseError.responseJSON.errmsg})</p>
+                        `);
+                    }
                     $("#error").removeAttr("hidden");
                     $("#contentLoading").attr("hidden", true);
                     $(".spinner-border").attr("hidden", true);
