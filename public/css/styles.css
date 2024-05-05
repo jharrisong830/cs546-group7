@@ -69,3 +69,23 @@
     background-color: #1db954 !important;
     border-color: #1db954 !important;
 }
+
+.btn-primary {
+    background-color: #7f50b9 !important;
+    border-color: #7f50b9 !important;
+}
+
+.btn-primary:hover {
+    background-color: #8a5fbf !important;
+    border-color: #8a5fbf !important;
+}
+
+.btn-danger {
+    background-color: #dc6a87 !important;
+    border-color: #dc6a87 !important;
+}
+
+.btn-danger:hover {
+    background-color: #e3879e !important;
+    border-color: #e3879e !important;
+}

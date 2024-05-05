@@ -29,11 +29,11 @@
                 <div class="modal-body">
                     <form id="newPostForm" method="POST" action="/api/posts">
                         <label for="textContentInner" class="form-label">Write some thoughts:</label>
-                        <textarea required id="textContentInner" name="textContent" type="text" placeholder="What are you listening to?" class="form-control"></textarea>
+                        <textarea required id="textContentInner" name="textContent" placeholder="What are you listening to?" class="form-control"></textarea>
 
                         <br>
 
-                        <label for="musicContent" class="form-label">Choose some music:</label>
+                        <label class="form-label">Choose some music:</label>
                         <br>
 
                         {{!-- <div class="btn-group" role="group">
@@ -43,10 +43,10 @@
 
                         <div class="btn-group" role="group" id="musicContentTypeButtons">
                             <input type="radio" id="playlists" value="playlists" name="musicContentType" class="btn-check" checked>
-                            <label for="playlists" class="btn btn-outline-success">Playlists</label>
+                            <label for="playlists" class="btn btn-outline-secondary">Playlists</label>
 
                             <input type="radio" id="catalog" value="catalog" name="musicContentType" class="btn-check">
-                            <label for="catalog" class="btn btn-outline-success">Catalog</label>
+                            <label for="catalog" class="btn btn-outline-secondary">Catalog</label>
                         </div>
 
                         <!-- views below will change based on what is checked above -->
