@@ -242,7 +242,7 @@ newRatingForm.submit((event) => {
     event.preventDefault();
     let newRating = ratingText.val();
     let selectedRating = $('input[name="rating"]:checked').val();
-    console.log(selectedRating);
+    //console.log(selectedRating);
 
     if (newRating) {
         let requestConfig = {
@@ -276,8 +276,8 @@ newRatingForm.submit((event) => {
                         <h5 class="card-title text-body-emphasis">${responseMessage.addedRating.authorUsername}</h5>
                         <h6 class="card-subtitle mb-2">${responseMessage.addedRating.createTime}</h6>
                 
-                        <p class="card-text">${responseMessage.addedRating.ratingText}</p>
-                        <p>Rating: ${responseMessage.addedRating.rating}/5 Stars</p>
+                        <p class="card-text">${responseMessage.addedRating.textContent}</p>
+                        <p>Rating: ${responseMessage.addedRating.starRating}/5 Stars</p>
                     </div>
                 </div>
                 `);
