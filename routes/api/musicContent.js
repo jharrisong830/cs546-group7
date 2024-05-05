@@ -63,14 +63,12 @@ router.route("/spotify/searchCatalog").get(async (req, res) => {
             )
         ) {
             // send different data if error is due to account not being connected
-            return res
-                .status(500)
-                .json({
-                    success: false,
-                    errmsg: e,
-                    notConnected: true,
-                    username: req.session.user.username
-                });
+            return res.status(500).json({
+                success: false,
+                errmsg: e,
+                notConnected: true,
+                username: req.session.user.username
+            });
         }
         return res.status(500).json({ success: false, errmsg: e });
     }
