@@ -1,6 +1,6 @@
-/* body {
-    font-family: system-ui, "Open Sans", sans-serif;
-} */
+.basePage {
+    background-color: #c0daed;
+}
 
 .apiThumbnail {
     width: 125px;
@@ -40,4 +40,52 @@
 
 .star-rating input[type="radio"]:checked ~ label {
     color: #ffe234;
+}
+
+#error {
+    color: #da1b41;
+}
+
+.spColor {
+    /* spotify green */
+    background-color: #1db954 !important;
+    border-color: #1db954 !important;
+}
+
+.spColor:hover {
+    /* bootstrap green on hover */
+    background-color: #198754 !important;
+    border-color: #198754 !important;
+}
+
+.spColor-outline {
+    /* spotify green */
+    color: #1db954 !important;
+    border-color: #1db954 !important;
+}
+
+.spColor-outline:hover {
+    color: #ffffff !important;
+    background-color: #1db954 !important;
+    border-color: #1db954 !important;
+}
+
+.btn-primary {
+    background-color: #7f50b9 !important;
+    border-color: #7f50b9 !important;
+}
+
+.btn-primary:hover {
+    background-color: #8a5fbf !important;
+    border-color: #8a5fbf !important;
+}
+
+.btn-danger {
+    background-color: #dc6a87 !important;
+    border-color: #dc6a87 !important;
+}
+
+.btn-danger:hover {
+    background-color: #e3879e !important;
+    border-color: #e3879e !important;
 }
