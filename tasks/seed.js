@@ -50,13 +50,13 @@ let user4 = await userData.registerUser(
 //     true,
 //     "Ramses Peralta"
 // );
-// let user6 = await userData.registerUser(
-//     "ran3",
-//     "test3",
-//     "06/14/2007",
-//     true,
-//     "Rebecca An"
-// );
+let user6 = await userData.registerUser(
+     "rebeccaan8",
+     "#Password123",
+     "2003-04-03",
+     true,
+     "Rebecca An"
+ );
 
 // try {
 //     let failed = await userData.registerUser(
@@ -128,8 +128,7 @@ console.log("...and writing some posts...");
 let firstPost = await postData.createPost(
     user1._id,
     {},
-    "Hello, world! This is my first post!",
-    []
+    "Hello, world! This is my first post!"
 );
 user1 = await userData.getUser(user1._id);
 
@@ -141,8 +140,7 @@ await new Promise((resolve) => setTimeout(resolve, 5000)); // getting sleepy, 5 
 let nextPost = await postData.createPost(
     user1._id,
     {},
-    "Hello again! This is my second post. Better than the first",
-    []
+    "Hello again! This is my second post. Better than the first"
 );
 
 await new Promise((resolve) => setTimeout(resolve, 5000));
@@ -152,30 +150,25 @@ firstPost = await postData.updatePost(
     "I updated this post. The update time should be after that of my second post"
 );
 
-let emmaPost1 = await postData.createPost(
-    user2._id,
-    {},
-    "Hello from Emma!",
-    []
-);
+let emmaPost1 = await postData.createPost(user2._id, {}, "Hello from Emma!");
 
 await new Promise((resolve) => setTimeout(resolve, 5000));
 
-let justinPost = await postData.createPost(
-    user4._id,
-    {},
-    "Hello from Justin!",
-    []
-);
+let justinPost = await postData.createPost(user4._id, {}, "Hello from Justin!");
 
 await new Promise((resolve) => setTimeout(resolve, 5000));
 
 let emmaPost2 = await postData.createPost(
     user2._id,
     {},
-    "This is another post from Emma. What's up??",
-    []
+    "This is another post from Emma. What's up??"
 );
+
+console.log("...might try and make new friends...");
+
+let rebeccaFriendRequest1 = await userData.addFriendRequest(user6._id, user1._id);
+let rebeccaFriendRequest2 = await userData.addFriendRequest(user6._id, user2._id);
+let rebeccaFriendRequest3 = await userData.addFriendRequest(user6._id, user4._id);
 
 // console.log(nextPost);
 // console.log(firstPost);
@@ -184,12 +177,6 @@ let emmaPost2 = await postData.createPost(
 // user1 = await userData.getUser(user1._id);
 
 // await userData.deleteUser(user1._id); // user1 should disappear from database, along with all posts
-
-let newComment = await postData.commentPost(
-    emmaPost2._id,
-    user1._id,
-    "This is a test of the comments!"
-);
 
 console.log("All done, database ready!");
 
