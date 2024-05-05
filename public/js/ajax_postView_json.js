@@ -49,6 +49,42 @@ const likeCommentEvent = (commentId) => {
     };
 };
 
+$(document).on('click', '#ratingLikeButton', function(event) {
+    event.preventDefault();
+    const ratingId = $(this).data('rating-id');
+    let requestConfig = {
+        method: "POST",
+        url: "/api/ratings/like",
+        contentType: "application/json",
+        data: JSON.stringify({
+            idUrl: ratingId
+        })
+    };
+    $.ajax(requestConfig).then(function (responseMessage) {
+        const likesElement = $(`#likes-rating-${ratingId}`);
+        if (responseMessage.liked) {
+            const currentLikes = parseInt(likesElement.text().split(" ")[0]);
+            const newLikes = currentLikes + 1;
+            if (newLikes === 1) {
+                likesElement.text(newLikes + " Like");
+            } 
+            else {
+                likesElement.text(newLikes + " Likes");
+            }
+        } 
+        else {
+            const currentLikes = parseInt(likesElement.text().split(" ")[0]);
+            const newLikes = currentLikes - 1;
+            if (newLikes === 1) {
+                likesElement.text(newLikes + " Like");
+            } 
+            else {
+                likesElement.text(newLikes + " Likes");
+            }
+        }
+    })
+});
+
 newCommentForm.submit((event) => {
     event.preventDefault();
     let newComment = textComment.val();

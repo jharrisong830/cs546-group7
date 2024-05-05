@@ -702,6 +702,120 @@ const searchPlaylists = async (userId, searchTerm) => {
     return actualResults;
 };
 
+/**
+ * Likes or unlikes a rating on a playlist within a post.
+ *
+ * @param {string | ObjectId} ratingId  the rating id of the rating being liked or unliked
+ * @param {string | ObjectId} userId    the user id of the user liking or unliking the rating
+ * @returns {Promise<boolean>}          returns true if the rating was liked, false if unliked
+ * @throws if the operation is unsuccessful
+ */
+const likeRating = async (ratingId, userId) => {
+    ratingId = vld.checkObjectId(ratingId);
+    userId = vld.checkObjectId(userId);
+
+    const postCol = await posts();
+    const userCol = await users();
+
+    // Find the rating in any post to check if it's already liked by this user
+    const postWithRating = await postCol.findOne(
+        { "musicContent.ratings._id": ratingId },
+        { projection: { "musicContent.$": 1 } }
+    );
+
+    if (!postWithRating) {
+        errorMessage(
+            MOD_NAME,
+            "likeRating",
+            `Unable to like this rating. It might not exist.`
+        );
+    }
+
+    const rating = postWithRating.musicContent.ratings.find(r => r._id.equals(ratingId));
+
+    const ratingLikes = rating.likes.map(id => id.toString());  
+
+    if (ratingLikes.includes(userId.toString())) {
+        // User already liked the rating, so unlike it
+        const updateInfo = await postCol.updateOne(
+            { "musicContent.ratings._id": ratingId },
+            { $pull: { "musicContent.ratings.$.likes": userId } }
+        );
+
+        if (
+            !updateInfo ||
+            updateInfo.matchedCount === 0 ||
+            updateInfo.modifiedCount === 0
+        ) {
+            errorMessage(
+                MOD_NAME,
+                "likeRating",
+                `Unable to unlike this rating. It might not exist.`
+            );
+        }
+
+        // Update the user's document to remove the like
+        const userUpdateInfo = await userCol.updateOne(
+            { _id: userId },
+            { $pull: { ratingLikes: ratingId } }
+        );
+
+        if (
+            !userUpdateInfo ||
+            userUpdateInfo.matchedCount === 0 ||
+            userUpdateInfo.modifiedCount === 0
+        ) {
+            errorMessage(
+                MOD_NAME,
+                "likeRating",
+                `Unable to unlike this rating. It might not exist.`
+            );
+        }
+
+        return false; // Indicates rating was unliked
+    } 
+    else {
+        // User has not liked the rating, so add the like
+        const updateInfo = await postCol.updateOne(
+            { "musicContent.ratings._id": ratingId },
+            { $push: { "musicContent.ratings.$.likes": userId } }
+        );
+
+        if (
+            !updateInfo ||
+            updateInfo.matchedCount === 0 ||
+            updateInfo.modifiedCount === 0
+        ) {
+            errorMessage(
+                MOD_NAME,
+                "likeRating",
+                `Unable to like this rating. It might not exist.`
+            );
+        }
+
+        // Update user's document to add the like
+        const userUpdateInfo = await userCol.updateOne(
+            { _id: userId },
+            { $push: { ratingLikes: ratingId } }
+        );
+
+        if (
+            !userUpdateInfo ||
+            userUpdateInfo.matchedCount === 0 ||
+            userUpdateInfo.modifiedCount === 0
+        ) {
+            errorMessage(
+                MOD_NAME,
+                "likeRating",
+                `Unable to like this rating. It might not exist.`
+            );
+        }
+
+        return true; // Indicates rating was liked
+    }
+};
+
+
 const exportedMethods = {
     createPost,
     getPost,
@@ -714,7 +828,8 @@ const exportedMethods = {
     likeComment,
     ratePlaylist,
     searchPosts,
-    searchPlaylists
+    searchPlaylists,
+    likeRating
 };
 
 export default exportedMethods;
