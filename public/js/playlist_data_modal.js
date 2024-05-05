@@ -205,7 +205,7 @@ $("#submitSearchCatalog").click((event) => {
             (responseError) => {
                 $("#error").html(`
                     <p class="font-monospace">You don't seem to have any accounts connected. Add one in your profile settings.</p>
-                    <a href="/auth/spotify" role="button" class="btn btn-success">Connect to Spotify</a>
+                    <a href="/auth/spotify" role="button" class="spColor btn btn-success">Connect to Spotify</a>
                 `);
                 $("#error").removeAttr("hidden");
                 $("#contentLoading").attr("hidden", true);
@@ -300,7 +300,7 @@ $("#postModal").on("shown.bs.modal", (event) => {
                     if (responseError.responseJSON.notConnected) {
                         $("#error").html(`
                             <p class="font-monospace">You don't seem to have any accounts connected. Add one in your profile settings.</p>
-                            <a href="/auth/spotify" role="button" class="btn btn-success">Connect to Spotify</a>
+                            <a href="/auth/spotify" role="button" class="spColor btn btn-success">Connect to Spotify</a>
                         `);
                     } else {
                         $("#error").html(`

@@ -45,3 +45,27 @@
 #error {
     color: #da1b41;
 }
+
+.spColor {
+    /* spotify green */
+    background-color: #1db954 !important;
+    border-color: #1db954 !important;
+}
+
+.spColor:hover {
+    /* bootstrap green on hover */
+    background-color: #198754 !important;
+    border-color: #198754 !important;
+}
+
+.spColor-outline {
+    /* spotify green */
+    color: #1db954 !important;
+    border-color: #1db954 !important;
+}
+
+.spColor-outline:hover {
+    color: #ffffff !important;
+    background-color: #1db954 !important;
+    border-color: #1db954 !important;
+}

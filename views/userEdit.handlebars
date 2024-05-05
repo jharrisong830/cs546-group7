@@ -78,13 +78,13 @@
     <div class="row py-2">
         <div class="col">
             {{#if user.SPAuth}} <!-- display connect/remove depending on auth data in the database -->
-                <a href="/auth/spotify/remove" role="button" class="btn btn-outline-success">Remove Spotify Account</a>
+                <a href="/auth/spotify/remove" role="button" class="spColor-outline btn btn-outline-success">Remove Spotify Account</a>
             {{else}}
-                <a href="/auth/spotify" role="button" class="btn btn-success">Connect Spotify Account</a>
+                <a href="/auth/spotify" role="button" class="spColor btn btn-success">Connect Spotify Account</a>
             {{/if}}
         </div>
     </div>
-    <div class="row py-2">
+    {{!-- <div class="row py-2">
         <div class="col">
             {{#if user.AMAuth}}
                 <a href="/auth/appleMusic/remove" role="button" class="btn btn-outline-danger" id="musickit-js-unauth">Remove Apple Music Account</a>
@@ -99,7 +99,7 @@
             <a href="javascript:void(0)" role="button" class="btn btn-dark" id="testButton">Test to console log playlist!</a>
         </div>
     </div>
-    {{/if}}
+    {{/if}} --}}
 </div>
 
 
