@@ -378,6 +378,11 @@ const createMessage = async (
         throw "Both sender and recipient must be valid users.";
     }
 
+    const isBlocked = await checkBlocked(sender.toHexString(), recipient.toHexString());
+    if (isBlocked) {
+        throw "Messaging blocked. One of the users has blocked the other.";
+    }
+
 
     // https://stackoverflow.com/questions/10599148/how-do-i-get-the-current-time-only-in-javascript
     const currTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", hour12: false })
@@ -871,7 +876,6 @@ const exportedMethods = {
     addFriendRequest,
     getRequests,
     removeFriendRequest,
-    getFriends
 };
 
 export default exportedMethods;

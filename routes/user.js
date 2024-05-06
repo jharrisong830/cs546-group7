@@ -110,9 +110,10 @@ router
 
             res.redirect(`/user/${senderUsername}/messages`);
         } catch (e) {
+            console.log(e);
             return res.status(500).render("error", {
                 title: "Error",
-                errmsg: "Failed to send message: "
+                errmsg: e
             });
         }
     });
