@@ -881,20 +881,12 @@ const getUserComments = async (userId) => {
         .toArray();
 
     let userComments = [];
-    if (postsWithUserComments.length > 0) {
-        postsWithUserComments.forEach((post) => {
-            const comments = post.comments.filter((comment) =>
-                comment.authorId.equals(userId)
-            );
-            userComments.push(...comments);
-        });
-    } else {
-        errorMessage(
-            MOD_NAME,
-            "getUserComments",
-            `No comments found for user with ID '${userId}'`
+    postsWithUserComments.forEach((post) => {
+        const comments = post.comments.filter((comment) =>
+            comment.authorId.equals(userId)
         );
-    }
+        userComments.push(...comments);
+    });
 
     return userComments;
 };

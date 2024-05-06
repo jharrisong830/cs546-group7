@@ -76,7 +76,7 @@
                             <div class="col-4">
                                 <p class="card-text">${feedPost.textContent}</p>
 
-                                <input type="button" value="Like" id="likeButton_${feedPost._id}">
+                                <input type="button" value="Like" class="btn btn-sm btn-danger" id="likeButton_${feedPost._id}">
                                 <p class="likes_${feedPost._id}">${feedPost.likes.length} Likes</p>
                             </div>
                             <div class="col-8">
@@ -137,12 +137,17 @@
                             <h5 class="card-title text-body-emphasis">${responseMessage.addedPost.authorUsername}</h5>
                             <h6 class="card-subtitle mb-2">${responseMessage.addedPost.lastUpdated}</h6>
         
-                            <p class="card-text">${responseMessage.addedPost.textContent}</p>
+                            <div class="row">
+                                <div class="col-4">
+                                    <p class="card-text">${responseMessage.addedPost.textContent}</p>
 
-                            <input type="button" value="Like" id="likeButton_${responseMessage.addedPost._id}">
-                            <p class="likes_${responseMessage.addedPost._id}">${responseMessage.addedPost.likes.length} Likes</p>
-
-                            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/${responseMessage.addedPost.musicContent.type}/${responseMessage.addedPost.musicContent._id}?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                                    <input type="button" value="Like" class="btn btn-sm btn-danger" id="likeButton_${responseMessage.addedPost._id}">
+                                    <p class="likes_${responseMessage.addedPost._id}">${responseMessage.addedPost.likes.length} Likes</p>
+                                </div>
+                                <div class="col-8">
+                                    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/${responseMessage.addedPost.musicContent.type}/${responseMessage.addedPost.musicContent._id}?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                                </div>
+                            </div>
                             <a href="/post/${responseMessage.addedPost._id}" role="button" class="btn btn-outline-dark btn-sm">View Post</a>
                         </div>
                     </div>`

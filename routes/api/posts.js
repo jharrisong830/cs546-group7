@@ -19,12 +19,6 @@ router.route("/").post(async (req, res) => {
         newPost.tags = xss(newPost.tags);
         let musicItem = {};
         let cleanText = xss(newPost.textContent);
-        // Just make the array empty if each element is '' (happens when user selects tags but then chooses catalog)
-        if (newPost.tags.every((item) => item === "")) {
-            newPost.tags = [];
-        }
-
-        //console.log(req.body);
 
         if (newPost.musicContentType === "playlist") {
             const usr = await authentication.SPRequestRefresh(

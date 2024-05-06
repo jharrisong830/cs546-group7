@@ -116,7 +116,7 @@ newCommentForm.submit((event) => {
                         <h5 class="card-title text-body-emphasis">${responseMessage.addedComment.authorUsername}</h5>
                         <h6 class="card-subtitle mb-2">${responseMessage.addedComment.createTime}</h6>
 
-                        <input type="button" value="Like" id="likeButton_${responseMessage.addedComment._id}">
+                        <input type="button" value="Like" class="btn btn-sm btn-danger" id="likeButton_${responseMessage.addedComment._id}">
                         <p class="likes_${responseMessage.addedComment._id}">0 Likes</p>
                 
                         <p class="card-text">${responseMessage.addedComment.textContent}</p>

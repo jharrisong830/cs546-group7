@@ -344,7 +344,7 @@ const checkBlocked = async (currId, otherId) => {
 };
 
 /**
- * 
+ *
  * @param {*} messageContent   message that the user wants to send
  * @param {*} senderUsername   the username of the sender
  * @param {*} recipientUsername    the username of the recipient
@@ -380,7 +380,7 @@ const createMessage = async (
     }
 
     if (sender === recipient) {
-        throw "You cannot send a message to yourself!"
+        throw "You cannot send a message to yourself!";
     }
 
     const isBlocked = await checkBlocked(
@@ -391,9 +391,12 @@ const createMessage = async (
         throw "Messaging blocked. One of the users has blocked the other.";
     }
 
-
     // https://stackoverflow.com/questions/10599148/how-do-i-get-the-current-time-only-in-javascript
-    const currTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", hour12: false })
+    const currTime = new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+    });
     const newMessage = {
         _id: new ObjectId(),
         from: senderUsername,
@@ -412,7 +415,9 @@ const createMessage = async (
         { $push: { messages: newMessage } }
     );
 
-    if ( !updateInfoSender.acknowledged || updateInfoSender.modifiedCount !== 1 ||
+    if (
+        !updateInfoSender.acknowledged ||
+        updateInfoSender.modifiedCount !== 1 ||
         !updateInfoRecipient.acknowledged ||
         updateInfoRecipient.modifiedCount !== 1
     ) {
@@ -424,7 +429,7 @@ const createMessage = async (
 
 /**
  * gets all the messages that the user has
- * 
+ *
  * @param {*} username   username of the current user
  * @returns        all the messages that the user has from the database
  */
@@ -438,7 +443,6 @@ const getMessages = async (username) => {
 
     return user.messages;
 };
-
 
 /**
  * toggles the visibility status of a user's profile
@@ -801,16 +805,15 @@ const addFriendRequest = async (currId, requesterId) => {
     let requestList = await getUser(currId);
     let isIn = false;
 
-    for(let x in requestList.friendRequests)
-    {
-        if (requestList.friendRequests[x].toString() === requesterId.toString())
-        {
+    for (let x in requestList.friendRequests) {
+        if (
+            requestList.friendRequests[x].toString() === requesterId.toString()
+        ) {
             isIn = true;
         }
     }
 
-    if(isIn === false)
-    {
+    if (isIn === false) {
         const friendRequest = await getUser(requesterId); // make sure the user exists
 
         const userCol = await users();
@@ -820,7 +823,7 @@ const addFriendRequest = async (currId, requesterId) => {
                 $push: { friendRequests: requesterId }
             }
         );
-    
+
         if (
             !updateInfo ||
             updateInfo.matchedCount === 0 ||
@@ -904,7 +907,7 @@ const exportedMethods = {
     getMessages,
     addFriendRequest,
     getRequests,
-    removeFriendRequest,
+    removeFriendRequest
 };
 
 export default exportedMethods;
