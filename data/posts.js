@@ -690,11 +690,12 @@ const searchPlaylists = async (userId, searchTerm) => {
         .find({
             $or: [
                 { "musicContent.name": reSearch },
-                { "musicContent.tracks.name": reSearch }
+                { "musicContent.tracks.name": reSearch },
+                { tags: reSearch }
             ],
             "musicContent.type": "playlist"
         })
-        .toArray(); // get only posts with playlists, and search for playlists with titles/tracks matching the search
+        .toArray(); // get only posts with playlists, and search for playlists with titles/tracks/tags matching the search
 
     const currUser = await userData.getUser(userId);
     const userCol = await users();
