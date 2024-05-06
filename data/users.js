@@ -55,6 +55,7 @@ const registerUser = async (
     newUser.AMAuth = null;
 
     newUser.friends = [];
+    newUser.friendRequests = [];
     newUser.messages = [];
     newUser.blocked = [];
     newUser.posts = [];
