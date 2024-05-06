@@ -30,11 +30,22 @@ router.route("/:username").get(async (req, res) => {
         const usr = await userData.getUser(userId);
         const currUser = await userData.getUser(req.session.user._id); // get friend ids as strings
         const currUserFriends = currUser.friends.map((fr) => fr.toString());
+        let isFriend = currUserFriends.includes(userId.toString());
+
+        if (req.query.removeFriend === 'true' && isFriend) {
+            await userData.removeFriend(req.session.user._id, userId);
+            const updatedCurrUser = await userData.getUser(req.session.user._id);
+            const updatedCurrUserFriends = updatedCurrUser.friends.map((fr) => fr.toString());
+            isFriend = updatedCurrUserFriends.includes(userId.toString());
+            return res.redirect(`/user/${req.params.username}`);
+        }
+
         console.log(usr);
         return res.render("user", {
             title: usr.username,
             hasName: usr.name !== null,
             isCurrent: isCurrent,
+            isFriend: isFriend,
             showProfile:
                 usr.publicProfile ||
                 isCurrent ||
@@ -45,6 +56,7 @@ router.route("/:username").get(async (req, res) => {
         return res.status(404).render("error", { title: "Error", errmsg: e });
     }
 });
+
 router
     .route("/:username/messages")
     .get(async (req, res) => {
@@ -61,7 +73,7 @@ router
                 errmsg: "403: You are not authorized to access this page."
             });
         }
-        
+
         try {
             const user = req.params.username;
             let messages = await userData.getMessages(user);
