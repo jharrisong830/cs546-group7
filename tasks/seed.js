@@ -78,8 +78,7 @@ johnGraham = await userData.addFriend(johnGraham._id, ramsesPeralta._id);
 emmaHodor = await userData.addFriend(emmaHodor._id, michaelDevious._id);
 emmaHodor = await userData.addFriend(emmaHodor._id, johnGraham._id);
 emmaHodor = await userData.addFriend(emmaHodor._id, justinDuran._id);
-emmaHodor = await userData.blockUser(emmaHodor._id, rebeccaAn._id); // blocking starts here
-emmaHodor = await userData.blockUser(emmaHodor._id, ramsesPeralta._id);
+emmaHodor = await userData.blockUser(emmaHodor._id, ramsesPeralta._id);// blocking starts here
 
 justinDuran = await userData.addFriend(justinDuran._id, michaelDevious._id);
 justinDuran = await userData.addFriend(justinDuran._id, johnGraham._id);
@@ -91,6 +90,24 @@ ramsesPeralta = await userData.addFriend(ramsesPeralta._id, rebeccaAn._id);
 rebeccaAn = await userData.addFriend(rebeccaAn._id, johnGraham._id);
 rebeccaAn = await userData.addFriend(rebeccaAn._id, ramsesPeralta._id);
 rebeccaAn = await userData.blockUser(rebeccaAn._id, michaelDevious._id); // blocking starts here
+
+
+// lets test friend requests!
+console.log("looking for more friends too...");
+michaelDevious = await userData.addFriendRequest(michaelDevious._id, ramsesPeralta._id);
+
+justinDuran = await userData.addFriendRequest(justinDuran._id, rebeccaAn._id);
+justinDuran = await userData.addFriendRequest(justinDuran._id, ramsesPeralta._id);
+
+ramsesPeralta = await userData.addFriendRequest(ramsesPeralta._id, michaelDevious._id);
+//ramsesPeralta = await userData.addFriendRequest(ramsesPeralta._id, emmaHodor._id); //checks to see if you can send a friend request to a blocked user
+ramsesPeralta = await userData.addFriendRequest(ramsesPeralta._id, justinDuran._id);
+
+rebeccaAn = await userData.addFriendRequest(rebeccaAn._id, justinDuran._id);
+
+
+
+
 
 // lets test posts!
 
