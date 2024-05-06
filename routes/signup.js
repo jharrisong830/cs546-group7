@@ -6,6 +6,7 @@ import { Router } from "express";
 import { userData } from "../data/index.js";
 import vld from "../helpers/validation.js";
 import errorMessage from "../helpers/error.js";
+import xss from "xss";
 
 const MOD_NAME = "routes/signup.js";
 
@@ -18,6 +19,11 @@ router
     })
     .post(async (req, res) => {
         const newData = req.body;
+        newData.publicProfile = xss(newData.publicProfile);
+        newData.username = xss(newData.username);
+        newData.password = xss(newData.password);
+        newData.dateOfBirth = xss(newData.dateOfBirth);
+        newData.name = xss(newData.name);
         try {
             if (
                 newData.publicProfile !== "public" &&

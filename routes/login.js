@@ -2,6 +2,7 @@ import { Router } from "express";
 import { userData } from "../data/index.js";
 import vld from "../helpers/validation.js";
 import errorMessage from "../helpers/error.js";
+import xss from "xss";
 
 const router = Router();
 
@@ -15,10 +16,12 @@ router
     .post(async (req, res) => {
         const loginData = req.body;
         try {
+            loginData.username = xss(loginData.username);
             loginData.username = vld.returnValidString(loginData.username);
             loginData.username = loginData.username.toLowerCase();
             vld.checkEmptyString(loginData.username);
 
+            loginData.password = xss(loginData.password);
             loginData.password = vld.returnValidString(loginData.password);
             vld.checkEmptyString(loginData.password);
 

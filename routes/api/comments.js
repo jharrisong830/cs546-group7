@@ -14,11 +14,12 @@ router.route("/").post(async (req, res) => {
 
     try {
         let newComment = req.body;
-
+        let cleanUrl = xss(newComment.idUrl),
+            cleanText = xss(newComment.textContent);
         let addedComment = await postData.commentPost(
-            newComment.idUrl,
+            cleanUrl,
             req.session.user._id,
-            newComment.textContent
+            cleanText
         );
 
         return res.json({ success: true, addedComment: addedComment }); // redirect to the user's profile

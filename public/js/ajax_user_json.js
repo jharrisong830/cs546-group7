@@ -53,8 +53,7 @@ $.ajax(requestConfig).then(function (responseMessage) {
                     </div>
                 </div>
             `);
-            $('#commentArea').append(commentCard);
+            $("#commentArea").append(commentCard);
         });
-        
     }
 });

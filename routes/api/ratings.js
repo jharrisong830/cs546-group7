@@ -17,18 +17,19 @@ router.route("/").post(async (req, res) => {
 
     try {
         let newRating = req.body;
-        // console.log("Ratings request body" + newRating);
-
-        let starRating = parseInt(newRating.ratingNumber);
+        let cleanText = xss(newRating.textContent);
+        let cleanRating = xss(newRating.ratingNumber);
+        let cleanUrl = newRating.idUrl;
+        let starRating = parseInt(cleanRating);
 
         let addedRating = await postData.ratePlaylist(
-            newRating.idUrl,
+            cleanUrl,
             req.session.user._id,
             starRating,
-            newRating.textContent
+            cleanText
         );
 
-        if (typeof(addedRating) === "string"){
+        if (typeof addedRating === "string") {
             return res.json({ success: false, message: addedRating });
         }
 
@@ -47,7 +48,8 @@ router.route("/like").post(async (req, res) => {
     }
     try {
         const userID = req.session.user._id;
-        const liked = await postData.likeRating(req.body.idUrl, userID);
+        let cleanUrl = xss(req.body.idUrl);
+        const liked = await postData.likeRating(cleanUrl, userID);
         return res.json({ success: true, liked: liked });
     } catch (e) {
         return res.status(500).json({ success: false, errmsg: e.message });

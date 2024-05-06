@@ -6,83 +6,93 @@ import { post } from "ajax";
 
 const router = Router();
 
-router.route("/:username").get(async (req, res) => {
-    if (!req.session.user) {
-        return res.status(401).render("error", {
-            title: "Error",
-            errmsg: "401: You need to be logged in to access this page."
-        });
-    }
-    try {
-        req.params.username = vld
-            .returnValidString(req.params.username)
-            .toLowerCase(); // get the username as lowercase
-        const isCurrent = req.session.user.username === req.params.username; // we are viewing the current user's page if the usernames match
-
-        const userId = await userData.findByUsername(req.params.username); // get the id of the requested user
-
-        if (!userId) {
-            return res.status(404).render("error", {
+router
+    .route("/:username")
+    .get(async (req, res) => {
+        if (!req.session.user) {
+            return res.status(401).render("error", {
                 title: "Error",
-                errmsg: `404: user '${req.params.username}' was not found`
+                errmsg: "401: You need to be logged in to access this page."
             });
         }
-        const usr = await userData.getUser(userId);
-        const currUser = await userData.getUser(req.session.user._id); // get friend ids as strings
-        const currUserFriends = currUser.friends.map((fr) => fr.toString());
-        let isFriend = currUserFriends.includes(userId.toString());
+        try {
+            req.params.username = vld
+                .returnValidString(req.params.username)
+                .toLowerCase(); // get the username as lowercase
+            const isCurrent = req.session.user.username === req.params.username; // we are viewing the current user's page if the usernames match
 
-        if (req.query.removeFriend === 'true' && isFriend) {
-            await userData.removeFriend(req.session.user._id, userId);
-            const updatedCurrUser = await userData.getUser(req.session.user._id);
-            const updatedCurrUserFriends = updatedCurrUser.friends.map((fr) => fr.toString());
-            isFriend = updatedCurrUserFriends.includes(userId.toString());
-            return res.redirect(`/user/${req.params.username}`);
+            const userId = await userData.findByUsername(req.params.username); // get the id of the requested user
+
+            if (!userId) {
+                return res.status(404).render("error", {
+                    title: "Error",
+                    errmsg: `404: user '${req.params.username}' was not found`
+                });
+            }
+            const usr = await userData.getUser(userId);
+            const currUser = await userData.getUser(req.session.user._id); // get friend ids as strings
+            const currUserFriends = currUser.friends.map((fr) => fr.toString());
+            let isFriend = currUserFriends.includes(userId.toString());
+
+            if (req.query.removeFriend === "true" && isFriend) {
+                await userData.removeFriend(req.session.user._id, userId);
+                const updatedCurrUser = await userData.getUser(
+                    req.session.user._id
+                );
+                const updatedCurrUserFriends = updatedCurrUser.friends.map(
+                    (fr) => fr.toString()
+                );
+                isFriend = updatedCurrUserFriends.includes(userId.toString());
+                return res.redirect(`/user/${req.params.username}`);
+            }
+
+            console.log(usr);
+            return res.render("user", {
+                currentUsername: req.session.user.username,
+                title: usr.username,
+                hasName: usr.name !== null,
+                isCurrent: isCurrent,
+                isFriend: isFriend,
+                showProfile:
+                    usr.publicProfile ||
+                    isCurrent ||
+                    currUserFriends.includes(userId.toString()), // we will show content if profile is public or if this is the current user (false when private and not current user), or if the requested user is in the friends list of the current user
+                user: usr,
+                commentArray: usr.comments
+            });
+        } catch (e) {
+            return res
+                .status(404)
+                .render("error", { title: "Error", errmsg: e });
         }
+    })
+    .post(async (req, res) => {
+        if (!req.session.user) {
+            return res.status(401).render("error", {
+                title: "Error",
+                errmsg: "401: You need to be logged in to send a friend request."
+            });
+        }
+        try {
+            let friendRequest = req.body;
+            let cleanRequester = xss(friendRequest.requester),
+                cleanRequested = xss(friendRequest.requested);
+            let requesterId = await userData.findByUsername(cleanRequester);
+            let requestedId = await userData.findByUsername(cleanRequested);
 
-        console.log(usr);
-        return res.render("user", {
-            currentUsername: req.session.user.username,
-            title: usr.username,
-            hasName: usr.name !== null,
-            isCurrent: isCurrent,
-            isFriend: isFriend,
-            showProfile:
-                usr.publicProfile ||
-                isCurrent ||
-                currUserFriends.includes(userId.toString()), // we will show content if profile is public or if this is the current user (false when private and not current user), or if the requested user is in the friends list of the current user
-            user: usr,
-            commentArray: usr.comments
-        });
-    } catch (e) {
-        return res.status(404).render("error", { title: "Error", errmsg: e });
-    }
-})
-.post(async (req, res) => {
-    if (!req.session.user) {
-        return res.status(401).render("error", {
-            title: "Error",
-            errmsg: "401: You need to be logged in to send a friend request."
-        });
-    }
-    try {
-        let friendRequest = req.body;
+            let requestSent = await userData.addFriendRequest(
+                requestedId,
+                requesterId
+            );
 
-        let requesterId = await userData.findByUsername(friendRequest.requester);
-        let requestedId = await userData.findByUsername(friendRequest.requested);
-
-        let requestSent = await userData.addFriendRequest(requestedId, requesterId);
-
-
-
-        return res.redirect(`/user/${friendRequest.requested}`);
-    } catch (e) {
-        return res.status(500).render("error", {
-            title: "Error",
-            errmsg: "Failed to send friend request"
-        });
-    }
-});
+            return res.redirect(`/user/${friendRequest.requested}`);
+        } catch (e) {
+            return res.status(500).render("error", {
+                title: "Error",
+                errmsg: "Failed to send friend request"
+            });
+        }
+    });
 
 router
     .route("/:username/messages")
@@ -371,7 +381,10 @@ router
             if (friendRequestStatus.acceptStatus === "accept") {
                 let filler = await userData.addFriend(usr._id, requesterId); // call addFriend on that id, then remove it from the requests list
                 filler = await userData.addFriend(requesterId, usr._id);
-                filler = await userData.removeFriendRequest(usr._id, requesterId);
+                filler = await userData.removeFriendRequest(
+                    usr._id,
+                    requesterId
+                );
 
                 //if person a requests person b, but person b is in person a's requests, remove person b from person a's requests
                 /*let temp = await userData.getUser(requesterId);
@@ -387,7 +400,10 @@ router
                     }
                 }*/
             } else if (friendRequestStatus.acceptStatus === "decline") {
-                let filler = await userData.removeFriendRequest(usr._id, requesterId); // remove it from the requests list
+                let filler = await userData.removeFriendRequest(
+                    usr._id,
+                    requesterId
+                ); // remove it from the requests list
             } else if (friendRequestStatus.acceptStatus === "") {
                 //do nothing
             }

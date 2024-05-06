@@ -563,10 +563,12 @@ const ratePlaylist = async (id, userId, starRating, reviewText) => {
     let musicContentId = post.musicContent._id;
 
     if (post.authorId.equals(userId)) {
-        return "You cannot make a rating of your own playlist."
-    }    
+        return "You cannot make a rating of your own playlist.";
+    }
 
-    const existingRating = post.musicContent.ratings.find(r => r.authorId.equals(userId));
+    const existingRating = post.musicContent.ratings.find((r) =>
+        r.authorId.equals(userId)
+    );
     if (existingRating) {
         return "You have already rated this playlist.";
     }
@@ -835,7 +837,8 @@ const likeRating = async (ratingId, userId) => {
  * @returns {Object}                     The comment object found.
  * @throws                               Throws an error if necessary.
  */
-const getComment = async (commentId) => { // Not sure if needed
+const getComment = async (commentId) => {
+    // Not sure if needed
     commentId = vld.checkObjectId(commentId);
 
     const postCol = await posts();
@@ -846,10 +849,13 @@ const getComment = async (commentId) => { // Not sure if needed
     );
 
     if (!comment) {
-        errorMessage(MOD_NAME, "getComment", `No coment with '${commentId}' was found`);
-
+        errorMessage(
+            MOD_NAME,
+            "getComment",
+            `No coment with '${commentId}' was found`
+        );
     }
-        
+
     return comment;
 };
 
@@ -862,24 +868,32 @@ const getComment = async (commentId) => { // Not sure if needed
  * @throws                            Throws an error if the input is invalid or if the operation fails.
  */
 const getUserComments = async (userId) => {
-    userId = vld.checkObjectId(userId); 
+    userId = vld.checkObjectId(userId);
 
     const postCol = await posts();
 
-    const postsWithUserComments = await postCol.find( // Find all posts that contain comments by this user
-        { "comments.authorId": userId },
-        { projection: { "comments.$": 1 } }
-    ).toArray();
+    const postsWithUserComments = await postCol
+        .find(
+            // Find all posts that contain comments by this user
+            { "comments.authorId": userId },
+            { projection: { "comments.$": 1 } }
+        )
+        .toArray();
 
     let userComments = [];
     if (postsWithUserComments.length > 0) {
-        postsWithUserComments.forEach(post => {
-            const comments = post.comments.filter(comment => comment.authorId.equals(userId));
+        postsWithUserComments.forEach((post) => {
+            const comments = post.comments.filter((comment) =>
+                comment.authorId.equals(userId)
+            );
             userComments.push(...comments);
         });
-    } 
-    else {
-        errorMessage(MOD_NAME, "getUserComments", `No comments found for user with ID '${userId}'`);
+    } else {
+        errorMessage(
+            MOD_NAME,
+            "getUserComments",
+            `No comments found for user with ID '${userId}'`
+        );
     }
 
     return userComments;

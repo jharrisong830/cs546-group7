@@ -344,7 +344,7 @@ const checkBlocked = async (currId, otherId) => {
 };
 
 /**
- * 
+ *
  * @param {*} messageContent   message that the user wants to send
  * @param {*} senderUsername   the username of the sender
  * @param {*} recipientUsername    the username of the recipient
@@ -379,14 +379,20 @@ const createMessage = async (
         throw "Both sender and recipient must be valid users.";
     }
 
-    const isBlocked = await checkBlocked(sender.toHexString(), recipient.toHexString());
+    const isBlocked = await checkBlocked(
+        sender.toHexString(),
+        recipient.toHexString()
+    );
     if (isBlocked) {
         throw "Messaging blocked. One of the users has blocked the other.";
     }
 
-
     // https://stackoverflow.com/questions/10599148/how-do-i-get-the-current-time-only-in-javascript
-    const currTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", hour12: false })
+    const currTime = new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false
+    });
     const newMessage = {
         _id: new ObjectId(),
         from: senderUsername,
@@ -404,7 +410,9 @@ const createMessage = async (
         { $push: { messages: newMessage } }
     );
 
-    if ( !updateInfoSender.acknowledged || updateInfoSender.modifiedCount !== 1 ||
+    if (
+        !updateInfoSender.acknowledged ||
+        updateInfoSender.modifiedCount !== 1 ||
         !updateInfoRecipient.acknowledged ||
         updateInfoRecipient.modifiedCount !== 1
     ) {
@@ -416,7 +424,7 @@ const createMessage = async (
 
 /**
  * gets all the messages that the user has
- * 
+ *
  * @param {*} username   username of the current user
  * @returns        all the messages that the user has from the database
  */
@@ -430,7 +438,6 @@ const getMessages = async (username) => {
 
     return user.messages;
 };
-
 
 /**
  * toggles the visibility status of a user's profile
@@ -881,7 +888,7 @@ const exportedMethods = {
     getMessages,
     addFriendRequest,
     getRequests,
-    removeFriendRequest,
+    removeFriendRequest
 };
 
 export default exportedMethods;

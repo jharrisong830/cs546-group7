@@ -258,12 +258,10 @@ newRatingForm.submit((event) => {
         $.ajax(requestConfig).then(function (responseMessage) {
             console.log(responseMessage);
             if (!responseMessage.success) {
-
                 if (responseMessage.message) {
                     // make an alert on the page with the message
                     alert(responseMessage.message);
-                }
-                else {
+                } else {
                     const postRenderError = $(
                         `<div class='renderError'>
                         <h1>Could not render ratings </h1>

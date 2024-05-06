@@ -16,9 +16,9 @@ router.route("/").post(async (req, res) => {
 
     try {
         let newPost = req.body;
-
+        newPost.tags = xss(newPost.tags);
         let musicItem = {};
-
+        let cleanText = xss(newPost.textContent);
         // Just make the array empty if each element is '' (happens when user selects tags but then chooses catalog)
         if (newPost.tags.every((item) => item === "")) {
             newPost.tags = [];
@@ -61,7 +61,7 @@ router.route("/").post(async (req, res) => {
         let addedPost = await postData.createPost(
             req.session.user._id,
             musicItem,
-            newPost.textContent,
+            cleanText,
             newPost.tags
         );
 
@@ -98,7 +98,11 @@ router.route("/user/:username").get(async (req, res) => {
         const userPosts = await postData.getUserPosts(user);
         const userComments = await postData.getUserComments(user);
 
-        return res.json({ success: true, userPosts: userPosts, userComments: userComments });
+        return res.json({
+            success: true,
+            userPosts: userPosts,
+            userComments: userComments
+        });
     } catch (e) {
         return res.status(500).json({ success: false, errmsg: e });
     }
@@ -113,8 +117,9 @@ router.route("/like").post(async (req, res) => {
     }
     // console.log(req.body);
     try {
+        let cleanUrl = xss(req.body.idUrl);
         const userID = req.session.user._id;
-        const liked = await postData.likePost(req.body.idUrl, userID);
+        const liked = await postData.likePost(cleanUrl, userID);
         return res.json({ success: true, liked: liked });
     } catch (e) {
         return res.status(500).json({ success: false, errmsg: e });

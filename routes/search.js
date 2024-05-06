@@ -2,6 +2,7 @@ import { Router } from "express";
 const router = Router();
 import helpers from "../helpers/validation.js";
 import { userData, postData } from "../data/index.js";
+import xss from "xss";
 
 router
     .route("/")
@@ -29,11 +30,13 @@ router
             });
         }
         try {
+            req.body.searchText = xss(req.body.searchText);
             req.body.searchText = helpers.returnValidString(
                 req.body.searchText
             ); // the regex is already case insensitive by default, so lets leave it
             helpers.checkEmptyString(req.body.searchText);
 
+            req.body.searchType = xss(req.body.searchType);
             req.body.searchType = helpers
                 .returnValidString(req.body.searchType)
                 .toLowerCase();
