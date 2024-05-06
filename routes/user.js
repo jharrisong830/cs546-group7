@@ -30,12 +30,23 @@ router.route("/:username").get(async (req, res) => {
         const usr = await userData.getUser(userId);
         const currUser = await userData.getUser(req.session.user._id); // get friend ids as strings
         const currUserFriends = currUser.friends.map((fr) => fr.toString());
+        let isFriend = currUserFriends.includes(userId.toString());
+
+        if (req.query.removeFriend === 'true' && isFriend) {
+            await userData.removeFriend(req.session.user._id, userId);
+            const updatedCurrUser = await userData.getUser(req.session.user._id);
+            const updatedCurrUserFriends = updatedCurrUser.friends.map((fr) => fr.toString());
+            isFriend = updatedCurrUserFriends.includes(userId.toString());
+            return res.redirect(`/user/${req.params.username}`);
+        }
+
         console.log(usr);
         return res.render("user", {
             currentUsername: req.session.user.username,
             title: usr.username,
             hasName: usr.name !== null,
             isCurrent: isCurrent,
+            isFriend: isFriend,
             showProfile:
                 usr.publicProfile ||
                 isCurrent ||
@@ -72,6 +83,7 @@ router.route("/:username").get(async (req, res) => {
         });
     }
 });
+
 router
     .route("/:username/messages")
     .get(async (req, res) => {
@@ -81,6 +93,14 @@ router
                 errmsg: "401: You need to be logged in to access this page."
             });
         }
+
+        if (req.session.user.username !== req.params.username) {
+            return res.status(403).render("error", {
+                title: "Error",
+                errmsg: "403: You are not authorized to access this page."
+            });
+        }
+
         try {
             const user = req.params.username;
             let messages = await userData.getMessages(user);
@@ -117,9 +137,10 @@ router
 
             res.redirect(`/user/${senderUsername}/messages`);
         } catch (e) {
+            console.log(e);
             return res.status(500).render("error", {
                 title: "Error",
-                errmsg: "Failed to send message: "
+                errmsg: e
             });
         }
     });

@@ -22,6 +22,9 @@
                     <!--<input type="submit" class="submit">-->
                 </form>
             {{/if}}
+            {{#if isFriend}}
+                 <button onclick="window.location.href='/user/{{user.username}}?removeFriend=true'" class="btn btn-warning">Remove Friend</button>
+            {{/if}}
         </div>
     </div>
 </div>
