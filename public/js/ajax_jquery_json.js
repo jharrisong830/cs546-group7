@@ -80,7 +80,7 @@
                                 <p class="likes_${feedPost._id}">${feedPost.likes.length} Likes</p>
                             </div>
                             <div class="col-8">
-                                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/${feedPost.musicContent.type}/${feedPost.musicContent._id}?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                                <iframe style="border-radius:12px" src="https://open.spotify.com/embed/${feedPost.musicContent.type}/${feedPost.musicContent._id}?utm_source=generator" height="352" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
                             </div>
                         </div>
 
@@ -145,7 +145,7 @@
                                     <p class="likes_${responseMessage.addedPost._id}">${responseMessage.addedPost.likes.length} Likes</p>
                                 </div>
                                 <div class="col-8">
-                                    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/${responseMessage.addedPost.musicContent.type}/${responseMessage.addedPost.musicContent._id}?utm_source=generator" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                                    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/${responseMessage.addedPost.musicContent.type}/${responseMessage.addedPost.musicContent._id}?utm_source=generator" height="352" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
                                 </div>
                             </div>
                             <a href="/post/${responseMessage.addedPost._id}" role="button" class="btn btn-outline-dark btn-sm">View Post</a>

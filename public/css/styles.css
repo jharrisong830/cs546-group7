@@ -89,3 +89,7 @@
     background-color: #e3879e !important;
     border-color: #e3879e !important;
 }
+
+iframe {
+    width: 100%;
+}
