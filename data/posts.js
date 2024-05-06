@@ -530,13 +530,15 @@ const likeComment = async (commentId, userId) => {
 
 /**
  * Rates a playlist within a post by adding a rating object to the musicContent.ratings array.
+ * If the user has already made a rating on the playlist, the function will return a string.
+ * If the user is attempting make a rating on their own playlist, the function will also return a string.
  *
  * @param {string | ObjectId} id          The ID of the post containing the playlist to rate.
  * @param {string | ObjectId} userId      The ID of the user who is rating the playlist.
  * @param {number} starRating             The star rating given to the playlist (scale of 1 to 5).
  * @param {string} reviewText             Optional text content explaining the rating.
  *
- * @returns {Object}                      the newly created rating subdocument
+ * @returns {Object | string}             The newly created rating subdocument or a string message if the rating could not be added.
  * @throws {Error}                        Throws an error if the operation fails.
  */
 const ratePlaylist = async (id, userId, starRating, reviewText) => {
@@ -559,6 +561,15 @@ const ratePlaylist = async (id, userId, starRating, reviewText) => {
     const post = await postCol.findOne({ _id: id }, { "musicContent._id": 1 }); // Post with a playlist type should ALWAYS have music content
 
     let musicContentId = post.musicContent._id;
+
+    if (post.authorId.equals(userId)) {
+        return "You cannot make a rating of your own playlist."
+    }    
+
+    const existingRating = post.musicContent.ratings.find(r => r.authorId.equals(userId));
+    if (existingRating) {
+        return "You have already rated this playlist.";
+    }
 
     const currTime = Math.floor(Date.now() / 1000); // get unix epoch seconds
     let ratingId = new ObjectId();
