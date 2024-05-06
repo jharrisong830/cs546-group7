@@ -54,6 +54,14 @@ router
                 errmsg: "401: You need to be logged in to access this page."
             });
         }
+
+        if (req.session.user.username !== req.params.username) {
+            return res.status(403).render("error", {
+                title: "Error",
+                errmsg: "403: You are not authorized to access this page."
+            });
+        }
+        
         try {
             const user = req.params.username;
             let messages = await userData.getMessages(user);

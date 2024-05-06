@@ -403,6 +403,19 @@ const getMessages = async (username) => {
     return user.messages;
 };
 
+
+const getFriends = async (username) => {
+    const userCol = await users(username);
+    const user = await userCol.findOne({ username: username });
+
+    if (!user) {
+        throw "User not found";
+    }
+
+    return user.friends;
+};
+
+
 /**
  * toggles the visibility status of a user's profile
  *
@@ -852,7 +865,8 @@ const exportedMethods = {
     getMessages,
     addFriendRequest,
     getRequests,
-    removeFriendRequest
+    removeFriendRequest,
+    getFriends
 };
 
 export default exportedMethods;
