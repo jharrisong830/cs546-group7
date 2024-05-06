@@ -342,6 +342,15 @@ const checkBlocked = async (currId, otherId) => {
     ); // returns false only if neither user is blocked by one another
 };
 
+/**
+ * 
+ * @param {*} messageContent   message that the user wants to send
+ * @param {*} senderUsername   the username of the sender
+ * @param {*} recipientUsername    the username of the recipient
+ * @returns   message if it was successful
+ * @throws on invalid input
+ */
+
 const createMessage = async (
     messageContent,
     senderUsername,
@@ -369,7 +378,9 @@ const createMessage = async (
         throw "Both sender and recipient must be valid users.";
     }
 
-    const currTime = Math.floor(Date.now() / 1000);
+
+    // https://stackoverflow.com/questions/10599148/how-do-i-get-the-current-time-only-in-javascript
+    const currTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: "2-digit", hour12: false })
     const newMessage = {
         _id: new ObjectId(),
         from: senderUsername,
@@ -392,6 +403,12 @@ const createMessage = async (
     return newMessage;
 };
 
+/**
+ * gets all the messages that the user has
+ * 
+ * @param {*} username   username of the current user
+ * @returns        all the messages that the user has from the database
+ */
 const getMessages = async (username) => {
     const userCol = await users(username);
     const user = await userCol.findOne({ username: username });
@@ -401,18 +418,6 @@ const getMessages = async (username) => {
     }
 
     return user.messages;
-};
-
-
-const getFriends = async (username) => {
-    const userCol = await users(username);
-    const user = await userCol.findOne({ username: username });
-
-    if (!user) {
-        throw "User not found";
-    }
-
-    return user.friends;
 };
 
 
