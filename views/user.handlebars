@@ -10,8 +10,17 @@
         <div class="col">
             <a href="/" role="button" class="btn btn-secondary">Home</a>
             <a href="/logout" role="button" class="btn btn-danger">Log Out</a>
+            <br>
             {{#if isCurrent}}
                 <a href="/user/{{user.username}}/edit" role="button" class="btn btn-primary">Edit Profile</a>
+                <a href="/user/{{user.username}}/requests" class="btn btn-primary">View your friend requests here.</a>
+            {{else}}
+                <form method="POST" action="/user/{{user.username}}" id="sendRequest">
+                    <input type="hidden" name="requested" value="{{user.username}}">
+                    <input type="hidden" name="requester" value="{{currentUsername}}">
+                    <button type="submit" name="friendRequest" class="btn btn-primary">Request Friend</button>
+                    <!--<input type="submit" class="submit">-->
+                </form>
             {{/if}}
         </div>
     </div>
