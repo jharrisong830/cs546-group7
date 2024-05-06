@@ -1,6 +1,29 @@
 # Tweeter - Playlist Social Media Web Application
 Group 7 final project for CS 546 (Web Programming) at Stevens Institute of Technology
 
+## Getting Started
+
+Starting the application is very simple. Just run the following commands in the project root:
+
+```sh
+npm install    # install needed dependencies
+npm start      # start the server  
+```
+
+### Seeding the Database
+
+We provide some sample data with a couple of users and posts to help you get started. To populate the database with sample data, run the following:
+
+```sh
+npm run seed   # adds sample data to the app
+```
+
+If at any point you want to clear the database and start fresh, run this:
+
+```sh
+npm run drop   # clears all database entries
+```
+
 ## Overview
 
 Our website will allow users to sign up, link their music streaming services, add playlists to their profiles, and interact/friend other users. Users can select public playlists from their library to feature on their page, along with listing the genres and/or mood/vibe the playlist has. Playlists will act as the main form of “posting”. Playlists will be able to be rated by other users out of 5 stars. Uploading a playlist will populate a feed that friended users can see, like, and comment on. All users will be able to view pages that list top-rated playlists from users with public profiles. Users can also select a song or album and create a post around that.
