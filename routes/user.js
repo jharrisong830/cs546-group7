@@ -32,6 +32,7 @@ router.route("/:username").get(async (req, res) => {
         const currUserFriends = currUser.friends.map((fr) => fr.toString());
         console.log(usr);
         return res.render("user", {
+            currentUsername: req.session.user.username,
             title: usr.username,
             hasName: usr.name !== null,
             isCurrent: isCurrent,
@@ -43,6 +44,31 @@ router.route("/:username").get(async (req, res) => {
         });
     } catch (e) {
         return res.status(404).render("error", { title: "Error", errmsg: e });
+    }
+})
+.post(async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).render("error", {
+            title: "Error",
+            errmsg: "401: You need to be logged in to send a friend request."
+        });
+    }
+    try {
+        let friendRequest = req.body;
+
+        let requesterId = await userData.findByUsername(friendRequest.requester);
+        let requestedId = await userData.findByUsername(friendRequest.requested);
+
+        let requestSent = await userData.addFriendRequest(requestedId, requesterId);
+
+
+
+        return res.redirect(`/user/${friendRequest.requested}`);
+    } catch (e) {
+        return res.status(500).render("error", {
+            title: "Error",
+            errmsg: "Failed to send friend request"
+        });
     }
 });
 router
@@ -321,10 +347,25 @@ router
             ); //handlebar sends over the username of the requester so this will get their id
 
             if (friendRequestStatus.acceptStatus === "accept") {
-                userData.addFriend(usr._id, requesterId); // call addFriend on that id, then remove it from the requests list
-                userData.removeFriendRequest(usr._id, requesterId);
+                let filler = await userData.addFriend(usr._id, requesterId); // call addFriend on that id, then remove it from the requests list
+                filler = await userData.addFriend(requesterId, usr._id);
+                filler = await userData.removeFriendRequest(usr._id, requesterId);
+
+                //if person a requests person b, but person b is in person a's requests, remove person b from person a's requests
+                /*let temp = await userData.getUser(requesterId);
+                let incomingRequests = temp.friendRequests;
+                console.log(usr._id);
+
+                for (let x in incomingRequests)
+                {
+                    if (usr._id === incomingRequests[x])
+                    {
+                        console.log("it goes here lol");
+                        filler = await userData.removeFriendRequest(requesterId, usr._id);
+                    }
+                }*/
             } else if (friendRequestStatus.acceptStatus === "decline") {
-                userData.removeFriendRequest(usr._id, requesterId); // remove it from the requests list
+                let filler = await userData.removeFriendRequest(usr._id, requesterId); // remove it from the requests list
             } else if (friendRequestStatus.acceptStatus === "") {
                 //do nothing
             }
