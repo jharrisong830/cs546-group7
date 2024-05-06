@@ -28,3 +28,14 @@ $(document).ready((event) => {
         submitButton.removeAttr("disabled");
     }
 });
+
+document.addEventListener("DOMContentLoaded", function() {
+    const subtitleElements = document.querySelectorAll('h6.card-subtitle.mb-2');
+
+    subtitleElements.forEach(function(element) {
+        const unixTimestamp = parseInt(element.textContent.trim());
+        const date = new Date(unixTimestamp * 1000); // Convert to milliseconds
+        const formattedDate = date.toISOString().substring(0, 10); // Format YYYY-MM-DD
+        element.textContent = formattedDate; 
+    });
+});
