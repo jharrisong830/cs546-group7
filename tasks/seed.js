@@ -2,6 +2,7 @@
  * populate the database with test data
  */
 
+import { urlencoded } from "express";
 import { dbConnection, closeConnection } from "../config/mongoConnection.js";
 
 import { userData, postData } from "../data/index.js";
@@ -16,192 +17,201 @@ await db.dropDatabase();
 
 console.log("Creating users...");
 
-let user1 = await userData.registerUser(
-    "jgraham5",
+let michaelDevious = await userData.registerUser(
+    "deviousTweeter",
+    "deVious420*",
+    "2000-06-09",
+    true,
+    "Michael Devious"
+);
+
+let johnGraham = await userData.registerUser(
+    "jharrisong830",
     "passworD123*",
     "2003-08-30",
-    undefined,
+    true,
     "John Graham"
 );
-let user2 = await userData.registerUser(
+
+let emmaHodor = await userData.registerUser(
     "ehodor",
     "1234emmaH&",
-    "2003-02-10",
-    undefined // defaults to true
+    "2003-02-10" // the rest of the fields default to true and null, not needed!
 );
-// let user3 = await userData.registerUser(
-//     "anonymous",
-//     "test",
-//     "03/11/2004",
-//     false,
-//     undefined // should be set to null (ignored)
-// );
-let user4 = await userData.registerUser(
+
+let justinDuran = await userData.registerUser(
     "jduran",
     "Wustin*456",
-    "2005-04-12",
-    true,
-    "Justin Duran"
+    "2002-04-20",
+    false,
+    "Justin"
 );
-// let user5 = await userData.registerUser(
-//     "rperalt1",
-//     "test3",
-//     "05/13/2006",
-//     true,
-//     "Ramses Peralta"
-// );
-// let user6 = await userData.registerUser(
-//     "ran3",
-//     "test3",
-//     "06/14/2007",
-//     true,
-//     "Rebecca An"
-// );
 
-// try {
-//     let failed = await userData.registerUser(
-//         "jGraham5", // despite differeing case, should be rejected for being the same username
-//         "pswd",
-//         "08/31/2003"
-//     );
-//     console.log(failed);
-// } catch (e) {
-//     console.log("Duplicate username rejection works!");
-//     console.log(e);
-// }
+let ramsesPeralta = await userData.registerUser(
+    "rperalt1",
+    "iobotomY-69",
+    "2004-06-02",
+    true,
+    "TheRam"
+);
 
-// testing the friend feature
+let rebeccaAn = await userData.registerUser(
+    "rebeccaan3",
+    "Password*96",
+    "2003-02-01",
+    false,
+    "Rebecca An"
+);
 
 console.log("Making friends along the way...");
 
-user1 = await userData.addFriend(user1._id, user2._id); // one-way, so only user 1 will have friend list altered
-user2 = await userData.addFriend(user2._id, user1._id); // reciporcation!
+michaelDevious = await userData.addFriend(michaelDevious._id, johnGraham._id);
+michaelDevious = await userData.addFriend(michaelDevious._id, emmaHodor._id);
+michaelDevious = await userData.addFriend(michaelDevious._id, justinDuran._id);
 
-user1 = await userData.addFriend(user1._id, user4._id); // one-way
-user4 = await userData.getUser(user4._id); // should be unchanged
+johnGraham = await userData.addFriend(johnGraham._id, michaelDevious._id);
+johnGraham = await userData.addFriend(johnGraham._id, emmaHodor._id);
+johnGraham = await userData.addFriend(johnGraham._id, justinDuran._id);
+johnGraham = await userData.addFriend(johnGraham._id, rebeccaAn._id);
+johnGraham = await userData.addFriend(johnGraham._id, ramsesPeralta._id);
 
-user4 = await userData.toggleProfileVisibility(user4._id); // profile visibility should now be false
+emmaHodor = await userData.addFriend(emmaHodor._id, michaelDevious._id);
+emmaHodor = await userData.addFriend(emmaHodor._id, johnGraham._id);
+emmaHodor = await userData.addFriend(emmaHodor._id, justinDuran._id);
+emmaHodor = await userData.blockUser(emmaHodor._id, rebeccaAn._id); // blocking starts here
+emmaHodor = await userData.blockUser(emmaHodor._id, ramsesPeralta._id);
 
-// console.log(user1, user2, user4);
+justinDuran = await userData.addFriend(justinDuran._id, michaelDevious._id);
+justinDuran = await userData.addFriend(justinDuran._id, johnGraham._id);
+justinDuran = await userData.addFriend(justinDuran._id, emmaHodor._id);
 
-// await userData.forceUnfriend(user4._id, user1._id);
-// user1 = await userData.getUser(user1._id);
+ramsesPeralta = await userData.addFriend(ramsesPeralta._id, johnGraham._id);
+ramsesPeralta = await userData.addFriend(ramsesPeralta._id, rebeccaAn._id);
 
-// console.log("Force unfriend by user4, removes user4 from user1's friend list");
-// console.log(user1);
-// console.log(
-//     `User 1 and User 4 blocked? ${await userData.checkBlocked(user1._id, user4._id)}`
-// ); // should be false
-
-// user1 = await userData.blockUser(user1._id, user2._id); // user2 will be in user1 block list, both will be removed from each other's friend lists
-// user2 = await userData.getUser(user2._id);
-
-// console.log("Two-way forced friend removal and block of user2 by user1");
-// console.log(user1);
-// console.log(user2);
-// console.log(
-//     `User 1 and User 2 blocked? ${await userData.checkBlocked(user1._id, user2._id)}`
-// ); // should be true
-
-// try {
-//     let failed = await userData.addFriend(user2._id, user1._id);
-//     console.log(failed);
-// } catch (e) {
-//     console.log("Blocking works! Can't add someone who blocked you");
-//     console.log(e);
-// }
-
-// try {
-//     let failed = await userData.addFriend(user1._id, user2._id);
-//     console.log(failed);
-// } catch (e) {
-//     console.log("Again! works both ways");
-//     console.log(e);
-// }
-
-// user1 = await userData.unblockUser(user1._id, user2._id);
+rebeccaAn = await userData.addFriend(rebeccaAn._id, johnGraham._id);
+rebeccaAn = await userData.addFriend(rebeccaAn._id, ramsesPeralta._id);
+rebeccaAn = await userData.blockUser(rebeccaAn._id, michaelDevious._id); // blocking starts here
 
 // lets test posts!
 
 console.log("...and writing some posts...");
 
-let firstPost = await postData.createPost(
-    user1._id,
-    {},
-    "Hello, world! This is my first post!",
-    []
+let johnPost1Music = {
+    _id: "2aGVQddkbCISYvn4XJVpN1",
+    platform: "SP",
+    type: "playlist",
+    name: "Kendrick Stan",
+    platformURL: "https://open.spotify.com/playlist/2aGVQddkbCISYvn4XJVpN1",
+    tracks: [
+        {
+            _id: "77DRzu7ERs0TX3roZcre7Q",
+            platform: "SP",
+            type: "track",
+            isrc: "USUG12402839",
+            name: "euphoria",
+            artists: ["Kendrick Lamar"],
+            platformURL:
+                "https://open.spotify.com/track/77DRzu7ERs0TX3roZcre7Q",
+            albumId: "32bR4LcEc1PvJEhaKoo4ZN"
+        },
+        {
+            _id: "7uWVT3UkCAZyANvv0bdyQn",
+            platform: "SP",
+            type: "track",
+            isrc: "USUM71502496",
+            name: "These Walls",
+            artists: ["Kendrick Lamar", "Bilal", "Anna Wise", "Thundercat"],
+            platformURL:
+                "https://open.spotify.com/track/7uWVT3UkCAZyANvv0bdyQn",
+            albumId: "7ycBtnsMtyVbbwTfJwRjSP"
+        },
+        {
+            _id: "6HZILIRieu8S0iqY8kIKhj",
+            platform: "SP",
+            type: "track",
+            isrc: "USUM71703079",
+            name: "DNA.",
+            artists: ["Kendrick Lamar"],
+            platformURL:
+                "https://open.spotify.com/track/6HZILIRieu8S0iqY8kIKhj",
+            albumId: "4eLPsYPBmXABThSJ821sqY"
+        },
+        {
+            _id: "4S8PxReB1UiDR2F5x1lyIR",
+            platform: "SP",
+            type: "track",
+            isrc: "USUG12400909",
+            name: "meet the grahams",
+            artists: ["Kendrick Lamar"],
+            platformURL:
+                "https://open.spotify.com/track/4S8PxReB1UiDR2F5x1lyIR",
+            albumId: "5PGH88Cwual1Nj8d2RsKP0"
+        }
+    ],
+    ratings: []
+};
+let johnPost1 = await postData.createPost(
+    johnGraham._id,
+    johnPost1Music,
+    "Here's my new playlist, inspired by the beef that's going on. It's funny bc my last name is Graham lmaooo",
+    ["hip-hop", "", ""]
 );
-user1 = await userData.getUser(user1._id);
-
-// console.log(user1); // should include a post id
-// console.log(await postData.getPost(firstPost._id)); // testing getPost
+johnGraham = await userData.getUser(johnGraham._id);
 
 await new Promise((resolve) => setTimeout(resolve, 5000)); // getting sleepy, 5 secs
 
-let nextPost = await postData.createPost(
-    user1._id,
-    {},
-    "Hello again! This is my second post. Better than the first",
-    []
+let johnPost2Music = {
+    _id: "1jZrlerU1ZWEI7oDPtHPGx",
+    platform: "SP",
+    type: "track",
+    isrc: "USAT22102113",
+    name: "MESS U MADE",
+    artists: ["MICHELLE"],
+    platformURL: "https://open.spotify.com/track/1jZrlerU1ZWEI7oDPtHPGx",
+    albumId: "0DNz0XsG6B1Vz1CcbuIsov"
+};
+let johnPost2 = await postData.createPost(
+    johnGraham._id,
+    johnPost2Music,
+    "One of my all time favorites, so glad I found this band!",
+    ["", "", ""]
 );
+johnGraham = await userData.getUser(johnGraham._id);
 
 await new Promise((resolve) => setTimeout(resolve, 5000));
 
-firstPost = await postData.updatePost(
-    firstPost._id,
-    "I updated this post. The update time should be after that of my second post"
+johnPost1 = await postData.updatePost(
+    johnPost1._id,
+    "Just wanted to update by saying I am not related to Drake, despite my last name. I want nothing to do with him.   " +
+        johnPost1.textContent
 );
 
+let emmaComment1 = await postData.commentPost(
+    johnPost2._id,
+    emmaHodor._id,
+    "Not a fan tbh, kinda mid"
+);
+emmaHodor = await userData.getUser(emmaHodor._id);
+
+await new Promise((resolve) => setTimeout(resolve, 5000));
+
+let emmaPost1Music = {
+    _id: "5V729UqvhwNOcMejx0m55I",
+    platform: "SP",
+    type: "album",
+    name: "NewJeans 'Super Shy'",
+    artists: ["NewJeans"],
+    platformURL: "https://open.spotify.com/album/5V729UqvhwNOcMejx0m55I",
+    tracks: []
+};
 let emmaPost1 = await postData.createPost(
-    user2._id,
-    {},
-    "Hello from Emma!",
-    []
+    emmaHodor._id,
+    emmaPost1Music,
+    "My name is emma, and i LOVE kpop!!!",
+    ["", "", ""]
 );
-
-await new Promise((resolve) => setTimeout(resolve, 5000));
-
-let justinPost = await postData.createPost(
-    user4._id,
-    {},
-    "Hello from Justin!",
-    []
-);
-
-await new Promise((resolve) => setTimeout(resolve, 5000));
-
-let emmaPost2 = await postData.createPost(
-    user2._id,
-    {},
-    "This is another post from Emma. What's up??",
-    []
-);
-
-// console.log(nextPost);
-// console.log(firstPost);
-
-// await postData.deletePost(nextPost._id); // delete a single post, should not be in users post data
-// user1 = await userData.getUser(user1._id);
-
-// await userData.deleteUser(user1._id); // user1 should disappear from database, along with all posts
-
-let newComment = await postData.commentPost(
-    emmaPost2._id,
-    user1._id,
-    "This is a test of the comments!"
-);
+emmaHodor = await userData.getUser(emmaHodor._id);
 
 console.log("All done, database ready!");
 
-// console.log(await postData.generateFeed(user1._id));
-
 await closeConnection();
-
-/**
- * at this point, we should have the following users and friend relations in the database:
- *
- * const user1 = { username: "jgraham5", friends: ["ehodor", "jduran"], public: true }
- * const user2 = { username: "ehodor", friends: ["jgraham5"], public: true }
- * const user4 = { username: "jduran", friends: ["jgraham5"], public: false }
- *
- */
