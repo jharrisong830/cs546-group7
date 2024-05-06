@@ -399,6 +399,7 @@ const createMessage = async (
     });
     const newMessage = {
         _id: new ObjectId(),
+        from: senderUsername,
         to: recipientUsername,
         content: messageContent,
         timestamp: currTime
