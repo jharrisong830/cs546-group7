@@ -399,7 +399,12 @@ const createMessage = async (
         { $push: { messages: newMessage } }
     );
 
-    if (
+    const updateInfoSender = await userCol.updateOne(
+        { _id: new ObjectId(sender) },
+        { $push: { messages: newMessage } }
+    );
+
+    if ( !updateInfoSender.acknowledged || updateInfoSender.modifiedCount !== 1 ||
         !updateInfoRecipient.acknowledged ||
         updateInfoRecipient.modifiedCount !== 1
     ) {
