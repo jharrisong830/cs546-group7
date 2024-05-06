@@ -379,6 +379,10 @@ const createMessage = async (
         throw "Both sender and recipient must be valid users.";
     }
 
+    if (sender === recipient) {
+        throw "You cannot send a message to yourself!"
+    }
+
     const isBlocked = await checkBlocked(
         sender.toHexString(),
         recipient.toHexString()
@@ -395,7 +399,7 @@ const createMessage = async (
     });
     const newMessage = {
         _id: new ObjectId(),
-        from: senderUsername,
+        to: recipientUsername,
         content: messageContent,
         timestamp: currTime
     };

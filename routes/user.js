@@ -139,6 +139,14 @@ router
             const recipientUsername = xss(req.body.username);
             const messageContent = xss(req.body.message);
 
+
+            if (senderUsername === recipientUsername) {
+                return res.status(403).render("error", {
+                    title: "Error",
+                    errmsg: "403: You cannot send a message to yourself."
+                });
+            }
+
             const newMessage = await userData.createMessage(
                 messageContent,
                 senderUsername,
