@@ -827,6 +827,64 @@ const likeRating = async (ratingId, userId) => {
     }
 };
 
+/**
+ * Retrieves a specific comment by its ID.
+ * This function searches all posts for the specified comment ID and returns the comment if found.
+ *
+ * @param {string | ObjectId} commentId  The ID of the comment to get.
+ * @returns {Object}                     The comment object found.
+ * @throws                               Throws an error if necessary.
+ */
+const getComment = async (commentId) => { // Not sure if needed
+    commentId = vld.checkObjectId(commentId);
+
+    const postCol = await posts();
+
+    const comment = await postCol.findOne(
+        { "comments._id": commentId },
+        { projection: { "comments.$": 1 } }
+    );
+
+    if (!comment) {
+        errorMessage(MOD_NAME, "getComment", `No coment with '${commentId}' was found`);
+
+    }
+        
+    return comment;
+};
+
+/**
+ * Retrieves all comments made by a specific user.
+ * This function searches all posts for comments made by the specified user and returns them in an array.
+ *
+ * @param {string | ObjectId} userId  The user ID that helps comments.
+ * @returns {Array<Object>}           An array of comment subdocuments made by the user.
+ * @throws                            Throws an error if the input is invalid or if the operation fails.
+ */
+const getUserComments = async (userId) => {
+    userId = vld.checkObjectId(userId); 
+
+    const postCol = await posts();
+
+    const postsWithUserComments = await postCol.find( // Find all posts that contain comments by this user
+        { "comments.authorId": userId },
+        { projection: { "comments.$": 1 } }
+    ).toArray();
+
+    let userComments = [];
+    if (postsWithUserComments.length > 0) {
+        postsWithUserComments.forEach(post => {
+            const comments = post.comments.filter(comment => comment.authorId.equals(userId));
+            userComments.push(...comments);
+        });
+    } 
+    else {
+        errorMessage(MOD_NAME, "getUserComments", `No comments found for user with ID '${userId}'`);
+    }
+
+    return userComments;
+};
+
 const exportedMethods = {
     createPost,
     getPost,
@@ -840,7 +898,9 @@ const exportedMethods = {
     ratePlaylist,
     searchPosts,
     searchPlaylists,
-    likeRating
+    likeRating,
+    getComment,
+    getUserComments
 };
 
 export default exportedMethods;

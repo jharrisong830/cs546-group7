@@ -96,7 +96,9 @@ router.route("/user/:username").get(async (req, res) => {
     try {
         const user = await userData.findByUsername(req.params.username);
         const userPosts = await postData.getUserPosts(user);
-        return res.json({ success: true, userPosts: userPosts });
+        const userComments = await postData.getUserComments(user);
+
+        return res.json({ success: true, userPosts: userPosts, userComments: userComments });
     } catch (e) {
         return res.status(500).json({ success: false, errmsg: e });
     }
