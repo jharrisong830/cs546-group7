@@ -258,12 +258,19 @@ newRatingForm.submit((event) => {
         $.ajax(requestConfig).then(function (responseMessage) {
             console.log(responseMessage);
             if (!responseMessage.success) {
-                const postRenderError = $(
-                    `<div class='renderError'>
-                    <h1>Could not render ratings </h1>
-                    </div>`
-                );
-                ratingArea.append(postRenderError);
+
+                if (responseMessage.message) {
+                    // make an alert on the page with the message
+                    alert(responseMessage.message);
+                }
+                else {
+                    const postRenderError = $(
+                        `<div class='renderError'>
+                        <h1>Could not render ratings </h1>
+                        </div>`
+                    );
+                    ratingArea.append(postRenderError);
+                }
             } else {
                 responseMessage.addedRating.createTime = new Date(
                     responseMessage.addedRating.createTime * 1000

@@ -28,6 +28,10 @@ router.route("/").post(async (req, res) => {
             newRating.textContent
         );
 
+        if (typeof(addedRating) === "string"){
+            return res.json({ success: false, message: addedRating });
+        }
+
         return res.json({ success: true, addedRating: addedRating });
     } catch (e) {
         return res.status(500).json({ success: false, errmsg: e });
