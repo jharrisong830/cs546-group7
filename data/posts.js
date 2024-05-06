@@ -530,13 +530,15 @@ const likeComment = async (commentId, userId) => {
 
 /**
  * Rates a playlist within a post by adding a rating object to the musicContent.ratings array.
+ * If the user has already made a rating on the playlist, the function will return a string.
+ * If the user is attempting make a rating on their own playlist, the function will also return a string.
  *
  * @param {string | ObjectId} id          The ID of the post containing the playlist to rate.
  * @param {string | ObjectId} userId      The ID of the user who is rating the playlist.
  * @param {number} starRating             The star rating given to the playlist (scale of 1 to 5).
  * @param {string} reviewText             Optional text content explaining the rating.
  *
- * @returns {Object}                      the newly created rating subdocument
+ * @returns {Object | string}             The newly created rating subdocument or a string message if the rating could not be added.
  * @throws {Error}                        Throws an error if the operation fails.
  */
 const ratePlaylist = async (id, userId, starRating, reviewText) => {
@@ -556,9 +558,18 @@ const ratePlaylist = async (id, userId, starRating, reviewText) => {
     }
 
     const postCol = await posts();
-    const post = await postCol.findOne({_id: id}, {"musicContent._id": 1}); // Post with a playlist type should ALWAYS have music content
+    const post = await postCol.findOne({ _id: id }, { "musicContent._id": 1 }); // Post with a playlist type should ALWAYS have music content
 
     let musicContentId = post.musicContent._id;
+
+    if (post.authorId.equals(userId)) {
+        return "You cannot make a rating of your own playlist."
+    }    
+
+    const existingRating = post.musicContent.ratings.find(r => r.authorId.equals(userId));
+    if (existingRating) {
+        return "You have already rated this playlist.";
+    }
 
     const currTime = Math.floor(Date.now() / 1000); // get unix epoch seconds
     let ratingId = new ObjectId();
@@ -576,7 +587,7 @@ const ratePlaylist = async (id, userId, starRating, reviewText) => {
         createTime: currTime
     };
 
-    let mc = post.musicContent;    
+    let mc = post.musicContent;
 
     const updateResult = await postCol.updateOne(
         { _id: id },
@@ -731,9 +742,11 @@ const likeRating = async (ratingId, userId) => {
         );
     }
 
-    const rating = postWithRating.musicContent.ratings.find(r => r._id.equals(ratingId));
+    const rating = postWithRating.musicContent.ratings.find((r) =>
+        r._id.equals(ratingId)
+    );
 
-    const ratingLikes = rating.likes.map(id => id.toString());  
+    const ratingLikes = rating.likes.map((id) => id.toString());
 
     if (ratingLikes.includes(userId.toString())) {
         // User already liked the rating, so unlike it
@@ -773,8 +786,7 @@ const likeRating = async (ratingId, userId) => {
         }
 
         return false; // Indicates rating was unliked
-    } 
-    else {
+    } else {
         // User has not liked the rating, so add the like
         const updateInfo = await postCol.updateOne(
             { "musicContent.ratings._id": ratingId },
@@ -815,6 +827,63 @@ const likeRating = async (ratingId, userId) => {
     }
 };
 
+/**
+ * Retrieves a specific comment by its ID.
+ * This function searches all posts for the specified comment ID and returns the comment if found.
+ *
+ * @param {string | ObjectId} commentId  The ID of the comment to get.
+ * @returns {Object}                     The comment object found.
+ * @throws                               Throws an error if necessary.
+ */
+const getComment = async (commentId) => { // Not sure if needed
+    commentId = vld.checkObjectId(commentId);
+
+    const postCol = await posts();
+
+    const comment = await postCol.findOne(
+        { "comments._id": commentId },
+        { projection: { "comments.$": 1 } }
+    );
+
+    if (!comment) {
+        errorMessage(MOD_NAME, "getComment", `No coment with '${commentId}' was found`);
+
+    }
+        
+    return comment;
+};
+
+/**
+ * Retrieves all comments made by a specific user.
+ * This function searches all posts for comments made by the specified user and returns them in an array.
+ *
+ * @param {string | ObjectId} userId  The user ID that helps comments.
+ * @returns {Array<Object>}           An array of comment subdocuments made by the user.
+ * @throws                            Throws an error if the input is invalid or if the operation fails.
+ */
+const getUserComments = async (userId) => {
+    userId = vld.checkObjectId(userId); 
+
+    const postCol = await posts();
+
+    const postsWithUserComments = await postCol.find( // Find all posts that contain comments by this user
+        { "comments.authorId": userId },
+        { projection: { "comments.$": 1 } }
+    ).toArray();
+
+    let userComments = [];
+    if (postsWithUserComments.length > 0) {
+        postsWithUserComments.forEach(post => {
+            const comments = post.comments.filter(comment => comment.authorId.equals(userId));
+            userComments.push(...comments);
+        });
+    } 
+    else {
+        errorMessage(MOD_NAME, "getUserComments", `No comments found for user with ID '${userId}'`);
+    }
+
+    return userComments;
+};
 
 const exportedMethods = {
     createPost,
@@ -829,7 +898,9 @@ const exportedMethods = {
     ratePlaylist,
     searchPosts,
     searchPlaylists,
-    likeRating
+    likeRating,
+    getComment,
+    getUserComments
 };
 
 export default exportedMethods;

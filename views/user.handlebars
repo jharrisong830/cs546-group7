@@ -44,15 +44,11 @@
         <div class="container">
             <h4>Comments</h4>
             {{#if comments.length}}
-                <ul>
-                    {{#each comments}}
-                        <li>{{this}}</li>
-                    {{/each}}
-                </ul>
             {{else}}
                 <p>{{username}} hasn't made any comments yet.</p>
             {{/if}}
         </div>
+        <div id="commentArea"></div>
     {{/with}}
 
 {{else}}

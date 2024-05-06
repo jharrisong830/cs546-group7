@@ -4,9 +4,9 @@ let newCommentForm = $("#newComment"),
     idUrl = $("div").first().attr("id"),
     likeButton = $("#likeButton"),
     commentLikeButton = $("#commentLikeButton"),
-    likes = $(".likes"), 
+    likes = $(".likes"),
     newRatingForm = $("#newRating"),
-    ratingArea = $("#ratingArea"), 
+    ratingArea = $("#ratingArea"),
     ratingText = $("#ratingText"),
     ratingValue = $("#rating");
 
@@ -49,9 +49,9 @@ const likeCommentEvent = (commentId) => {
     };
 };
 
-$(document).on('click', '#ratingLikeButton', function(event) {
+$(document).on("click", "#ratingLikeButton", function (event) {
     event.preventDefault();
-    const ratingId = $(this).data('rating-id');
+    const ratingId = $(this).data("rating-id");
     let requestConfig = {
         method: "POST",
         url: "/api/ratings/like",
@@ -67,22 +67,19 @@ $(document).on('click', '#ratingLikeButton', function(event) {
             const newLikes = currentLikes + 1;
             if (newLikes === 1) {
                 likesElement.text(newLikes + " Like");
-            } 
-            else {
+            } else {
                 likesElement.text(newLikes + " Likes");
             }
-        } 
-        else {
+        } else {
             const currentLikes = parseInt(likesElement.text().split(" ")[0]);
             const newLikes = currentLikes - 1;
             if (newLikes === 1) {
                 likesElement.text(newLikes + " Like");
-            } 
-            else {
+            } else {
                 likesElement.text(newLikes + " Likes");
             }
         }
-    })
+    });
 });
 
 newCommentForm.submit((event) => {
@@ -196,7 +193,7 @@ $(document).ready((event) => {
 commentLikeButton.on("click", function (event) {
     event.preventDefault();
 
-    var commentIdUrl = $(this).data('comment-id'); // idUrl for a specific comment
+    var commentIdUrl = $(this).data("comment-id"); // idUrl for a specific comment
     var likesElement = $(`#likes-comment-` + commentIdUrl);
 
     console.log("Likes element is" + likesElement);
@@ -214,26 +211,28 @@ commentLikeButton.on("click", function (event) {
         let curLikes = 0;
         console.log(responseMessage);
         if (responseMessage.liked) {
-            curLikes = (parseInt(likesElement.text().split(" ")[0]) + 1).toString();
+            curLikes = (
+                parseInt(likesElement.text().split(" ")[0]) + 1
+            ).toString();
             if (curLikes == 1) {
                 likesElement.text(`${curLikes} Like`);
             } else {
                 likesElement.text(`${curLikes} Likes`);
             }
-        } 
-        else {
-            const curLikes = (parseInt(likesElement.text().split(" ")[0]) - 1).toString();
+        } else {
+            const curLikes = (
+                parseInt(likesElement.text().split(" ")[0]) - 1
+            ).toString();
             if (curLikes == 1) {
                 likesElement.text(`${curLikes} Like`);
             } else {
                 likesElement.text(`${curLikes} Likes`);
             }
         }
-
     });
 });
 
-$('.star-rating input[type="radio"]').change(function() {
+$('.star-rating input[type="radio"]').change(function () {
     // Gets the star value and sets the dropdown value to it
     const starValue = $(this).val();
     $("#rating").val(starValue);
@@ -243,7 +242,7 @@ newRatingForm.submit((event) => {
     event.preventDefault();
     let newRating = ratingText.val();
     let selectedRating = $('input[name="rating"]:checked').val();
-    console.log(selectedRating);
+    //console.log(selectedRating);
 
     if (newRating) {
         let requestConfig = {
@@ -259,15 +258,23 @@ newRatingForm.submit((event) => {
         $.ajax(requestConfig).then(function (responseMessage) {
             console.log(responseMessage);
             if (!responseMessage.success) {
-                const postRenderError = $(
-                    `<div class='renderError'>
-                    <h1>Could not render ratings </h1>
-                    </div>`
-                );
-                ratingArea.append(postRenderError);
-            } 
-            else {
-                responseMessage.addedRating.createTime = new Date(responseMessage.addedRating.createTime * 1000)
+
+                if (responseMessage.message) {
+                    // make an alert on the page with the message
+                    alert(responseMessage.message);
+                }
+                else {
+                    const postRenderError = $(
+                        `<div class='renderError'>
+                        <h1>Could not render ratings </h1>
+                        </div>`
+                    );
+                    ratingArea.append(postRenderError);
+                }
+            } else {
+                responseMessage.addedRating.createTime = new Date(
+                    responseMessage.addedRating.createTime * 1000
+                )
                     .toISOString()
                     .split("T")[0];
                 let ele = $(`
@@ -276,15 +283,15 @@ newRatingForm.submit((event) => {
                         <h5 class="card-title text-body-emphasis">${responseMessage.addedRating.authorUsername}</h5>
                         <h6 class="card-subtitle mb-2">${responseMessage.addedRating.createTime}</h6>
                 
-                        <p class="card-text">${responseMessage.addedRating.ratingText}</p>
-                        <p>Rating: ${responseMessage.addedRating.rating}/5 Stars</p>
+                        <p class="card-text">${responseMessage.addedRating.textContent}</p>
+                        <p>Rating: ${responseMessage.addedRating.starRating}/5 Stars</p>
                     </div>
                 </div>
                 `);
                 ratingArea.prepend(ele);
                 ratingText.val(""); // clear the input value
-                $('input#star5').prop('checked', true); // Reset to 5 stars
-                $('#rating').val('5'); // Set the select to "Perfect!"
+                $("input#star5").prop("checked", true); // Reset to 5 stars
+                $("#rating").val("5"); // Set the select to "Perfect!"
             }
         });
     }

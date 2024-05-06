@@ -40,7 +40,8 @@ router.route("/:username").get(async (req, res) => {
                 usr.publicProfile ||
                 isCurrent ||
                 currUserFriends.includes(userId.toString()), // we will show content if profile is public or if this is the current user (false when private and not current user), or if the requested user is in the friends list of the current user
-            user: usr
+            user: usr,
+            commentArray: usr.comments
         });
     } catch (e) {
         return res.status(404).render("error", { title: "Error", errmsg: e });

@@ -38,5 +38,23 @@ $.ajax(requestConfig).then(function (responseMessage) {
             `);
             postArea.append(postCard);
         });
+        responseMessage.userComments.forEach((userComment) => {
+            userComment.createTime = new Date(userComment.createTime * 1000)
+                .toISOString()
+                .split("T")[0];
+            const commentCard = $(`
+                <div class="card mx-5 my-4">
+                    <div class="card-body">
+                        <h5 class="card-title text-body-emphasis">${userComment.authorUsername}</h5>
+                        <h6 class="card-subtitle mb-2">${userComment.createTime}</h6>
+        
+                        <p class="card-text">${userComment.textContent}</p>
+                        <a href="/post/${userComment.parentId}" role="button" class="btn btn-outline-dark btn-sm">View Post</a>
+                    </div>
+                </div>
+            `);
+            $('#commentArea').append(commentCard);
+        });
+        
     }
 });
