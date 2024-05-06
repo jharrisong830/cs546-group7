@@ -6,21 +6,23 @@
         <h2>@{{user.username}}</h2>
     {{/if}}
 
-    <a href="/user/{{user.username}}">Back to profile.</a>
-    <a href="/">Go to home.</a>
+    <a href="/user/{{user.username}}" class="btn btn-primary">Back to profile.</a>
+    <a href="/" class="btn btn-primary">Go to home.</a>
 </div>
 
 {{#each requests}}
-    <a href="/user/{{username}}">{{username}}</a>
-    <form method="POST" action="/user/{{../user.username}}/requests" id="requestStatus">
-        <select name="acceptStatus" id="acceptStatus">
-            <option value=""></option>
-            <option value="accept">Accept</option>
-            <option value="decline">Decline</option>
-        </select>
-        <input type="hidden" name="requestx" value="{{username}}">
-        <input type="submit" class = "submit">
-    </form>
+    <div class="card-body">
+        <form method="POST" action="/user/{{../user.username}}/requests" id="requestStatus" class="container">
+        <a href="/user/{{username}}"><h5 class="card-title text-body-emphasis">{{username}}</h5></a>
+            <select name="acceptStatus" id="acceptStatus">
+                <option value=""></option>
+                <option value="accept">Accept</option>
+                <option value="decline">Decline</option>
+            </select>
+            <input type="hidden" name="requestx" value="{{username}}">
+            <input type="submit" class = "submit">
+        </form>
+    </div>
 {{/each}}
 
 <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
