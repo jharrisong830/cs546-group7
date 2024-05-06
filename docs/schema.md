@@ -104,6 +104,7 @@ const user = {
 | `comments` | `[Object]` (subdocument) | an array of comment objects, representing comments made on this post
 | `createTime` | `number` | time since Unix epoch of when the post was created |
 | `lastUpdated` | `number` | time since Unix epoch of when the post was last changed |
+| `tags` | `[string], Array.length === 3` | a triple of strings indicating genres/moods for a playlist post |
 
 
 ### Comment (Subdocument of Post)
